@@ -1,6 +1,7 @@
 #include "mwindow.h"
 #include "settings.h"
 #include "template.h"
+//#include <iostream>
 
 extern NNCGSettings objSett;
 extern theme_t themeCurrent;
@@ -150,6 +151,7 @@ void NNCGMainWindow::refreshTable() {
         for (int col = 0; col < 3; col++) table->setItem(hIt.value().orderNum, col, oneRow[col]);
     };
     this->show();
+   // std::cout << "refresh called! " << std::endl;
 };
 
 // при событии закрытия окна сохраняем настройки в json
@@ -164,11 +166,12 @@ void NNCGMainWindow::closeEvent(QCloseEvent* event) {
 }
 
 void NNCGMainWindow::dumpTableToHash() {
-    for (int r = 0; r < table->rowCount(); r++) {
+//    std::cout << "table rows : " <<  table->rowCount() << std::endl;
+    for (int r = 0; r < this->table->rowCount(); r++) {
         // обход хэша
         for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
             if (hIt.value().orderNum == r) {
-                objTempl->hashVars[hIt.key()].value = hIt.value().value;
+                objTempl->hashVars[hIt.key()].value = table->item(r, 2)->text();
                 break;
             }
         }

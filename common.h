@@ -1,7 +1,7 @@
 #ifndef ALLCONSTS_H
 #define ALLCONSTS_H
 
-#include <iostream>
+//#include <iostream>
 #include <QApplication>
 #include <QString>
 #include <QFileInfo>

@@ -18,7 +18,7 @@ void NNCGBtnCsvLoad::slotClicked() {
         /// потом выделить в отдельный поток
         NNCG_csv *newCSV = new NNCG_csv(newFN);
         if (newCSV->noOpenErr) { // с новым csv всё ок, тогда удаляем старый объект и подменяем указателем на новый
-            if (objCSV != nullptr) delete objCSV;
+            delete objCSV;
             objCSV = newCSV;
 //            std::cout << "noOpenError = " << objCSV->noOpenErr << std::endl;
 //            std::cout << objCSV->lastErrMsg.toStdString() << std::endl;
@@ -49,13 +49,13 @@ void NNCGBtnCsvSave::slotClicked() {
     if (!saveFpFn.isEmpty()) {
         /// потом выделить в отдельный поток
         QFile fileCSV(saveFpFn);
-        QFileInfo fi(fileCSV);
         if (fileCSV.open(QIODevice::WriteOnly)) {
             QByteArray ba;
             mainWindow->dumpTableToHash();
             ba.append(QS_VVT + "\r\n");
             for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
                   ba.append(QString("\"%1\";\"%2\";\"%3\"").arg(hIt.key()).arg(hIt.value().value).arg(t2s(hIt.value().type)) + "\r\n");
+                //ba.append(QString(R"("%1";"%2";"%3")").arg(hIt.key()).arg(hIt.value().value).arg(t2s(hIt.value().type)) + "\r\n");
             }
             if (fileCSV.write(ba)) {
                 QMessageBox(QMessageBox::Information, QObject::tr("Info"), QObject::tr("csv saved successfully"), QMessageBox::Ok, mainWindow).exec();
@@ -113,7 +113,6 @@ void NNCGButtonCreate::slotClicked(){
     if (!saveFpFn.isEmpty()) {
         /// потом выделить в отдельный поток
         QFile fileCFG(saveFpFn);
-        QFileInfo fi(fileCFG);
         if (fileCFG.open(QIODevice::WriteOnly)) {
             QByteArray ba;
             mainWindow->dumpTableToHash();

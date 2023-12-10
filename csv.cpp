@@ -27,7 +27,8 @@ NNCG_csv::NNCG_csv(const QString& fn)
             strList = QStringList(QString(qFile.readAll()).split("\r\n", QString::SkipEmptyParts));
             if (strList.length() > 1) {
                 if (strList[0] == QS_VVT) {
-                    QString varName, varValue;
+                    QString varName;
+                    QString varValue;
                     varType_t varType;
                     int varsCount {0};
                     for (int h = 1; h < strList.length(); h++) {
