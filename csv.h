@@ -1,6 +1,7 @@
 #ifndef NNCG_CSV_H
 #define NNCG_CSV_H
 
+
 #include "common.h"
 
 class NNCG_csv

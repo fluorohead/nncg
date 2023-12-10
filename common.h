@@ -26,6 +26,7 @@
 #include <QJsonParseError>
 #include <QJsonDocument>
 
+
 #define MIN_WIDTH 800
 #define MIN_HEIGHT 600
 
