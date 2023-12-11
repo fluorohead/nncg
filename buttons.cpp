@@ -16,7 +16,7 @@ void NNCGBtnCsvLoad::slotClicked() {
     QString newFN = QFileDialog::getOpenFileName(this, QObject::tr("Opening csv"), "./", QObject::tr("CSV files (*.csv)"));
     if (!newFN.isEmpty()) {
         /// потом выделить в отдельный поток
-        NNCG_csv *newCSV = new NNCG_csv(newFN);
+        auto *newCSV = new NNCG_csv(newFN);
         if (newCSV->noOpenErr) { // с новым csv всё ок, тогда удаляем старый объект и подменяем указателем на новый
             delete objCSV;
             objCSV = newCSV;
@@ -52,10 +52,9 @@ void NNCGBtnCsvSave::slotClicked() {
         if (fileCSV.open(QIODevice::WriteOnly)) {
             QByteArray ba;
             mainWindow->dumpTableToHash();
-            ba.append(QS_VVT + "\r\n");
+            ba.append(QS_VVT);
             for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
-                  ba.append(QString("\"%1\";\"%2\";\"%3\"").arg(hIt.key()).arg(hIt.value().value).arg(t2s(hIt.value().type)) + "\r\n");
-                //ba.append(QString(R"("%1";"%2";"%3")").arg(hIt.key()).arg(hIt.value().value).arg(t2s(hIt.value().type)) + "\r\n");
+                  ba.append(QString("\r\n\"%1\";\"%2\";\"%3\"").arg(hIt.key(), hIt.value().value, t2s(hIt.value().type)));
             }
             if (fileCSV.write(ba)) {
                 QMessageBox(QMessageBox::Information, QObject::tr("Info"), QObject::tr("csv saved successfully"), QMessageBox::Ok, mainWindow).exec();
@@ -80,7 +79,7 @@ void NNCGButtonLoad::slotClicked() {
     QString newFN = QFileDialog::getOpenFileName(this, QObject::tr("Opening template"), "./",  QObject::tr("Text files (*.txt)"));
     if (!newFN.isEmpty()) {
         /// потом выделить в отдельный поток
-        NNCGTemplate *newTempl = new NNCGTemplate(newFN);
+        auto *newTempl = new NNCGTemplate(newFN);
         ///
         if (newTempl->noOpenErr) { // с новым шаблоном всё ок, тогда удаляем старый объект и подменяем указателем на новый
             delete objTempl;

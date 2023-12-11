@@ -26,7 +26,8 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
     setCentralWidget(bigWidget);
     setStatusBar(statusBar);
 
-    QPalette bwPal = bigWidget->palette(), sbPal = statusBar->palette();
+    QPalette bwPal = bigWidget->palette();
+    QPalette sbPal = statusBar->palette();
     bwPal.setColor(QPalette::Background, themeCurrent.bw_bg);
     bwPal.setColor(QPalette::Foreground, themeCurrent.bw_fg);
     bigWidget->setPalette(bwPal);
@@ -34,11 +35,11 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
     sbPal.setColor(QPalette::Foreground, themeCurrent.sb_fg);
     statusBar->setPalette(sbPal);
 
-    QVBoxLayout *vbLayout = new QVBoxLayout(nullptr);
+    auto *vbLayout = new QVBoxLayout(nullptr);
     bigWidget->setLayout(vbLayout);
     vbLayout->setContentsMargins(20, 0, 20, 0);
 
-    QHBoxLayout *hbTop = new QHBoxLayout(nullptr);
+    auto *hbTop = new QHBoxLayout(nullptr);
     hbTop->setSpacing(24);
     hbTop->setContentsMargins(4, 20, 0, 20);
 
@@ -47,7 +48,7 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
     logoLabel->setScaledContents(true);
     hbTop->addWidget(logoLabel);
 
-    QVBoxLayout *vbTopRight = new QVBoxLayout(nullptr);
+    auto *vbTopRight = new QVBoxLayout(nullptr);
     vbTopRight->setContentsMargins(0, 0, 0, 0);
     vbTopRight->setSpacing(6);
     hbTop->addLayout(vbTopRight);
@@ -88,7 +89,7 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
     //table->setRowCount(objTempl->hashVars.size());
     table->setStyleSheet("color: rgb(190, 190, 190); gridline-color: rgb(50, 50, 50); background-color: rgb(60, 60, 60)");
 
-    QHBoxLayout *hbBottom = new QHBoxLayout(nullptr);
+    auto *hbBottom = new QHBoxLayout(nullptr);
     hbBottom->setSpacing(12);
     hbBottom->setContentsMargins(0, 16, 0, 20);
 
@@ -104,7 +105,7 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
     btnCsvSave = new NNCGBtnCsvSave(80, 32, QObject::tr("Save CSV"));
     btnCsvSave->setStyleSheet(btnSS);
 
-    QSpacerItem *hbSI = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
+    auto *hbSI = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
     btnTemplLoad = new NNCGButtonLoad(108, 32, QObject::tr("Load template"));
     btnTemplLoad->setStyleSheet(btnSS);
@@ -161,7 +162,7 @@ void NNCGMainWindow::closeEvent(QCloseEvent* event) {
 //    std::cout << "is maximized: " << isMaximized() << std::endl;
     this->hide();
     if (!objTempl->isDemo) objSett.saveSettings(objTempl->getFilePath() + objTempl->getFileName(), QS_DARK, width(), height(), b2s(isMaximized()));
-        else objSett.saveSettings("", QS_DARK, width(), height(), b2s(isMaximized()));
+    else objSett.saveSettings("", QS_DARK, width(), height(), b2s(isMaximized()));
     event->accept();
 }
 

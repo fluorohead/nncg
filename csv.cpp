@@ -1,6 +1,6 @@
 #include "csv.h"
 
-extern varType_t s2t(QString str);
+extern varType_t s2t(const QString &str);
 
 // возвращает true, если формат переменной верный
 bool NNCG_csv::inspectLine(const QString &line, QString &varName, QString &varValue, varType_t &varType) {
@@ -11,13 +11,13 @@ bool NNCG_csv::inspectLine(const QString &line, QString &varName, QString &varVa
         if ((varName.length() >= 3) && (varName.length() <= MAX_VAR_NAME_LEN) && (rex.cap(3).length() != 0)) {
             varType = s2t(rex.cap(3));
             varValue.truncate(maxChars[varType]);
-            return true;
         } else {
             return false;
         }
     } else {
         return false;
     }
+    return true;
 }
 
 NNCG_csv::NNCG_csv(const QString& fn)

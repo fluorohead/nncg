@@ -19,7 +19,7 @@ NNCGSettings::NNCGSettings() {
             if (qFile.size() <= MAX_JSON_FILE_SIZE) {
                 QByteArray qBA(qFile.readAll());
 //                std::cout << "readed bytes : " << qBA.size() << std::endl;
-                QJsonParseError jsErr;
+                QJsonParseError jsErr {};
                 jsDoc = QJsonDocument::fromJson(qBA, &jsErr);
                 if (!jsDoc.isNull()) {
                     width = jsDoc[QS_WIDTH].toInt(); height = jsDoc[QS_HEIGHT].toInt();
@@ -63,7 +63,7 @@ bool NNCGSettings::saveSettings(const QString& fpfn, const QString& theme, int w
                                 " \"%5\": %6,\r\n"
                                 " \"%7\": %8,\r\n"
                                 " \"%9\": %10\r\n"
-                                "}").arg(QS_TEMPLATE).arg(fpfn).arg(QS_THEME).arg(theme).arg(QS_WIDTH).arg(w).arg(QS_HEIGHT).arg(h).arg(QS_MXMZD).arg(mxmzd);
+                                "}").arg(QS_TEMPLATE, fpfn, QS_THEME, theme, QS_WIDTH, QString::number(w), QS_HEIGHT, QString::number(h), QS_MXMZD, mxmzd);
 //    std::cout << writeStr.toStdString() << std::endl;
     qFile.write(writeStr.toUtf8());
     qFile.flush();

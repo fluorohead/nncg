@@ -1,0 +1,86 @@
+NETWORK_NODE_CONFIG_TEMPLATE
+SOFTWARE_VERSION: 0.0.1
+TITLE: Template Example For Abstract Network Node
+COMMENT: version 2023-12-05-21-03
+LOGO:
+BRAND_COLOR:
+#BEGIN_VARIABLES
+#{sysname},         "Hostame :",                                 Sysname
+#{node},            "Node number (1 или 2) :",                   Unsigned
+#{loopback_ip},     "Interface Loopback IPv4 address :",         IPv4
+#{ett1_ip},         "Interface Eth-Trunk1 IPv4 address :",       IPv4
+#{ett1_descr},      "Interface Eth-Trunk1 description :",        Description
+#{ett1_cost},       "Interface Eth-Trunk1 OSPF cost :",          Unsigned
+#{ett2_ip},         "Interface Eth-Trunk2 IPv4 address : :",     IPv4
+#{ett2_descr},      "Interface Eth-Trunk2 description :",        Description
+#{ett2_cost},       "Interface Eth-Trunk2 OSPF cost :",          Unsigned
+#{phy1_descr},      "Phys. interface GE0/0/1 description :",     Description
+#{phy2_descr},      "Phys. interface GE0/0/2 description :",     Description
+#{mgmt_ip},         "Interface MGMT IPv4 address :",             IPv4
+#{mgmt_mask},       "Interface MGMT IPv4 mask :",                MASKv4
+#{mgmt_gw},         "MGMT gateway IPv4 address :",               IPv4
+#{mgmt_descr},      "Interface MGMT description :",              Description
+#{ett1_bfd_nei_ip}, "BFD neighbor IPv4 address on Eth-Trunk1 :", IPv4
+#{ett2_bfd_nei_ip}, "BFD neighbor IPv4 address on Eth-Trunk2 :", IPv4
+#{iccp_nei_ip},     "ICCP neighbor IPv4 address :",              IPv4
+#{ospf_pwd},        "OSPF sessions password :",                  Password
+#{asn},             "AS number :",                               Description
+#{tacacs_key},      "Tacacs key :",                              Password
+#END_VARIABLES
+
+sysname {sysname}
+
+ospf 1 router-id {loopback_ip}
+
+mpls lsr-id {loopback_ip}
+
+interface LoopBack3
+ ip address {loopback_ip} 255.255.255.255
+
+interface Eth-Trunk1
+ description {ett1_descr}
+ ip address {ett1_ip} 255.255.255.252
+ ospf cost {ett1_cost}
+
+interface Eth-Trunk2
+ description {ett2_descr}
+ ip address {ett2_ip} 255.255.255.252
+ ospf cost {ett2_cost}
+
+bfd bfd-ethtrunk1 bind link-bundle peer-ip {ett1_bfd_nei_ip} interface Eth-Trunk1 source-ip {ett1_ip}
+ min-tx-interval 250
+ min-rx-interval 250
+
+bfd bfd-ethtrunk2 bind link-bundle peer-ip {ett2_bfd_nei_ip} interface Eth-Trunk2 source-ip {ett2_ip}
+ min-tx-interval 250
+ min-rx-interval 250
+
+ip vpn-instance mgmtVrf
+ ipv4-family
+
+interface Ethernet0/0/0
+ description {mgmt_descr}
+ ip binding vpn-instance mgmtVrf
+ ip address {mgmt_ip} {mgmt_mask}
+
+ip route-static vpn-instance mgmtVrf 10.1.2.3 255.255.255.255 {mgmt_gw} preference 60
+ip route-static vpn-instance mgmtVrf 10.4.5.6 255.255.255.255 {mgmt_gw} preference 60
+
+interface GE0/0/1
+ description {phy1_descr}
+ eth-trunk 1
+
+interface GE0/0/2
+ description {phy2_descr}
+ eth-trunk 2
+
+bgp {asn}
+ router-id {loopback_ip}
+
+hwtacacs-server template tacacs-template
+ hwtacacs-server source-ip {loopback_ip}
+ hwtacacs-server shared-key {tacacs_key}
+
+iccp redundancy group 303
+ peer-ip {iccp_nei_ip}
+ mlacp node-id {node}

@@ -4,7 +4,6 @@
 #include "settings.h"
 #include "csv.h"
 
-QApplication *app;
 NNCGMainWindow *mainWindow;
 NNCGTemplate *objTempl;
 NNCGSettings objSett;
@@ -52,7 +51,7 @@ QString t2s(varType_t type) {
 }
 
 // из строки в тип переменной
-varType_t s2t(QString str) {
+varType_t s2t(const QString &str) {
     QString toLow = str.toLower();
     if (toLow == QS_SYSNAME) return varType_t::Sysname;
     if (toLow == QS_DESCR) return varType_t::Description;
@@ -70,7 +69,7 @@ int main(int argc, char* argv[]) {
 
 //    std::cout << objSett.lastErrMsg.toStdString() << std::endl;
 
-    app = new QApplication(argc, argv);
+    QApplication app(argc, argv);
 
     if (!objSett.templFpFn.isEmpty()) { // проверка пути к шаблону
         objTempl = new NNCGTemplate(objSett.templFpFn);
@@ -93,7 +92,7 @@ int main(int argc, char* argv[]) {
         mainWindow->btnCsvSave->setDisabled(true);
     }
 
-    app->exec();
+    QApplication::exec();
 
     return 0;
 }
