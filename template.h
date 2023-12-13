@@ -3,8 +3,9 @@
 
 #include "common.h"
 
-class NNCGTemplate
+class NNCGTemplate: public QObject
 {
+
 private:
     QFile qFile;
     QString serChar; // service char / служебный символ / первый символ строки №[4]
@@ -18,11 +19,13 @@ public:
     QHash<QString, oneRec_t> hashVars;
     QString getTitle();
     QString getComment();
-    QString getFilePath(); // только путь, без имени файла
-    QString getFileName(); // только имя файла, без пути
-    QPixmap* getPtrPixLogo(); // указатель на logo pixmap
-    int beginConfig {0}; // индекс начала самого конфига в strList
+    QString getFilePath(); // возвр. только путь, без имени файла
+    QString getFileName(); // возвр. только имя файла, без пути
+    QPixmap* getPtrPixLogo(); // возвр. указатель на logo pixmap
+    int beginConfig {0}; // начало конфига в списке strList
     QStringList strList;
+    QColor brandBgColor {0, 139, 224, 255};
+    QColor brandFgColor {255, 255, 255, 255};
     NNCGTemplate(); // для demo-шаблона
     NNCGTemplate(const QString&);
 };

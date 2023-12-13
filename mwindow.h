@@ -6,7 +6,6 @@
 
 class NNCGMainWindow: public QMainWindow
 {
-
     Q_OBJECT
 
 private:
@@ -16,9 +15,9 @@ private:
     QLabel *titleLabel;
     QLabel *commentLabel;
     QTableWidget *table;
-    QFont twiTah {"Tahoma", 10, 0}; // фонт для колонки с номером строки
-    QFont twiTahBold {"Tahoma", 10, 100}; // фонт для колонки Description
-    QFont twiCourNew {"Courier new", 12, 100}; // фонт для колонки Value
+    QFont fntCons10 {"Consolas", 10, 0}; // фонт для колонки #
+    QFont fntCons11 {"Consolas", 11, 0}; // фонт для колонки Description
+    QFont fntCons12bold {"Consolas", 12, 100}; // фонт для колонки Value
     void closeEvent(QCloseEvent* event);
 
 public:

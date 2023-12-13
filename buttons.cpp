@@ -20,10 +20,7 @@ void NNCGBtnCsvLoad::slotClicked() {
         if (newCSV->noOpenErr) { // с новым csv всё ок, тогда удаляем старый объект и подменяем указателем на новый
             delete objCSV;
             objCSV = newCSV;
-//            std::cout << "noOpenError = " << objCSV->noOpenErr << std::endl;
-//            std::cout << objCSV->lastErrMsg.toStdString() << std::endl;
             for (QHash<QString, oneRecShort_t>::iterator hIt = objCSV->hashVars.begin(); hIt != objCSV->hashVars.end(); ++hIt) {
-//                std::cout << "key : " << hIt.key().toStdString() << "; value : " << hIt.value().value.toStdString() << std::endl;
                 if (objTempl->hashVars.contains(hIt.key()) ) { // загружаем значения из csv в template
                     if (objTempl->hashVars[hIt.key()].type == hIt.value().type) { // проверка на соответствие типа переменной из шаблона и csv
                         objTempl->hashVars[hIt.key()].value = hIt.value().value;
@@ -84,13 +81,6 @@ void NNCGButtonLoad::slotClicked() {
         if (newTempl->noOpenErr) { // с новым шаблоном всё ок, тогда удаляем старый объект и подменяем указателем на новый
             delete objTempl;
             objTempl = newTempl;
-          /*  std::cout << "noOpenError = " << objTempl->noOpenErr << std::endl;
-            std::cout << objTempl->lastErrMsg.toStdString() << std::endl;
-            std::cout << objTempl->getTitle().toStdString() << std::endl;
-            std::cout << objTempl->getComment().toStdString() << std::endl;
-            for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
-                std::cout << "## : " << hIt.value().orderNum << "; key : " << hIt.key().toStdString() << "; value : " << hIt.value().descr.toStdString() << std::endl;
-            };*/
             mainWindow->refreshTable();
             mainWindow->btnCfgCreate->setEnabled(true);
             mainWindow->btnCsvLoad->setEnabled(true);

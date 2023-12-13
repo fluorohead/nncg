@@ -4,7 +4,7 @@
 
 #include "common.h"
 
-class NNCG_csv
+class NNCG_csv: public QObject
 {
 private:
     QFile qFile;

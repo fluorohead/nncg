@@ -11,22 +11,18 @@ NNCG_csv *objCSV {nullptr};
 
 theme_t themeDark {
     {37, 37, 37, 255}, // big widget background
-    {169, 169, 169, 255}, // big widget foreground
-    {0, 139, 224, 255}, // status bar background <- переделать на данные из шаблона
-    {255, 255, 255, 255} // status bar foreground <- переделать на данные из шаблона
+    {169, 169, 169, 255} // big widget foreground
 };
 
 theme_t themeCurrent {
     {37, 37, 37, 255}, // big widget background
-    {169, 169, 169, 255}, // big widget foreground
-    {0, 139, 224, 255}, // status bar background <- переделать на данные из шаблона
-    {255, 255, 255, 255} // status bar foreground <- переделать на данные из шаблона
+    {169, 169, 169, 255} // big widget foreground
 };
 
 // из bool в QString
 QString b2s(bool b) { return (b) ? "true" : "false"; }
 
-// из типа переменной в строку
+// из varType_t в строку
 QString t2s(varType_t type) {
     switch(type) {
     case varType_t::IPv4 :
@@ -50,7 +46,7 @@ QString t2s(varType_t type) {
     }
 }
 
-// из строки в тип переменной
+// из строки в varType_t
 varType_t s2t(const QString &str) {
     QString toLow = str.toLower();
     if (toLow == QS_SYSNAME) return varType_t::Sysname;
@@ -67,30 +63,26 @@ varType_t s2t(const QString &str) {
 ///////////////////////////////////////////
 int main(int argc, char* argv[]) {
 
-//    std::cout << objSett.lastErrMsg.toStdString() << std::endl;
-
     QApplication app(argc, argv);
 
     if (!objSett.templFpFn.isEmpty()) { // проверка пути к шаблону
         objTempl = new NNCGTemplate(objSett.templFpFn);
-        //std::cout << objTempl->lastErrMsg.toStdString() << std::endl;
         if (!objTempl->noOpenErr) { // ошибка загрузки шаблона из файла -> грузим демо-шаблон
             delete objTempl;
             objTempl = new NNCGTemplate();
-            //std::cout << objTempl->lastErrMsg.toStdString() << std::endl;
         }
     } else { // пустой путь к шаблону -> грузим демо-шаблон
-  //      std::cout << "template string from json is empty" << std::endl;
         objTempl = new NNCGTemplate();
     }
 
     mainWindow = new NNCGMainWindow(nullptr, Qt::Window);
-    mainWindow->refreshTable();
     if (objTempl->isDemo) {
         mainWindow->btnCfgCreate->setDisabled(true);
         mainWindow->btnCsvLoad->setDisabled(true);
         mainWindow->btnCsvSave->setDisabled(true);
     }
+
+    mainWindow->refreshTable();
 
     QApplication::exec();
 

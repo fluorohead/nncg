@@ -3,7 +3,7 @@ SOFTWARE_VERSION: 0.0.1
 TITLE: Template Example For Abstract Network Node
 COMMENT: version 2023-12-05-21-03
 LOGO:
-BRAND_COLOR:
+BRAND_COLORS:
 #BEGIN_VARIABLES
 #{sysname},         "Hostame :",                                 Sysname
 #{node},            "Node number (1 или 2) :",                   Unsigned
@@ -63,8 +63,8 @@ interface Ethernet0/0/0
  ip binding vpn-instance mgmtVrf
  ip address {mgmt_ip} {mgmt_mask}
 
-ip route-static vpn-instance mgmtVrf 10.1.2.3 255.255.255.255 {mgmt_gw} preference 60
-ip route-static vpn-instance mgmtVrf 10.4.5.6 255.255.255.255 {mgmt_gw} preference 60
+ip route-static vpn-instance mgmtVrf 10.1.2.3 255.255.255.255 {mgmt_gw}
+ip route-static vpn-instance mgmtVrf 10.4.5.6 255.255.255.255 {mgmt_gw}
 
 interface GE0/0/1
  description {phy1_descr}

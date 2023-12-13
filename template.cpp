@@ -46,18 +46,27 @@ bool NNCGTemplate::inspectLine(const QString &line, QString &varName, QString &v
     return true;
 }
 
+const QString   QS_NNCT = "NETWORK_NODE_CONFIG_TEMPLATE",
+                QS_SOFTVER = "SOFTWARE_VERSION:",
+                QS_TITLE = "TITLE:",
+                QS_COMMENT = "COMMENT:",
+                QS_LOGO = "LOGO:",
+                QS_BRCOLORS = "BRAND_COLORS:",
+                QS_BEGVARS = "BEGIN_VARIABLES",
+                QS_ENDVARS = "END_VARIABLES";
+
 // конструктор demo-шаблона
 NNCGTemplate::NNCGTemplate() {
     beginConfig = 6;
-    QString demoStr =   "NETWORK_NODE_CONFIG_TEMPLATE\r\n"
-                        "SOFTWARE_VERSION: 0.1.0\r\n"
-                        "TITLE: Network Node Configuration Demo Template\r\n"
-                        "COMMENT: created 2023-12-05-21-03\r\n"
-                        "LOGO: \r\n"
-                        "BRAND_COLOR: \r\n"
-                        "hostname {hostname}\r\n"
-                        "interface {phy1_ifname}\r\n"
-                        " description {phy1_descr}\r\n"
+    QString demoStr =   QS_NNCT + "\r\n" +
+                        QS_SOFTVER + " 0.0.1\r\n" +
+                        QS_TITLE + " Network Node Configuration Demo Template\r\n" +
+                        QS_COMMENT + " created 2023-12-05-21-03\r\n" +
+                        QS_LOGO + " \r\n" +
+                        QS_BRCOLORS + " \r\n" +
+                        "hostname {hostname}\r\n" +
+                        "interface {phy1_ifname}\r\n" +
+                        " description {phy1_descr}\r\n" +
                         " ipv4 address {phy1_ip} {phy1_mask}\r\n";
     strList = QStringList(demoStr.split("\r\n", Qt::KeepEmptyParts, Qt::CaseSensitive));
     hashVars["{hostname}"] = {0, "Network node hostname ->", "demo-sr01", Sysname};
@@ -66,7 +75,7 @@ NNCGTemplate::NNCGTemplate() {
     hashVars["{phy1_ip}"] = {3, "IPv4 address -> ", "192.168.0.2", IPv4};
     hashVars["{phy1_mask}"] = {4, "IPv4 mask ->", "255.255.255.0", MASKv4};
     noOpenErr = true;
-    lastErrMsg = QObject::tr("demo template loaded");
+    lastErrMsg = tr("demo template loaded");
     pixLogo.load(defLogo);
     isDemo = true;
 }
@@ -79,13 +88,13 @@ NNCGTemplate::NNCGTemplate(const QString &fn)
             strList = QStringList(QString(qFile.readAll()).split("\r\n", Qt::KeepEmptyParts, Qt::CaseSensitive));
             if (strList.length() >= MIN_TMPL_HEADER_LINES) {
                 bool wolfBill = false;
-                if (strList[0] != "NETWORK_NODE_CONFIG_TEMPLATE") wolfBill = true;
-                if (!strList[1].startsWith("SOFTWARE_VERSION:")) wolfBill = true;
-                if (!strList[2].startsWith("TITLE:")) wolfBill = true;
-                if (!strList[3].startsWith("COMMENT:")) wolfBill = true;
-                if (!strList[4].startsWith("LOGO:")) wolfBill = true;
-                if (!strList[5].startsWith("BRAND_COLOR:")) wolfBill = true;
-                if (!strList[6].endsWith("BEGIN_VARIABLES")) wolfBill = true;
+                if (strList[0] != QS_NNCT) wolfBill = true;
+                if (!strList[1].startsWith(QS_SOFTVER)) wolfBill = true;
+                if (!strList[2].startsWith(QS_TITLE)) wolfBill = true;
+                if (!strList[3].startsWith(QS_COMMENT)) wolfBill = true;
+                if (!strList[4].startsWith(QS_LOGO)) wolfBill = true;
+                if (!strList[5].startsWith(QS_BRCOLORS)) wolfBill = true;
+                if (!strList[6].endsWith(QS_BEGVARS)) wolfBill = true;
                 if (!wolfBill) {
                     serChar = strList[6][0];
                     int varsCount {0};
@@ -95,7 +104,7 @@ NNCGTemplate::NNCGTemplate(const QString &fn)
                     for (int h = MIN_TMPL_HEADER_LINES - 1; h < strList.length(); h++) {
                         if (!strList[h].isEmpty()) { // пропускаем пустые строки
                             if (strList[h][0] == serChar) { // проверка на служебный символ
-                                if (strList[h] == serChar + "END_VARIABLES") { // значит переменные закончились и дальше текст конфига
+                                if (strList[h] == serChar + QS_ENDVARS) { // значит переменные закончились и дальше текст конфига
                                     beginConfig = ++h;
                                     break;
                                 }
@@ -107,27 +116,27 @@ NNCGTemplate::NNCGTemplate(const QString &fn)
                                             varsCount++;
                                         } else { // такой ключ уже есть, повторение -> ошибка, выходим
                                             noOpenErr = false;
-                                            lastErrMsg = QObject::tr("repeating of variable at line : ");
+                                            lastErrMsg = tr("repeating of variable at line : ");
                                             lastErrMsg.append(QString::number(++h));
                                             hashVars.clear();
                                             return;
                                         }
                                     } else { // инспекция линии не успешна -> ошибка, выход
                                         noOpenErr = false;
-                                        lastErrMsg = QObject::tr("wrong syntax at line : ");
+                                        lastErrMsg = tr("wrong syntax at line : ");
                                         lastErrMsg.append(QString::number(++h));
                                         hashVars.clear();
                                         return;
                                     }
                                 } else { // превышено количество переменных
                                     noOpenErr = false;
-                                    lastErrMsg = QObject::tr("too much variables (allowed 1000 MAX)");
+                                    lastErrMsg = tr("too much variables (allowed 1000 MAX)");
                                     hashVars.clear();
                                     return;
                                 }
                             } else { // встретился посторонний символ -> больше не ищем переменных и выходим с ошибкой
                                 noOpenErr = false;
-                                lastErrMsg = QObject::tr("syntax error at line : ");
+                                lastErrMsg = tr("syntax error at line : ");
                                 lastErrMsg.append(QString::number(++h));
                                 hashVars.clear();
                                 return;
@@ -136,27 +145,24 @@ NNCGTemplate::NNCGTemplate(const QString &fn)
                     }
                     ///// тут, если всё корректно по заголовку и по переменным
                     noOpenErr = true;
-                    lastErrMsg = QObject::tr("template loaded : ");
+                    lastErrMsg = tr("template loaded : ");
                     lastErrMsg.append(fn.section('\\', -1, -1));
-                    //std::cout << "Logo path: " << (getFilePath().toStdString() + "/" + strList[4].mid(6, -1).simplified().toStdString()) << std::endl;
                     if (!pixLogo.load(getFilePath() + "/" + strList[4].mid(6, -1).simplified())) pixLogo.load(defLogo);
-                    //std::cout << "variables = " << varsCount << std::endl;
-                    //std::cout << "config begins from = " << beginConfig << std::endl;
                     /////
                 } else {
                     noOpenErr = false;
-                    lastErrMsg = QObject::tr("incorrect header");
+                    lastErrMsg = tr("incorrect header");
                 }
             } else {
                 noOpenErr = false;
-                lastErrMsg = QObject::tr("too short header");
+                lastErrMsg = tr("too short header");
             }
         } else {
             noOpenErr = false;
-            lastErrMsg = QObject::tr("too big template (allowed 5_000_000 bytes MAX)");
+            lastErrMsg = tr("too big template (allowed 5_000_000 bytes MAX)");
         }
     } else {
         noOpenErr = false;
-        lastErrMsg = QObject::tr("error opening template file");
+        lastErrMsg = tr("error opening template file");
     }
 }

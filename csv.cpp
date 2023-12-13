@@ -39,35 +39,31 @@ NNCG_csv::NNCG_csv(const QString& fn)
                             }
                         } else {
                             noOpenErr = true;
-                            lastErrMsg = QObject::tr("csv loaded : ");
+                            lastErrMsg = tr("csv loaded : ");
                             lastErrMsg.append(fn.section('\\', -1, -1));
-                            lastErrMsg.append(QObject::tr(", extra variables was skipped (allowed 1000 MAX)"));
+                            lastErrMsg.append(tr(", extra variables was skipped (allowed 1000 MAX)"));
                             qFile.close();
                             return;
                         }
                     }
-/*                    std::cout << "csv lines : " << hashVars.count() << std::endl;
-                    for (QHash<QString, oneRecShort_t>::iterator hIt = hashVars.begin(); hIt != hashVars.end(); ++hIt) {
-                        std::cout << "key : " << hIt.key().toStdString() << "; value : " << hIt.value().value.toStdString() << std::endl;
-                    };*/
                     noOpenErr = true;
-                    lastErrMsg = QObject::tr("csv loaded : ");
+                    lastErrMsg = tr("csv loaded : ");
                     lastErrMsg.append(fn.section('\\', -1, -1));
                 } else {
                     noOpenErr = false;
-                    lastErrMsg = QObject::tr("wrong header in csv");
+                    lastErrMsg = tr("wrong header in csv");
                 }
             } else {
                 noOpenErr = false;
-                lastErrMsg = QObject::tr("empty csv");
+                lastErrMsg = tr("empty csv");
             }
         } else {
             noOpenErr = false;
-            lastErrMsg = QObject::tr("too big csv (allowed 1_000_000 bytes MAX)");
+            lastErrMsg = tr("too big csv (allowed 1_000_000 bytes MAX)");
         }
     } else {
         noOpenErr = false;
-        lastErrMsg = QObject::tr("error opening csv file");
+        lastErrMsg = tr("error opening csv file");
     }
     qFile.close();
 }
