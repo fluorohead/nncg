@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <QMainWindow>
 #include <QLabel>
+#include <QLineEdit>
 #include <QTableWidget>
 #include <QStatusBar>
 #include <QVBoxLayout>
@@ -27,6 +28,7 @@
 #include <QJsonParseError>
 #include <QJsonDocument>
 #include <QScrollBar>
+#include <QList>
 
 #define MIN_WIDTH 800
 #define MIN_HEIGHT 600
@@ -50,20 +52,14 @@ const QString   QS_WIDTH = "width",
                 QS_THEME = "theme",
                 QS_MXMZD = "maximized",
                 QS_CSV = "csv",
-                QS_SYSNAME = "sysname",
-                QS_DESCR = "description",
-                QS_IPV4 = "ipv4",
-                QS_MASKV4 = "maskv4",
-                QS_IPV6 = "ipv6",
-                QS_MASKV6 = "maskv6",
-                QS_UNSIGNED = "unsigned",
-                QS_PASSWD = "password",
                 QS_VVT = "\"variable\";\"value\";\"type\"",
-                QS_COLWIDTH = "col_width";
+                QS_COLWIDTH = "col_width",
+                QS_REXIPV4 = "^([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})$";
 
-enum varType_t { Sysname = 0, Description, IPv4, Unsigned, Password, MASKv4, IPv6, MASKv6 };
+const QString   QS_VARTYPES[] {"domname", "description", "ipv4", "unsigned", "password", "maskv4", "ipv6", "maskv6len", "wildcardv4", "maskv4len", "prompt", "hash"};
 
-const int maxChars[] {32, 56, 15, 10, 128, 15, 45, 4};
+enum varType_t       {Domname = 0, Description, IPv4, Unsigned, Password, MASKv4, IPv6, MASKv6Len, WildcardV4, MASKv4Len, Prompt, Hash, MAX};
+const int maxChars[] {        253,         255,   15,       10,      128,     15,   45,         4,         15,         2,     64,  128};
 
 struct oneRec_t{
     int orderNum;

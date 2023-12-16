@@ -3,6 +3,7 @@
 #include "template.h"
 #include "settings.h"
 #include "csv.h"
+#include <iostream>
 
 NNCGMainWindow *mainWindow;
 NNCGTemplate *objTempl;
@@ -24,39 +25,15 @@ QString b2s(bool b) { return (b) ? "true" : "false"; }
 
 // из varType_t в строку
 QString t2s(varType_t type) {
-    switch(type) {
-    case varType_t::IPv4 :
-        return QS_IPV4;
-    case varType_t::MASKv4 :
-        return QS_MASKV4;
-    case varType_t::Sysname :
-        return QS_SYSNAME;
-    case varType_t::Description :
-        return QS_DESCR;
-    case varType_t::Unsigned :
-        return QS_UNSIGNED;
-    case varType_t::Password :
-        return QS_PASSWD;
-    case varType_t::IPv6 :
-        return QS_IPV6;
-    case varType_t::MASKv6 :
-        return QS_MASKV6;
-    default :
-        return QS_DESCR;
-    }
+    return QS_VARTYPES[type];
 }
 
 // из строки в varType_t
 varType_t s2t(const QString &str) {
     QString toLow = str.toLower();
-    if (toLow == QS_SYSNAME) return varType_t::Sysname;
-    if (toLow == QS_DESCR) return varType_t::Description;
-    if (toLow == QS_IPV4) return varType_t::IPv4;
-    if (toLow == QS_UNSIGNED) return varType_t::Unsigned;
-    if (toLow == QS_PASSWD) return varType_t::Password;
-    if (toLow == QS_MASKV4) return varType_t::MASKv4;
-    if (toLow == QS_IPV6) return varType_t::IPv6;
-    if (toLow == QS_MASKV6) return varType_t::MASKv6;
+    for (int vt = 0; vt < varType_t::MAX; vt++){
+        if (toLow == QS_VARTYPES[vt]) return (varType_t) vt;
+    }
     return varType_t::Description; // значение по умолчанию
 }
 
@@ -64,6 +41,7 @@ varType_t s2t(const QString &str) {
 int main(int argc, char* argv[]) {
 
     QApplication app(argc, argv);
+    app.setApplicationName("Network Node Configuration Generator");
 
     if (!objSett.templFpFn.isEmpty()) { // проверка пути к шаблону
         objTempl = new NNCGTemplate(objSett.templFpFn);

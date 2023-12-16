@@ -1,8 +1,8 @@
 #ifndef NNCGMAINWINDOW_H
 #define NNCGMAINWINDOW_H
 
-#include "common.h"
 #include "buttons.h"
+#include "validators.h"
 
 class NNCGMainWindow: public QMainWindow
 {
@@ -19,6 +19,7 @@ private:
     QFont fntCons11 {"Consolas", 11, 0}; // фонт для колонки Description
     QFont fntCons12bold {"Consolas", 12, 100}; // фонт для колонки Value
     void closeEvent(QCloseEvent* event);
+    QValidator *vldtrs[varType_t::MAX];
 
 public:
     NNCGMainWindow(QWidget* = nullptr, Qt::WindowFlags = Qt::WindowFlags());

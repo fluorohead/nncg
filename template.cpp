@@ -46,6 +46,27 @@ bool NNCGTemplate::inspectLine(const QString &line, QString &varName, QString &v
     return true;
 }
 
+void NNCGTemplate::inspectBrandColors() {
+    QRegExp rex(" ([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3})");
+    if (rex.indexIn(strList[5]) != -1) {
+        int colors[6];
+        bool badGamma {false};
+        for (int c = 0; c < 6; c++) {
+            colors[c] = rex.cap(c + 1).toInt();
+            if ((colors[c] < 0) or (colors[c] > 255)) {
+                badGamma = true;
+                break;
+            }
+        }
+        if (!badGamma) {
+            for (int c = 0; c < 6; c++) {
+                brandColors[c] = colors[c];
+            }
+        } // иначе просто оставляем гамму по-умолчанию (при инициализации объекта)
+    }
+}
+
+
 const QString   QS_NNCT = "NETWORK_NODE_CONFIG_TEMPLATE",
                 QS_SOFTVER = "SOFTWARE_VERSION:",
                 QS_TITLE = "TITLE:",
@@ -69,7 +90,7 @@ NNCGTemplate::NNCGTemplate() {
                         " description {phy1_descr}\r\n" +
                         " ipv4 address {phy1_ip} {phy1_mask}\r\n";
     strList = QStringList(demoStr.split("\r\n", Qt::KeepEmptyParts, Qt::CaseSensitive));
-    hashVars["{hostname}"] = {0, "Network node hostname ->", "demo-sr01", Sysname};
+    hashVars["{hostname}"] = {0, "Network node hostname ->", "demo-sr01", Domname};
     hashVars["{phy1_ifname}"] = {1, "Interface name ->", "Giga0/1/0/7", Description};
     hashVars["{phy1_descr}"] = {2, "Interface description ->", "to Internet", Description};
     hashVars["{phy1_ip}"] = {3, "IPv4 address -> ", "192.168.0.2", IPv4};
@@ -144,6 +165,7 @@ NNCGTemplate::NNCGTemplate(const QString &fn)
                         }
                     }
                     ///// тут, если всё корректно по заголовку и по переменным
+                    inspectBrandColors();
                     noOpenErr = true;
                     lastErrMsg = tr("template loaded : ");
                     lastErrMsg.append(fn.section('\\', -1, -1));

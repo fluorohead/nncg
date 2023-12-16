@@ -1,5 +1,5 @@
 # NNCG "Network Node Configuration Generator"
-<b>A simple templates based generator of network device configurations.</b>
+<b>A simple templates-based config generator for network devices.</b>
 
 Designed to facilitate routine operations for network engineers during mass configuration of similar devices.
 Once you create a template, you can reuse it further, changing variables such as hostname, IP addresses, masks, mac addresses, network protocol settings,

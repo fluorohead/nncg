@@ -2,6 +2,7 @@
 #include "settings.h"
 #include "template.h"
 #include <QCommonStyle>
+#include <QLineEdit>
 //#include <iostream>
 
 extern NNCGSettings objSett;
@@ -33,8 +34,8 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
     bwPal.setColor(QPalette::Background, themeCurrent.bw_bg);
     bwPal.setColor(QPalette::Foreground, themeCurrent.bw_fg);
     bigWidget->setPalette(bwPal);
-    sbPal.setColor(QPalette::Background, objTempl->brandBgColor);
-    sbPal.setColor(QPalette::Foreground, objTempl->brandFgColor);
+    sbPal.setColor(QPalette::Background, QColor(objTempl->brandColors[0], objTempl->brandColors[1], objTempl->brandColors[2]));
+    sbPal.setColor(QPalette::Foreground, QColor(objTempl->brandColors[3], objTempl->brandColors[4], objTempl->brandColors[5]));
     statusBar->setPalette(sbPal);
 
     auto *vbLayout = new QVBoxLayout(nullptr);
@@ -89,12 +90,12 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
     table->horizontalHeaderItem(2)->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter); // выравнивание текста вправо для колонки 0
     table->setStyleSheet("color: rgb(190, 190, 190); gridline-color: rgb(50, 50, 50); background-color: rgb(60, 60, 60)");
     table->horizontalHeader()->setStyleSheet(QString("::section {background-color: rgb(%1, %2, %3); color: rgb(%4, %5, %6); font: bold 14px 'Consolas'}")
-                                             .arg(QString::number(objTempl->brandBgColor.red()),
-                                                  QString::number(objTempl->brandBgColor.green()),
-                                                  QString::number(objTempl->brandBgColor.blue()),
-                                                  QString::number(objTempl->brandFgColor.red()),
-                                                  QString::number(objTempl->brandFgColor.green()),
-                                                  QString::number(objTempl->brandFgColor.blue()))
+                                             .arg(QString::number(objTempl->brandColors[0]),
+                                                  QString::number(objTempl->brandColors[1]),
+                                                  QString::number(objTempl->brandColors[2]),
+                                                  QString::number(objTempl->brandColors[3]),
+                                                  QString::number(objTempl->brandColors[4]),
+                                                  QString::number(objTempl->brandColors[5]))
                                              );
     table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
     table->verticalScrollBar()->setStyle(new QCommonStyle);
@@ -121,8 +122,8 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
         ":disabled {background: rgb(96, 96, 96);    border: 6px rgb(%4, %5, %6); border-radius: 14px; border-style: outset; font: 12px 'Tahoma'}"
         ":hover    {background: rgb(216, 216, 216); border: 6px rgb(%1, %2, %3); border-radius: 14px; border-style: inset;  font: 12px 'Tahoma'}"
         ":pressed  {background: rgb(216, 216, 216); border: 6px rgb(%1, %2, %3); border-radius:  8px; border-style: inset;  font: 12px 'Tahoma'}"
-    ).arg(QString::number(objTempl->brandBgColor.red()), QString::number(objTempl->brandBgColor.green()), QString::number(objTempl->brandBgColor.blue()),
-          QString::number(objTempl->brandBgColor.red() / 2), QString::number(objTempl->brandBgColor.green() / 2), QString::number(objTempl->brandBgColor.blue() / 2));
+    ).arg(QString::number(objTempl->brandColors[0]), QString::number(objTempl->brandColors[1]), QString::number(objTempl->brandColors[2]),
+          QString::number(objTempl->brandColors[3] / 2), QString::number(objTempl->brandColors[4] / 2), QString::number(objTempl->brandColors[5] / 2));
 
     btnCsvLoad->setStyleSheet(btnSS);
     btnCsvSave->setStyleSheet(btnSS);
@@ -142,6 +143,13 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
     connect(btnCsvSave, SIGNAL(clicked()), btnCsvSave, SLOT(slotClicked()), Qt::AutoConnection);
     connect(btnTemplLoad, SIGNAL(clicked()), btnTemplLoad, SLOT(slotClicked()), Qt::AutoConnection);
     connect(btnCfgCreate, SIGNAL(clicked()), btnCfgCreate, SLOT(slotClicked()), Qt::AutoConnection);
+
+   // validators creation
+    for (int vld = varType_t::Domname; vld < varType_t::MAX; vld++) vldtrs[vld] = nullptr;
+    vldtrs[varType_t::Domname] = new NNCGValidDomname(this);
+    vldtrs[varType_t::IPv4] = new NNCGValidIPv4(this);
+    vldtrs[varType_t::Unsigned] = new NNCGValidUnsigned(this);
+    vldtrs[varType_t::MASKv4] = new NNCGValidMASKv4(this);
 }
 
 
@@ -152,7 +160,6 @@ void NNCGMainWindow::refreshTable() {
     titleLabel->setText(objTempl->getTitle());
     commentLabel->setText(objTempl->getComment());
     table->clear();
-
     table->setHorizontalHeaderLabels({tr("#"), tr("Description"), tr("Value")});
     table->setRowCount(objTempl->hashVars.size());
     for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
@@ -165,11 +172,22 @@ void NNCGMainWindow::refreshTable() {
         oneRow[1]->setFont(fntCons11);
         oneRow[1]->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
         oneRow[1]->setFlags(Qt::NoItemFlags | Qt::ItemIsEnabled);
-        oneRow[2] = new QTableWidgetItem(hIt.value().value, 0);
-        oneRow[2]->setFont(fntCons12bold);
+        //oneRow[2] = new QTableWidgetItem(hIt.value().value, 0);
+        //oneRow[2]->setFont(fntCons12bold);
         //oneRow[2]->setForeground(QColor(100, 10, 255, 255));
-        oneRow[2]->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled);
-        for (int col = 0; col < 3; col++) table->setItem(hIt.value().orderNum, col, oneRow[col]);
+        //oneRow[2]->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled);
+        auto qle = new QLineEdit;
+        qle->setFont(fntCons12bold);
+        qle->setFrame(false);
+        qle->setMaxLength(maxChars[hIt.value().type]);
+        qle->setClearButtonEnabled(true);
+        //qle->setPlaceholderText("текст");
+        if (hIt.value().type == varType_t::Password)
+            qle->setEchoMode(QLineEdit::Password);
+        qle->setValidator(vldtrs[hIt.value().type]);
+        qle->setText(hIt.value().value);
+        table->setCellWidget(hIt.value().orderNum, 2, qle);
+        for (int col = 0; col < 2; col++) table->setItem(hIt.value().orderNum, col, oneRow[col]);
     };
     this->show();
 };
@@ -186,13 +204,8 @@ void NNCGMainWindow::closeEvent(QCloseEvent* event) {
 
 // сброс данных из таблицы в хэш объекта шаблона
 void NNCGMainWindow::dumpTableToHash() {
-    for (int r = 0; r < table->rowCount(); r++) {
-        // обход хэша
-        for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
-            if (hIt.value().orderNum == r) {
-                objTempl->hashVars[hIt.key()].value = table->item(r, 2)->text();
-                break;
-            }
-        }
+    for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
+        QLineEdit *cw = (QLineEdit*) table->cellWidget(hIt.value().orderNum, 2);
+        objTempl->hashVars[hIt.key()].value = cw->text();
     }
 }

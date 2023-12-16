@@ -21,7 +21,8 @@ SOURCES += \
     main.cpp \
     mwindow.cpp \
     settings.cpp \
-    template.cpp
+    template.cpp \
+    validators.cpp
 
 HEADERS += \
     buttons.h \
@@ -29,7 +30,8 @@ HEADERS += \
     csv.h \
     mwindow.h \
     settings.h \
-    template.h
+    template.h \
+    validators.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
