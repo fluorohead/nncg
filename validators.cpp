@@ -1,5 +1,5 @@
 #include "validators.h"
-#include <iostream>
+//#include <iostream>
 #include <QRegExp>
 
 extern QString b2s(bool b);
@@ -164,42 +164,42 @@ QValidator::State NNCGValidIPv6::validate(QString &input, int &pos) const {
     QRegExp rex;
     rex.setPattern("[0-9A-Fa-f]{5,}:"); // больше 4 символов перед ":" => ошибка
     if (rex.indexIn(input) != -1) {
-        std::cout << "error : too much symbols before \":\" ! " << std::endl;
+//        std::cout << "error : too much symbols before \":\" ! " << std::endl;
         return Invalid;
     }
     rex.setPattern(":[0-9A-Fa-f]{5,}"); // больше 4 символов после ":" => ошибка
     if (rex.indexIn(input) != -1) {
-        std::cout << "error : too much symbols after \":\" ! " << std::endl;
+//        std::cout << "error : too much symbols after \":\" ! " << std::endl;
         return Invalid;
     }
     if (input.contains('.')) { // => ищем ошибки в интегрированном ipv4-адресе
         rex.setPattern(":[A-Fa-f0-9]{4,}\\."); // между : и . не должно быть более 3 символов
         if (rex.indexIn(input) != - 1) {
-            std::cout << "error found : too much symbols between \":\" and \".\"" << std::endl;
+//            std::cout << "error found : too much symbols between \":\" and \".\"" << std::endl;
             return Invalid;
         }
         rex.setPattern(":.?[A-Fa-f]+.?\\."); // между : и . не должно быть букв
         if (rex.indexIn(input) != - 1) {
-            std::cout << "error found : letters between \":\" and \".\"" << std::endl;
+//            std::cout << "error found : letters between \":\" and \".\"" << std::endl;
             return Invalid;
         }
         rex.setPattern("\\..*[A-Fa-f]+.*"); // после . не должно быть букв
         if (rex.indexIn(input) != - 1) {
-            std::cout << "error found : letters after \".\"" << std::endl;
+    //        std::cout << "error found : letters after \".\"" << std::endl;
             return Invalid;
         }
         rex.setPattern("\\.[0-9]{4,}"); // после . не должно быть более 3 символов
         if (rex.indexIn(input) != - 1) {
-            std::cout << "error found : too much symbols after \".\"" << std::endl;
+  //          std::cout << "error found : too much symbols after \".\"" << std::endl;
             return Invalid;
         }
     }
     if (input.endsWith('.')) return Intermediate;
-    std::cout << "last checking for string : " << input.toStdString() << std::endl;
+//    std::cout << "last checking for string : " << input.toStdString() << std::endl;
     // если здесь, значит в полном виде присутствует интегрированный ipv4; проверяем его октеты
     rex.setPattern("^(.*:)([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})$");
     if (rex.indexIn(input) != -1) { // нашли ipv6 + 4 октета ipv4
-        std::cout << "integrated ipv4 in full form exists" << std::endl;
+  //      std::cout << "integrated ipv4 in full form exists" << std::endl;
         input.clear(); // будем пересобирать строку заново
         input.append(rex.cap(1));
         for (int gr = 2; gr <= 5; gr++) {
