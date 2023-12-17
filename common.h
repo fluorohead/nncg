@@ -27,8 +27,6 @@
 #include <QJsonParseError>
 #include <QJsonDocument>
 #include <QScrollBar>
-#include <QList>
-#include <QRegExp>
 
 #define MIN_WIDTH 800
 #define MIN_HEIGHT 600
@@ -60,6 +58,22 @@ const QString   QS_VARTYPES[] {"domname", "text", "ipv4", "unsigned", "password"
 
 enum varType_t       {Domname = 0, Text, IPv4, Unsigned, Password, MASKv4, IPv6, MASKv6Len, WildcardV4, MASKv4Len, Prompt, Hash, MAX};
 const int maxChars[] {        253,  255,   15,       10,      128,     15,   45,         3,         15,         2,     64,  128}; // длины полей ввода в символах
+
+// placeholders text for lineedit widgets in table
+const QString   QS_PLCHLDRS[] {
+                                "max 253 symbols, only latin and hyphens",
+                                "max 255 symbols, unicode",
+                                "___.___.___.___",
+                                "positive integer",
+                                "hidden, max 128 symbols",
+                                "___.___.___.___",
+                                "____:____:____:____:____:____:____:____",
+                                "valid from 0 to 128",
+                                "___.___.___.___",
+                                "valid from 0 to 32",
+                                "max 255 symbols, latin and special",
+                                "max 128 symbols"
+                            };
 
 struct oneRec_t{
     int orderNum;

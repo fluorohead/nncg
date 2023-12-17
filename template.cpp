@@ -1,5 +1,4 @@
 #include "template.h"
-#include <iostream>
 
 extern varType_t s2t(const QString &str);
 
@@ -190,6 +189,7 @@ NNCGTemplate::NNCGTemplate(const QString &fn)
                     lastErrMsg.append(fn.section('\\', -1, -1));
                     // загружаем файл логотипа
                     if (!pixLogo.load(getFilePath() + "/" + strList[4].mid(5, -1).simplified())) pixLogo.load(defLogo);
+
                     /////
                 } else {
                     noOpenErr = false;

@@ -1,19 +1,18 @@
 #include "validators.h"
-//#include <iostream>
 #include <QRegExp>
 
 extern QString b2s(bool b);
 
-bool simpleIPv4Check(QString &str) { // check for common ipv4-address format requirements
+bool simpleIPv4Check(QString &s) { // check for common ipv4-address format requirements
     // разрешены только цифры и точки
-    for (auto idx = 0; idx < str.length(); idx++) {
-        if (str[idx].unicode() > 57) return false;
-        if ((str[idx].unicode() < 48) && (str[idx].unicode() != 46)) return false;
+    for (auto idx = 0; idx < s.length(); idx++) {
+        if (s[idx].unicode() > 57) return false;
+        if ((s[idx].unicode() < 48) && (s[idx].unicode() != 46)) return false;
     }
     // проверка на символы прошла успешно
-    if (str.startsWith('.')) return false; // ip не может начинаться с точки
-    if (str.contains("..")) return false; // не может быть двух точек подряд
-    if (str.count('.') > 3) return false; // не может быть более 3 точек всего
+    if (s.startsWith('.')) return false; // ip не может начинаться с точки
+    if (s.contains("..")) return false; // не может быть двух точек подряд
+    if (s.count('.') > 3) return false; // не может быть более 3 точек всего
     return true;
 }
 
@@ -25,6 +24,14 @@ bool isCorrectMASKv4_Octet(int octet) {
         if (octet == rightValues[m]) return true;
     }
     return false;
+}
+
+// проверяем на цифровые символы
+bool onlyDigits(QString &s){
+    for (auto idx = 0; idx < s.length(); idx++) {
+        if ((s[idx].unicode() < 48) || (s[idx].unicode() > 57)) return false;
+    }
+    return true;
 }
 
 
@@ -47,6 +54,7 @@ QValidator::State NNCGValidIPv4::validate(QString &input, int &pos) const {
     }
     return Acceptable;
 }
+
 
 void NNCGValidIPv4::fixup(QString &input) const {
     input = "0.0.0.0";
@@ -118,28 +126,14 @@ void NNCGValidDomname::fixup(QString &input) const {
 
 
 QValidator::State NNCGValidUnsigned::validate(QString &input, int &pos) const {
-    for (auto idx = 0; idx < input.length(); idx++) {
-        if (input[idx].unicode() > 57) return Invalid;
-        if (input[idx].unicode() < 48) return Invalid;
-    }
-    if (input.length() > 10) return Invalid;
+    if (!onlyDigits(input)) return Invalid;
+    if (input.startsWith("0")) return Invalid; // не может начинаться с нуля
     if (input.toLongLong() > UINT32_MAX) input.setNum(UINT32_MAX);
     return Acceptable;
 }
 
 
-void NNCGValidUnsigned::fixup(QString &input) const {
-}
-
-
-bool isIntegratedIPv4Exists(QString &str) {
-
-
-    return false;
-}
-
 QValidator::State NNCGValidIPv6::validate(QString &input, int &pos) const {
-    //std::cout << "string : " << input.toStdString() << std::endl;
     bool overlap; // совпадение со списком разрешённых символов
     for (int idx = 0; idx < input.length(); idx++) {
         overlap = false;
@@ -164,42 +158,34 @@ QValidator::State NNCGValidIPv6::validate(QString &input, int &pos) const {
     QRegExp rex;
     rex.setPattern("[0-9A-Fa-f]{5,}:"); // больше 4 символов перед ":" => ошибка
     if (rex.indexIn(input) != -1) {
-//        std::cout << "error : too much symbols before \":\" ! " << std::endl;
         return Invalid;
     }
     rex.setPattern(":[0-9A-Fa-f]{5,}"); // больше 4 символов после ":" => ошибка
     if (rex.indexIn(input) != -1) {
-//        std::cout << "error : too much symbols after \":\" ! " << std::endl;
         return Invalid;
     }
     if (input.contains('.')) { // => ищем ошибки в интегрированном ipv4-адресе
         rex.setPattern(":[A-Fa-f0-9]{4,}\\."); // между : и . не должно быть более 3 символов
         if (rex.indexIn(input) != - 1) {
-//            std::cout << "error found : too much symbols between \":\" and \".\"" << std::endl;
             return Invalid;
         }
         rex.setPattern(":.?[A-Fa-f]+.?\\."); // между : и . не должно быть букв
         if (rex.indexIn(input) != - 1) {
-//            std::cout << "error found : letters between \":\" and \".\"" << std::endl;
             return Invalid;
         }
         rex.setPattern("\\..*[A-Fa-f]+.*"); // после . не должно быть букв
         if (rex.indexIn(input) != - 1) {
-    //        std::cout << "error found : letters after \".\"" << std::endl;
             return Invalid;
         }
         rex.setPattern("\\.[0-9]{4,}"); // после . не должно быть более 3 символов
         if (rex.indexIn(input) != - 1) {
-  //          std::cout << "error found : too much symbols after \".\"" << std::endl;
             return Invalid;
         }
     }
     if (input.endsWith('.')) return Intermediate;
-//    std::cout << "last checking for string : " << input.toStdString() << std::endl;
     // если здесь, значит в полном виде присутствует интегрированный ipv4; проверяем его октеты
     rex.setPattern("^(.*:)([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})$");
     if (rex.indexIn(input) != -1) { // нашли ipv6 + 4 октета ipv4
-  //      std::cout << "integrated ipv4 in full form exists" << std::endl;
         input.clear(); // будем пересобирать строку заново
         input.append(rex.cap(1));
         for (int gr = 2; gr <= 5; gr++) {
@@ -215,4 +201,22 @@ QValidator::State NNCGValidIPv6::validate(QString &input, int &pos) const {
 void NNCGValidIPv6::fixup(QString &input) const {
 //    std::cout << "ipv6 fixup called" << std::endl;
     input = "::1";
+}
+
+
+QValidator::State NNCGValidMASKv4Len::validate(QString &input, int &pos) const {
+    if (!onlyDigits(input)) return Invalid;
+    if (input.startsWith("0")) return Invalid; // не может начинаться с нуля
+    if (input.toLongLong() > 32) input.setNum(32); // макс значение = 32
+
+    return Acceptable;
+}
+
+
+QValidator::State NNCGValidMASKv6Len::validate(QString &input, int &pos) const {
+    if (!onlyDigits(input)) return Invalid;
+    if (input.startsWith("0")) return Invalid; // не может начинаться с нуля
+    if (input.toLongLong() > 128) input.setNum(128); // макс значение = 128
+
+    return Acceptable;
 }

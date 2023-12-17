@@ -152,9 +152,9 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
     vldtrs[varType_t::Password] = nullptr;
     vldtrs[varType_t::MASKv4] = new NNCGValidMASKv4(this);
     vldtrs[varType_t::IPv6] = new NNCGValidIPv6(this);
-    vldtrs[varType_t::MASKv6Len] = new NNCGValidUnsigned(this); // для длины v6-маски такой же валидатор, что и для Unsigned
+    vldtrs[varType_t::MASKv6Len] = new NNCGValidMASKv6Len(this); // для длины v6-маски такой же валидатор, что и для Unsigned
     vldtrs[varType_t::WildcardV4] = new NNCGValidIPv4(this);
-    vldtrs[varType_t::MASKv4Len] = new NNCGValidUnsigned(this); // для длины v4-маски такой же валидатор, что и для Unsigned
+    vldtrs[varType_t::MASKv4Len] = new NNCGValidMASKv4Len(this); // для длины v4-маски такой же валидатор, что и для Unsigned
     vldtrs[varType_t::Prompt] = nullptr;
     vldtrs[varType_t::Hash] = nullptr;
 }
@@ -179,16 +179,12 @@ void NNCGMainWindow::refreshTable() {
         oneRow[1]->setFont(fntCons11);
         oneRow[1]->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
         oneRow[1]->setFlags(Qt::NoItemFlags | Qt::ItemIsEnabled);
-        //oneRow[2] = new QTableWidgetItem(hIt.value().value, 0);
-        //oneRow[2]->setFont(fntCons12bold);
-        //oneRow[2]->setForeground(QColor(100, 10, 255, 255));
-        //oneRow[2]->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled);
         auto qle = new QLineEdit;
         qle->setFont(fntCons12bold);
         qle->setFrame(false);
         qle->setMaxLength(maxChars[hIt.value().type]);
         qle->setClearButtonEnabled(true);
-        //qle->setPlaceholderText("текст");
+        qle->setPlaceholderText(QS_PLCHLDRS[hIt.value().type]);
         if (hIt.value().type == varType_t::Password)
             qle->setEchoMode(QLineEdit::Password);
         qle->setValidator(vldtrs[hIt.value().type]);

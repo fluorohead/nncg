@@ -1,13 +1,14 @@
 NETWORK_NODE_CONFIG_TEMPLATE
-SOFTWARE_VERSION: 0.0.1
-TITLE: Template Example For Abstract Network Node
-COMMENT: version 2023-12-05-21-03
+SOFTWARE_VERSION:0.0.1
+TITLE:Template Example For Abstract Network Node
+COMMENT:version 2023-12-05-21-03
 LOGO:
 BRAND_COLORS:
 DELIMITER_OPEN:{
 DELIMITER_CLOSE:}
 #BEGIN_VARIABLES
-#{sysname},         "Domain name :",                             Domname
+#{domname},         "Domain name :",                             Domname
+#{prompt},          "System prompt :",                           Prompt
 #{node},            "Node number (1 or 2) :",                    Unsigned
 #{loopback_ip},     "Interface Loopback IPv4 address :",         IPv4
 #{loopback_ipv6},   "Interface Loopback IPv6 address :",         IPv6
@@ -28,13 +29,16 @@ DELIMITER_CLOSE:}
 #{ett2_bfd_nei_ip}, "BFD neighbor IPv4 address on Eth-Trunk2 :", IPv4
 #{iccp_nei_ip},     "ICCP neighbor IPv4 address :",              IPv4
 #{ospf_pwd},        "OSPF sessions password hash :",             Hash
-#{asn},             "AS number :",                               Text
+#{asn},             "AS number :",                               Unsigned
 #{tacacs_key},      "Tacacs key :",                              Password
+#{v4ml},            "Test v4 mask length :",                     MASKv4Len
+#{v6ml},            "Test v6 mask length :",                     MASKv6Len
 #END_VARIABLES
 
-sysname {sysname}
+sysname {prompt}
 
 ospf 1 router-id {loopback_ip}
+ hostname {domname}
 
 mpls lsr-id {loopback_ip}
 

@@ -3,7 +3,6 @@
 #include "template.h"
 #include "settings.h"
 #include "csv.h"
-#include <iostream>
 
 NNCGMainWindow *mainWindow;
 NNCGTemplate *objTempl;
