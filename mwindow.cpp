@@ -145,11 +145,18 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
     connect(btnCfgCreate, SIGNAL(clicked()), btnCfgCreate, SLOT(slotClicked()), Qt::AutoConnection);
 
    // validators creation
-    for (int vld = varType_t::Domname; vld < varType_t::MAX; vld++) vldtrs[vld] = nullptr;
     vldtrs[varType_t::Domname] = new NNCGValidDomname(this);
+    vldtrs[varType_t::Text] = nullptr;
     vldtrs[varType_t::IPv4] = new NNCGValidIPv4(this);
     vldtrs[varType_t::Unsigned] = new NNCGValidUnsigned(this);
+    vldtrs[varType_t::Password] = nullptr;
     vldtrs[varType_t::MASKv4] = new NNCGValidMASKv4(this);
+    vldtrs[varType_t::IPv6] = new NNCGValidIPv6(this);
+    vldtrs[varType_t::MASKv6Len] = new NNCGValidUnsigned(this); // для длины v6-маски такой же валидатор, что и для Unsigned
+    vldtrs[varType_t::WildcardV4] = new NNCGValidIPv4(this);
+    vldtrs[varType_t::MASKv4Len] = new NNCGValidUnsigned(this); // для длины v4-маски такой же валидатор, что и для Unsigned
+    vldtrs[varType_t::Prompt] = nullptr;
+    vldtrs[varType_t::Hash] = nullptr;
 }
 
 

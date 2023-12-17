@@ -1,5 +1,6 @@
 #include "validators.h"
 #include <iostream>
+#include <QRegExp>
 
 extern QString b2s(bool b);
 
@@ -53,7 +54,7 @@ void NNCGValidIPv4::fixup(QString &input) const {
 
 
 QValidator::State NNCGValidMASKv4::validate(QString &input, int &pos) const {
-    std::cout << "current mask to inspect : " << input.toStdString() << "; cursor position : " << pos << std::endl;
+    //std::cout << "current mask to inspect : " << input.toStdString() << "; cursor position : " << pos << std::endl;
     if (!simpleIPv4Check(input)) return Invalid;
     else {
         if (rex.indexIn(input) != -1) { // проверка на regexp
@@ -126,5 +127,92 @@ QValidator::State NNCGValidUnsigned::validate(QString &input, int &pos) const {
     return Acceptable;
 }
 
+
 void NNCGValidUnsigned::fixup(QString &input) const {
+}
+
+
+bool isIntegratedIPv4Exists(QString &str) {
+
+
+    return false;
+}
+
+QValidator::State NNCGValidIPv6::validate(QString &input, int &pos) const {
+    //std::cout << "string : " << input.toStdString() << std::endl;
+    bool overlap; // совпадение со списком разрешённых символов
+    for (int idx = 0; idx < input.length(); idx++) {
+        overlap = false;
+        for (int alwd = 0; alwd < allowed.length(); alwd++) {
+            if (input[idx] == allowed[alwd]) {
+                overlap = true;
+                break;
+            }
+        }
+        if (!overlap) return Invalid; // не совпало со списком разрешённых символов
+    }
+    if (input.startsWith('.')) return Invalid; // не может начинаться с точки
+    if (input.contains(":::")) return Invalid; // не может быть двоеточий 3 раза подряд
+    if (input.contains(":.")) return Invalid; // не может быть сочетания ":."
+    if (input.contains("..")) return Invalid; // не может быть двух точек подряд
+    if (input.count("::") > 1) return Invalid; // нельзя использовать "::" более одного раза
+    if (input.count('.') > 3) return Invalid; // не может быть более 3 точек всего
+    if (!input.contains(':')) return Intermediate; // если вообще нет символа ":" => неполный ввод
+    if (input.count(':') < 2) return Intermediate; // если всего символов ":" меньше двух => неполный ввод
+    if (input.contains('.') && input.endsWith(':')) return Invalid;
+    if (input.contains('.') && (!input.contains(':'))) return Invalid;
+    QRegExp rex;
+    rex.setPattern("[0-9A-Fa-f]{5,}:"); // больше 4 символов перед ":" => ошибка
+    if (rex.indexIn(input) != -1) {
+        std::cout << "error : too much symbols before \":\" ! " << std::endl;
+        return Invalid;
+    }
+    rex.setPattern(":[0-9A-Fa-f]{5,}"); // больше 4 символов после ":" => ошибка
+    if (rex.indexIn(input) != -1) {
+        std::cout << "error : too much symbols after \":\" ! " << std::endl;
+        return Invalid;
+    }
+    if (input.contains('.')) { // => ищем ошибки в интегрированном ipv4-адресе
+        rex.setPattern(":[A-Fa-f0-9]{4,}\\."); // между : и . не должно быть более 3 символов
+        if (rex.indexIn(input) != - 1) {
+            std::cout << "error found : too much symbols between \":\" and \".\"" << std::endl;
+            return Invalid;
+        }
+        rex.setPattern(":.?[A-Fa-f]+.?\\."); // между : и . не должно быть букв
+        if (rex.indexIn(input) != - 1) {
+            std::cout << "error found : letters between \":\" and \".\"" << std::endl;
+            return Invalid;
+        }
+        rex.setPattern("\\..*[A-Fa-f]+.*"); // после . не должно быть букв
+        if (rex.indexIn(input) != - 1) {
+            std::cout << "error found : letters after \".\"" << std::endl;
+            return Invalid;
+        }
+        rex.setPattern("\\.[0-9]{4,}"); // после . не должно быть более 3 символов
+        if (rex.indexIn(input) != - 1) {
+            std::cout << "error found : too much symbols after \".\"" << std::endl;
+            return Invalid;
+        }
+    }
+    if (input.endsWith('.')) return Intermediate;
+    std::cout << "last checking for string : " << input.toStdString() << std::endl;
+    // если здесь, значит в полном виде присутствует интегрированный ipv4; проверяем его октеты
+    rex.setPattern("^(.*:)([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})$");
+    if (rex.indexIn(input) != -1) { // нашли ipv6 + 4 октета ipv4
+        std::cout << "integrated ipv4 in full form exists" << std::endl;
+        input.clear(); // будем пересобирать строку заново
+        input.append(rex.cap(1));
+        for (int gr = 2; gr <= 5; gr++) {
+            if (rex.cap(gr).toInt() > 255) input.append("255.");
+            else input.append(rex.cap(gr) + '.');
+        }
+        input.chop(1); // откусываем последнюю точку
+    }
+    return Acceptable;
+}
+
+
+void NNCGValidIPv6::fixup(QString &input) const {
+//    std::cout << "ipv6 fixup called" << std::endl;
+    input = "::1";
 }

@@ -34,7 +34,7 @@ varType_t s2t(const QString &str) {
     for (int vt = 0; vt < varType_t::MAX; vt++){
         if (toLow == QS_VARTYPES[vt]) return (varType_t) vt;
     }
-    return varType_t::Description; // значение по умолчанию
+    return varType_t::Text; // значение по умолчанию
 }
 
 ///////////////////////////////////////////

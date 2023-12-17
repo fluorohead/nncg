@@ -1,7 +1,6 @@
 #ifndef ALLCONSTS_H
 #define ALLCONSTS_H
 
-//#include <iostream>
 #include <QApplication>
 #include <QString>
 #include <QFileInfo>
@@ -29,6 +28,7 @@
 #include <QJsonDocument>
 #include <QScrollBar>
 #include <QList>
+#include <QRegExp>
 
 #define MIN_WIDTH 800
 #define MIN_HEIGHT 600
@@ -56,10 +56,10 @@ const QString   QS_WIDTH = "width",
                 QS_COLWIDTH = "col_width",
                 QS_REXIPV4 = "^([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})$";
 
-const QString   QS_VARTYPES[] {"domname", "description", "ipv4", "unsigned", "password", "maskv4", "ipv6", "maskv6len", "wildcardv4", "maskv4len", "prompt", "hash"};
+const QString   QS_VARTYPES[] {"domname", "text", "ipv4", "unsigned", "password", "maskv4", "ipv6", "maskv6len", "wildcardv4", "maskv4len", "prompt", "hash"};
 
-enum varType_t       {Domname = 0, Description, IPv4, Unsigned, Password, MASKv4, IPv6, MASKv6Len, WildcardV4, MASKv4Len, Prompt, Hash, MAX};
-const int maxChars[] {        253,         255,   15,       10,      128,     15,   45,         4,         15,         2,     64,  128};
+enum varType_t       {Domname = 0, Text, IPv4, Unsigned, Password, MASKv4, IPv6, MASKv6Len, WildcardV4, MASKv4Len, Prompt, Hash, MAX};
+const int maxChars[] {        253,  255,   15,       10,      128,     15,   45,         3,         15,         2,     64,  128}; // длины полей ввода в символах
 
 struct oneRec_t{
     int orderNum;

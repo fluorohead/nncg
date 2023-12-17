@@ -91,8 +91,8 @@ NNCGTemplate::NNCGTemplate() {
                         " ipv4 address {phy1_ip} {phy1_mask}\r\n";
     strList = QStringList(demoStr.split("\r\n", Qt::KeepEmptyParts, Qt::CaseSensitive));
     hashVars["{hostname}"] = {0, "Network node hostname ->", "demo-sr01", Domname};
-    hashVars["{phy1_ifname}"] = {1, "Interface name ->", "Giga0/1/0/7", Description};
-    hashVars["{phy1_descr}"] = {2, "Interface description ->", "to Internet", Description};
+    hashVars["{phy1_ifname}"] = {1, "Interface name ->", "Giga0/1/0/7", Text};
+    hashVars["{phy1_descr}"] = {2, "Interface description ->", "to Internet", Text};
     hashVars["{phy1_ip}"] = {3, "IPv4 address -> ", "192.168.0.2", IPv4};
     hashVars["{phy1_mask}"] = {4, "IPv4 mask ->", "255.255.255.0", MASKv4};
     noOpenErr = true;

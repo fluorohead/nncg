@@ -1,6 +1,8 @@
 # NNCG "Network Node Configuration Generator"
 <b>A simple templates-based config generator for network devices.</b>
 
+Usefull for industrial type equipment, like : Routers, Switches, DSLAM, OLT, WDM and etc...
+
 Designed to facilitate routine operations for network engineers during mass configuration of similar devices.
 Once you create a template, you can reuse it further, changing variables such as hostname, IP addresses, masks, mac addresses, network protocol settings,
 names and descriptions of interfaces. The type of the variable doesn't matter.

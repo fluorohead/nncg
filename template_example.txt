@@ -6,25 +6,27 @@ LOGO:
 BRAND_COLORS:
 #BEGIN_VARIABLES
 #{sysname},         "Domain name :",                             Domname
-#{node},            "Node number (1 или 2) :",                   Unsigned
+#{node},            "Node number (1 or 2) :",                    Unsigned
 #{loopback_ip},     "Interface Loopback IPv4 address :",         IPv4
+#{loopback_ipv6},   "Interface Loopback IPv6 address :",         IPv6
 #{ett1_ip},         "Interface Eth-Trunk1 IPv4 address :",       IPv4
-#{ett1_descr},      "Interface Eth-Trunk1 description :",        Description
+#{ett1_descr},      "Interface Eth-Trunk1 description :",        Text
 #{ett1_cost},       "Interface Eth-Trunk1 OSPF cost :",          Unsigned
 #{ett2_ip},         "Interface Eth-Trunk2 IPv4 address : :",     IPv4
-#{ett2_descr},      "Interface Eth-Trunk2 description :",        Description
+#{ett2_descr},      "Interface Eth-Trunk2 description :",        Text
 #{ett2_cost},       "Interface Eth-Trunk2 OSPF cost :",          Unsigned
-#{phy1_descr},      "Phys. interface GE0/0/1 description :",     Description
-#{phy2_descr},      "Phys. interface GE0/0/2 description :",     Description
+#{phy1_descr},      "Phys. interface GE0/0/1 description :",     Text
+#{phy2_descr},      "Phys. interface GE0/0/2 description :",     Text
 #{mgmt_ip},         "Interface MGMT IPv4 address :",             IPv4
 #{mgmt_mask},       "Interface MGMT IPv4 mask :",                MASKv4
 #{mgmt_gw},         "MGMT gateway IPv4 address :",               IPv4
-#{mgmt_descr},      "Interface MGMT description :",              Description
+#{mgmt_descr},      "Interface MGMT description :",              Text
+#{acl},             "Access ipv4 ACL wildcard :",                WildcardV4
 #{ett1_bfd_nei_ip}, "BFD neighbor IPv4 address on Eth-Trunk1 :", IPv4
 #{ett2_bfd_nei_ip}, "BFD neighbor IPv4 address on Eth-Trunk2 :", IPv4
 #{iccp_nei_ip},     "ICCP neighbor IPv4 address :",              IPv4
-#{ospf_pwd},        "OSPF sessions password :",                  Password
-#{asn},             "AS number :",                               Description
+#{ospf_pwd},        "OSPF sessions password hash :",             Hash
+#{asn},             "AS number :",                               Text
 #{tacacs_key},      "Tacacs key :",                              Password
 #END_VARIABLES
 
@@ -36,6 +38,7 @@ mpls lsr-id {loopback_ip}
 
 interface LoopBack3
  ip address {loopback_ip} 255.255.255.255
+ ipv6 address {loopback_ipv6)/128
 
 interface Eth-Trunk1
  description {ett1_descr}
