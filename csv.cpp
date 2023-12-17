@@ -4,7 +4,6 @@ extern varType_t s2t(const QString &str);
 
 // возвращает true, если формат переменной верный
 bool NNCG_csv::inspectLine(const QString &line, QString &varName, QString &varValue, varType_t &varType) {
-    QRegExp rex("\"(\\{.+\\})\";\"(.+)\";\"(.+)\"");
     if (rex.indexIn(line) != -1) {
         varName = rex.cap(1);
         varValue = rex.cap(2);
@@ -20,13 +19,16 @@ bool NNCG_csv::inspectLine(const QString &line, QString &varName, QString &varVa
     return true;
 }
 
-NNCG_csv::NNCG_csv(const QString& fn)
+NNCG_csv::NNCG_csv(const QString &fn, const QString &dlmOpen, const QString &dlmClose)
 {   qFile.setFileName(fn);
     if (qFile.open(QIODevice::ReadOnly)) {
         if (qFile.size() <= MAX_CSV_FILE_SIZE) {
             strList = QStringList(QString(qFile.readAll()).split("\r\n", QString::SkipEmptyParts));
             if (strList.length() > 1) {
                 if (strList[0] == QS_VVT) {
+                    delimOpen = dlmOpen;
+                    delimClose = dlmClose;
+                    rex.setPattern(QString("\"(\\%1.+\\%2)\";\"(.+)\";\"(.+)\"").arg(delimOpen, delimClose));
                     QString varName;
                     QString varValue;
                     varType_t varType;

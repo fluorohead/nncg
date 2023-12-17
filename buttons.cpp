@@ -16,7 +16,7 @@ void NNCGBtnCsvLoad::slotClicked() {
     QString newFN = QFileDialog::getOpenFileName(this, QObject::tr("Opening csv"), "./", QObject::tr("CSV files (*.csv)"));
     if (!newFN.isEmpty()) {
         /// потом выделить в отдельный поток
-        auto *newCSV = new NNCG_csv(newFN);
+        auto *newCSV = new NNCG_csv(newFN, objTempl->getDelimOpen(), objTempl->getDelimClose());
         if (newCSV->noOpenErr) { // с новым csv всё ок, тогда удаляем старый объект и подменяем указателем на новый
             delete objCSV;
             objCSV = newCSV;

@@ -4,6 +4,8 @@ TITLE: Template Example For Abstract Network Node
 COMMENT: version 2023-12-05-21-03
 LOGO:
 BRAND_COLORS:
+DELIMITER_OPEN:{
+DELIMITER_CLOSE:}
 #BEGIN_VARIABLES
 #{sysname},         "Domain name :",                             Domname
 #{node},            "Node number (1 or 2) :",                    Unsigned

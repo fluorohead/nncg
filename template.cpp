@@ -1,15 +1,16 @@
 #include "template.h"
+#include <iostream>
 
 extern varType_t s2t(const QString &str);
 
 const QString defLogo {":/icons8-router-96.png"};
 
 QString NNCGTemplate::getTitle(){
-    return strList[2].mid(7);
+    return strList[2].mid(6);
 }
 
 QString NNCGTemplate::getComment(){
-    return strList[3].mid(9);
+    return strList[3].mid(8);
 }
 
 // возвращает только путь к файлу, без имени файла
@@ -30,7 +31,7 @@ QPixmap* NNCGTemplate::getPtrPixLogo(){
 
 // возвращает true, если формат переменной верный
 bool NNCGTemplate::inspectLine(const QString &line, QString &varName, QString &varDescr, varType_t &varType) {
-    QRegExp rex(serChar + " *(\\{.+\\}) *, *\"(.*)\" *, *([a-zA-Z0-9]+) *");
+    //QRegExp rex(serChar + QString(" *(\\%1.+\\%2) *, *\"(.*)\" *, *([a-zA-Z0-9]+) *").arg(delimOpen, delimClose));
     if (rex.indexIn(line) != -1) {
         varName = rex.cap(1);
         varDescr = rex.cap(2);
@@ -47,7 +48,7 @@ bool NNCGTemplate::inspectLine(const QString &line, QString &varName, QString &v
 }
 
 void NNCGTemplate::inspectBrandColors() {
-    QRegExp rex(" ([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3})");
+    QRegExp rex("([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3})");
     if (rex.indexIn(strList[5]) != -1) {
         int colors[6];
         bool badGamma {false};
@@ -73,17 +74,21 @@ const QString   QS_NNCT = "NETWORK_NODE_CONFIG_TEMPLATE",
                 QS_COMMENT = "COMMENT:",
                 QS_LOGO = "LOGO:",
                 QS_BRCOLORS = "BRAND_COLORS:",
+                QS_DELIM_OPEN = "DELIMITER_OPEN:",
+                QS_DELIM_CLOSE = "DELIMITER_CLOSE:",
                 QS_BEGVARS = "BEGIN_VARIABLES",
                 QS_ENDVARS = "END_VARIABLES";
 
 // конструктор demo-шаблона
 NNCGTemplate::NNCGTemplate() {
-    beginConfig = 6;
+    beginConfig = 8;
     QString demoStr =   QS_NNCT + "\r\n" +
                         QS_SOFTVER + " 0.0.1\r\n" +
                         QS_TITLE + " Network Node Configuration Demo Template\r\n" +
                         QS_COMMENT + " created 2023-12-05-21-03\r\n" +
                         QS_LOGO + " \r\n" +
+                        QS_DELIM_OPEN + " {\r\n" +
+                        QS_DELIM_CLOSE + " }\r\n" +
                         QS_BRCOLORS + " \r\n" +
                         "hostname {hostname}\r\n" +
                         "interface {phy1_ifname}\r\n" +
@@ -101,6 +106,15 @@ NNCGTemplate::NNCGTemplate() {
     isDemo = true;
 }
 
+// извлекаем ограничители имён переменных (удаляя начальные и конечные пробелы)
+void NNCGTemplate::extractDelimiters() {
+    QString s = (strList[6].right(strList[6].length() - QS_DELIM_OPEN.length())).trimmed();
+    if (!s.isEmpty()) delimOpen = s;
+    s = (strList[7].right(strList[7].length() - QS_DELIM_CLOSE.length())).trimmed();
+    if (!s.isEmpty()) delimClose = s;
+}
+
+
 // конструктор шаблона из файла
 NNCGTemplate::NNCGTemplate(const QString &fn)
 {   qFile.setFileName(fn);
@@ -115,13 +129,18 @@ NNCGTemplate::NNCGTemplate(const QString &fn)
                 if (!strList[3].startsWith(QS_COMMENT)) wolfBill = true;
                 if (!strList[4].startsWith(QS_LOGO)) wolfBill = true;
                 if (!strList[5].startsWith(QS_BRCOLORS)) wolfBill = true;
-                if (!strList[6].endsWith(QS_BEGVARS)) wolfBill = true;
+                if (!strList[6].startsWith(QS_DELIM_OPEN)) wolfBill = true;
+                if (!strList[7].startsWith(QS_DELIM_CLOSE)) wolfBill = true;
+                if (!strList[8].endsWith(QS_BEGVARS)) wolfBill = true;
                 if (!wolfBill) {
-                    serChar = strList[6][0];
+                    serChar = strList[8][0]; // этим символом должны начинаться все последующие строки переменных
+                    extractDelimiters();
                     int varsCount {0};
                     QString varName;
                     QString varDescr;
                     varType_t varType;
+                    // настраиваем regexp-паттерн для проверки переменных
+                    rex.setPattern(serChar + QString(" *(\\%1.+\\%2) *, *\"(.*)\" *, *([a-zA-Z0-9]+) *").arg(delimOpen, delimClose));
                     for (int h = MIN_TMPL_HEADER_LINES - 1; h < strList.length(); h++) {
                         if (!strList[h].isEmpty()) { // пропускаем пустые строки
                             if (strList[h][0] == serChar) { // проверка на служебный символ
@@ -169,7 +188,8 @@ NNCGTemplate::NNCGTemplate(const QString &fn)
                     noOpenErr = true;
                     lastErrMsg = tr("template loaded : ");
                     lastErrMsg.append(fn.section('\\', -1, -1));
-                    if (!pixLogo.load(getFilePath() + "/" + strList[4].mid(6, -1).simplified())) pixLogo.load(defLogo);
+                    // загружаем файл логотипа
+                    if (!pixLogo.load(getFilePath() + "/" + strList[4].mid(5, -1).simplified())) pixLogo.load(defLogo);
                     /////
                 } else {
                     noOpenErr = false;
@@ -187,4 +207,12 @@ NNCGTemplate::NNCGTemplate(const QString &fn)
         noOpenErr = false;
         lastErrMsg = tr("error opening template file");
     }
+}
+
+QString NNCGTemplate::getDelimOpen() {
+    return delimOpen;
+}
+
+QString NNCGTemplate::getDelimClose() {
+    return delimClose;
 }
