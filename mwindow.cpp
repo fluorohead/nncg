@@ -27,18 +27,18 @@ extern const int maxChars[] {        253,  255,   15,       10,      128,     15
 //
 // placeholders text
 QString QS_PLCHLDRS[][LANGS_AMOUNT] {
-                                {"max 253 symbols, latin and hyphens", "макс. 253 символа, латиница и дефисы", "_"}, // domname
-                                {"max 255 symbols, unicode", "макс. 255 символов юникод", "_"}, // text
-                                {"___.___.___.___", "", ""}, // ipv4
-                                {"positive integer", "целое беззнаковое", "_"}, // unsigned
-                                {"hidden, max 128 symbols", "скрытый ввод, макс. 128 символов", "_"}, // password
-                                {"___.___.___.___", "", ""}, // ipv4 dotted mask
-                                {"____:____:____:____:____:____:____:____", "", ""}, // ipv6
-                                {"valid from 0 to 128", "значения от 0 до 128", "_"}, // ipv6 mask length
-                                {"___.___.___.___", "", ""}, // ipv4 wildcard
-                                {"valid from 0 to 32", "значения от 0 до 32", "_"}, // ipv4 mask length
-                                {"max 255 symbols, latin and special", "макс. 255 символов, латиница и спецсимволы", "_"}, // system prompt
-                                {"max 128 symbols, latin and special", "макс. 128 символов, латиница и спецсимволы", "_"} // hash
+                                {"max 253 symbols, latin and hyphens", "макс. 253 символа, латиница и дефисы"}, // domname
+                                {"max 255 symbols, unicode", "макс. 255 символов юникод"}, // text
+                                {"___.___.___.___", ""}, // ipv4
+                                {"positive integer", "целое беззнаковое"}, // unsigned
+                                {"hidden, max 128 symbols", "скрытый ввод, макс. 128 символов"}, // password
+                                {"___.___.___.___", ""}, // ipv4 dotted mask
+                                {"____:____:____:____:____:____:____:____", ""}, // ipv6
+                                {"valid from 0 to 128", "значения от 0 до 128"}, // ipv6 mask length
+                                {"___.___.___.___", ""}, // ipv4 wildcard
+                                {"valid from 0 to 32", "значения от 0 до 32"}, // ipv4 mask length
+                                {"max 255 symbols, latin and special", "макс. 255 символов, латиница и спецсимволы"}, // system prompt
+                                {"max 128 symbols, latin and special", "макс. 128 символов, латиница и спецсимволы"} // hash
                             };
 
 // создаём все элементы GUI
@@ -251,8 +251,8 @@ void NNCGMainWindow::refreshTable() {
 // при событии закрытия окна сохраняем настройки в json
 void NNCGMainWindow::closeEvent(QCloseEvent *event) {
     this->hide();
-    if (!objTempl->isDemo) objSett.saveSettings(objTempl->getFilePath() + objTempl->getFileName(), QS_DARK, width(), height(), b2s(isMaximized()), table->horizontalHeader()->sectionSize(1));
-    else objSett.saveSettings("", QS_DARK, width(), height(), b2s(isMaximized()), table->horizontalHeader()->sectionSize(1));
+    if (!objTempl->isDemo) objSett.saveSettings(objTempl->getFilePath() + objTempl->getFileName(), QS_DARK, width(), height(), b2s(isMaximized()), table->horizontalHeader()->sectionSize(1), objSett.curLang);
+    else objSett.saveSettings("", QS_DARK, width(), height(), b2s(isMaximized()), table->horizontalHeader()->sectionSize(1), objSett.curLang);
     event->accept();
 }
 

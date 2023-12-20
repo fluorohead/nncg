@@ -68,7 +68,6 @@ int main(int argc, char *argv[]) {
     }
 
     mainWindow->refreshTable();
-    objSett.curLang = 1;
     app->postEvent(mainWindow, new QEvent(QEvent::LanguageChange));
 
     QApplication::exec();

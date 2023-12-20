@@ -4,8 +4,8 @@
 #include "common.h"
 #include <QTableWidget>
 
-const QString QS_TBLDESCR[LANGS_AMOUNT] {"Description", "Описание", "_"};
-const QString QS_TBLVALUE[LANGS_AMOUNT] {"Value", "Значение", "_"};
+const QString QS_TBLDESCR[LANGS_AMOUNT] {"Description", "Описание"};
+const QString QS_TBLVALUE[LANGS_AMOUNT] {"Value", "Значение"};
 
 class NNCGTable: public QTableWidget
 {

@@ -75,7 +75,7 @@ class NNCGBtnSetLang: public QPushButton
     Q_OBJECT
 
 private :
-    QString natEmblems[LANGS_AMOUNT] {":/eng.png",":/rus.png",""};
+    QString natEmblems[LANGS_AMOUNT] {":/eng.png",":/rus.png"};
     langId_t newLang {langId_t::English};
 
 public:

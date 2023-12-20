@@ -9,15 +9,15 @@ extern NNCGSettings objSett;
 
 // тексты, связанные с объектом шаблона
 const QString QS_DEFLOGO {":/rtr.png"};
-const QString QS_REPVAR [LANGS_AMOUNT] {"repeating of variable at line : ", "повтор переменной в строке : ", "_"};
-const QString QS_WRSYNTX [LANGS_AMOUNT] {"wrong syntax at line : ", "неверный синтаксис в строке : ", "_"};
-const QString QS_TOOMCHVAR [LANGS_AMOUNT] {"too much variables (allowed 1000 MAX)", "слишком много переменных (макс. 1000)", "_"};
-const QString QS_WRSTRTSYMB [LANGS_AMOUNT] {"wrong start symbol at line : ", "неверный начальный символ в строке : ", "_"};
-const QString QS_TMPLTLDD [LANGS_AMOUNT] {"template loaded : ", "загружен шаблон : ", "_"};
-const QString QS_INCORHDR [LANGS_AMOUNT] {"incorrect header", "неверный заголовок", "_"};
-const QString QS_TOOSHRTHDR [LANGS_AMOUNT] {"too short header", "слишком короткий заголовок", "_"};
-const QString QS_TOOBIGTMPLT [LANGS_AMOUNT] {"too big template (allowed 5_000_000 bytes MAX)", "слишком большой размер (макс. 5 000 000 байт)", "_"};
-const QString QS_ERROPNNGTMPL [LANGS_AMOUNT] {"error opening template file", "ошибка при открытии шаблона", "_"};
+const QString QS_REPVAR [LANGS_AMOUNT] {"repeating of variable at line : ", "повтор переменной в строке : "};
+const QString QS_WRSYNTX [LANGS_AMOUNT] {"wrong syntax at line : ", "неверный синтаксис в строке : "};
+const QString QS_TOOMCHVAR [LANGS_AMOUNT] {"too much variables (allowed 1000 MAX)", "слишком много переменных (макс. 1000)"};
+const QString QS_WRSTRTSYMB [LANGS_AMOUNT] {"wrong start symbol at line : ", "неверный начальный символ в строке : "};
+const QString QS_TMPLTLDD [LANGS_AMOUNT] {"template loaded : ", "загружен шаблон : "};
+const QString QS_INCORHDR [LANGS_AMOUNT] {"incorrect header", "неверный заголовок"};
+const QString QS_TOOSHRTHDR [LANGS_AMOUNT] {"too short header", "слишком короткий заголовок"};
+const QString QS_TOOBIGTMPLT [LANGS_AMOUNT] {"too big template (allowed 5_000_000 bytes MAX)", "слишком большой размер (макс. 5 000 000 байт)"};
+const QString QS_ERROPNNGTMPL [LANGS_AMOUNT] {"error opening template file", "ошибка при открытии шаблона"};
 extern const QString QS_VARTYPES[] {"domname", "text", "ipv4", "unsigned", "password", "maskv4", "ipv6", "maskv6len", "wildcardv4", "maskv4len", "prompt", "hash"};
 
 // обязательные строки заголовка

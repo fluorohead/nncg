@@ -18,8 +18,8 @@
 #define BASE_WIDTH_COLUMN_DESCR 324
 
 // индексы языков
-#define LANGS_AMOUNT 3
-enum langId_t  {English = 0, Russian = 1, Elfian = 2};
+#define LANGS_AMOUNT 2
+enum langId_t  {English = 0, Russian = 1, Elfian = LANGS_AMOUNT};
 
 // типы переменных
 enum varType_t {Domname = 0, Text, IPv4, Unsigned, Password, MASKv4, IPv6, MASKv6Len, WildcardV4, MASKv4Len, Prompt, Hash, MAX};

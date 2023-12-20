@@ -19,25 +19,25 @@ extern QString t2s(varType_t type);
 extern QString QS_VVT;
 
 // тексты, связанные с работой кнопок
-const QString QS_LOADCSV [LANGS_AMOUNT] {"Load CSV", "Загр. CSV", "_"};
-const QString QS_SAVECSV [LANGS_AMOUNT] {"Save CSV", "Сохр. CSV", "_"};
-const QString QS_CSVFILES [LANGS_AMOUNT] {"CSV files (*.csv)", "Файлы CSV (*.csv)", "_"};
-const QString QS_DIAGERR [LANGS_AMOUNT] {"Error!", "Ошибка!", "_"};
-const QString QS_DIAGINFO [LANGS_AMOUNT] {"Information", "Информация", "_"};
-const QString QS_OPNNGCSV [LANGS_AMOUNT] {"Opening CSV", "Открытие CSV", "_"};
-const QString QS_SVNGCSV [LANGS_AMOUNT] {"Saving CSV", "Сохранение CSV", "_"};
-const QString QS_LDTMPLT [LANGS_AMOUNT] {"Load template", "Загр. шаблон", "_"};
-const QString QS_OPNNGTMPLT [LANGS_AMOUNT] {"Opening template", "Открытие шаблона", "_"};
-const QString QS_TXTFILES [LANGS_AMOUNT] {"Text files (*.txt)", "Текстовые файлы (*.txt)", "_"};
-const QString QS_SVNGCFG [LANGS_AMOUNT] {"Saving config", "Сохранение конфига", "_"};
-const QString QS_CFGFILES [LANGS_AMOUNT] {"CFG files (*.cfg)", "Файлы CFG (*.cfg)", "_"};
-const QString QS_CRTCFG [LANGS_AMOUNT] {"Create config", "Созд. конфиг", "_"};
-const QString QS_CSV_SSC [LANGS_AMOUNT] {"csv saved successfully", "csv успешно сохранён", "_"};
-const QString QS_CSV_ERWR [LANGS_AMOUNT] {"error writing csv", "ошибка записи в csv", "_"};
-const QString QS_CSV_ERSV [LANGS_AMOUNT] {"error creating csv", "ошибка при создании csv", "_"};
-const QString QS_CFG_SSC [LANGS_AMOUNT] {"config saved successfully", "конфиг успешно сохранён", "_"};
-const QString QS_CFG_ERWE [LANGS_AMOUNT] {"error writing config", "ошибка при записи конфига", "_"};
-const QString QS_CFG_ERSV [LANGS_AMOUNT] {"error creating config", "ошибка при создании конфига", "_"};
+const QString QS_LOADCSV [LANGS_AMOUNT] {"Load CSV", "Загр. CSV"};
+const QString QS_SAVECSV [LANGS_AMOUNT] {"Save CSV", "Сохр. CSV"};
+const QString QS_CSVFILES [LANGS_AMOUNT] {"CSV files (*.csv)", "Файлы CSV (*.csv)"};
+const QString QS_DIAGERR [LANGS_AMOUNT] {"Error!", "Ошибка!"};
+const QString QS_DIAGINFO [LANGS_AMOUNT] {"Information", "Информация"};
+const QString QS_OPNNGCSV [LANGS_AMOUNT] {"Opening CSV", "Открытие CSV"};
+const QString QS_SVNGCSV [LANGS_AMOUNT] {"Saving CSV", "Сохранение CSV"};
+const QString QS_LDTMPLT [LANGS_AMOUNT] {"Load template", "Загр. шаблон"};
+const QString QS_OPNNGTMPLT [LANGS_AMOUNT] {"Opening template", "Открытие шаблона"};
+const QString QS_TXTFILES [LANGS_AMOUNT] {"Text files (*.txt)", "Текстовые файлы (*.txt)"};
+const QString QS_SVNGCFG [LANGS_AMOUNT] {"Saving config", "Сохранение конфига"};
+const QString QS_CFGFILES [LANGS_AMOUNT] {"CFG files (*.cfg)", "Файлы CFG (*.cfg)"};
+const QString QS_CRTCFG [LANGS_AMOUNT] {"Create config", "Созд. конфиг"};
+const QString QS_CSV_SSC [LANGS_AMOUNT] {"csv saved successfully", "csv успешно сохранён"};
+const QString QS_CSV_ERWR [LANGS_AMOUNT] {"error writing csv", "ошибка записи в csv"};
+const QString QS_CSV_ERSV [LANGS_AMOUNT] {"error creating csv", "ошибка при создании csv"};
+const QString QS_CFG_SSC [LANGS_AMOUNT] {"config saved successfully", "конфиг успешно сохранён"};
+const QString QS_CFG_ERWE [LANGS_AMOUNT] {"error writing config", "ошибка при записи конфига"};
+const QString QS_CFG_ERSV [LANGS_AMOUNT] {"error creating config", "ошибка при создании конфига"};
 
 
 NNCGBtnCsvLoad::NNCGBtnCsvLoad(int w, int h, const QString &text, QWidget *parent): QPushButton(text, parent) {

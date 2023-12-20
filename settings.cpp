@@ -9,7 +9,8 @@ extern const QString    QS_TEMPLATE {"template"},
                         QS_HEIGHT {"height"},
                         QS_COLWIDTH {"col_width"},
                         QS_DARK {"dark"},
-                        QS_LIGHT {"light"};
+                        QS_LIGHT {"light"},
+                        QS_LANG {"lang"};
 
 NNCGSettings::NNCGSettings() {
     QDir qDir;
@@ -38,6 +39,8 @@ NNCGSettings::NNCGSettings() {
                     colWidth = jsDoc[QS_COLWIDTH].toInt();
                     if (colWidth < 39) colWidth = 39;
                     if (colWidth > 2048) colWidth = BASE_WIDTH_COLUMN_DESCR;
+                    curLang = (langId_t) jsDoc[QS_LANG].toInt();
+                    if (curLang < langId_t::English || curLang >= langId_t::Elfian) curLang = langId_t::English;
                     noLastErr = true;
                     lastErrMsg = tr("succesfully parsed nncg.json");
                 } else {
@@ -58,7 +61,7 @@ NNCGSettings::NNCGSettings() {
     }
 }
 
-bool NNCGSettings::saveSettings(const QString& fpfn, const QString& theme, int w, int h, const QString& mxmzd, int colWidth) {
+bool NNCGSettings::saveSettings(const QString& fpfn, const QString& theme, int w, int h, const QString& mxmzd, int colWidth, langId_t lang) {
     qFile.resize(0);
     QString writeStr =  QString("{\r\n"
                                 " \"%1\": \"%2\",\r\n"
@@ -66,8 +69,10 @@ bool NNCGSettings::saveSettings(const QString& fpfn, const QString& theme, int w
                                 " \"%5\": %6,\r\n"
                                 " \"%7\": %8,\r\n"
                                 " \"%9\": %10,\r\n"
-                                " \"%11\": %12\r\n"
-                                "}").arg(QS_TEMPLATE, fpfn, QS_THEME, theme, QS_WIDTH, QString::number(w), QS_HEIGHT, QString::number(h), QS_MXMZD, mxmzd, QS_COLWIDTH, QString::number(colWidth));
+                                " \"%11\": %12,\r\n"
+                                " \"%13\": %14\r\n"
+                                "}").arg(QS_TEMPLATE, fpfn, QS_THEME, theme, QS_WIDTH, QString::number(w), QS_HEIGHT, QString::number(h),
+                                         QS_MXMZD, mxmzd, QS_COLWIDTH, QString::number(colWidth), QS_LANG, QString::number(lang));
     qFile.write(writeStr.toUtf8());
     qFile.flush();
     return true;
