@@ -1,5 +1,8 @@
 <RCC>
     <qresource prefix="/">
-        <file>icons8-router-96.png</file>
+        <file>rtr.png</file>
+        <file>ca.png</file>
+        <file>rus.png</file>
+        <file>eng.png</file>
     </qresource>
 </RCC>

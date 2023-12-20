@@ -1,13 +1,21 @@
-#include "common.h"
 #include "mwindow.h"
 #include "template.h"
 #include "settings.h"
 #include "csv.h"
 
+#include <QApplication>
+#include <QWindowStateChangeEvent>
+
+//#include <iostream>
+
+QApplication *app;
+
 NNCGMainWindow *mainWindow;
 NNCGTemplate *objTempl;
 NNCGSettings objSett;
 NNCG_csv *objCSV {nullptr};
+
+extern QString QS_VARTYPES[];
 
 theme_t themeDark {
     {37, 37, 37, 255}, // big widget background
@@ -37,10 +45,9 @@ varType_t s2t(const QString &str) {
 }
 
 ///////////////////////////////////////////
-int main(int argc, char* argv[]) {
-
-    QApplication app(argc, argv);
-    app.setApplicationName("Network Node Configuration Generator");
+int main(int argc, char *argv[]) {
+    app = new QApplication(argc, argv);
+    app->setApplicationName("Network Node Configuration Generator");
 
     if (!objSett.templFpFn.isEmpty()) { // проверка пути к шаблону
         objTempl = new NNCGTemplate(objSett.templFpFn);
@@ -57,9 +64,12 @@ int main(int argc, char* argv[]) {
         mainWindow->btnCfgCreate->setDisabled(true);
         mainWindow->btnCsvLoad->setDisabled(true);
         mainWindow->btnCsvSave->setDisabled(true);
+        mainWindow->btnClearAll->setDisabled(true);
     }
 
     mainWindow->refreshTable();
+    objSett.curLang = 1;
+    app->postEvent(mainWindow, new QEvent(QEvent::LanguageChange));
 
     QApplication::exec();
 

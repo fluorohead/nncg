@@ -1,32 +1,7 @@
-#ifndef ALLCONSTS_H
-#define ALLCONSTS_H
+#ifndef COMMON_H
+#define COMMON_H
 
-#include <QApplication>
-#include <QString>
-#include <QFileInfo>
-#include <QMessageBox>
-#include <QMainWindow>
-#include <QLabel>
-#include <QLineEdit>
-#include <QTableWidget>
-#include <QStatusBar>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QHeaderView>
-#include <QAbstractItemView>
 #include <QColor>
-#include <QCloseEvent>
-#include <QFont>
-#include <QFileDialog>
-#include <QHash>
-#include <QPushButton>
-#include <QFile>
-#include <QJsonDocument>
-#include <QPixmap>
-#include <QDir>
-#include <QJsonParseError>
-#include <QJsonDocument>
-#include <QScrollBar>
 
 #define MIN_WIDTH 800
 #define MIN_HEIGHT 600
@@ -42,47 +17,21 @@
 
 #define BASE_WIDTH_COLUMN_DESCR 324
 
-const QString   QS_WIDTH = "width",
-                QS_HEIGHT = "height",
-                QS_DARK = "dark",
-                QS_LIGHT = "light",
-                QS_TEMPLATE = "template",
-                QS_THEME = "theme",
-                QS_MXMZD = "maximized",
-                QS_CSV = "csv",
-                QS_VVT = "\"variable\";\"value\";\"type\"",
-                QS_COLWIDTH = "col_width",
-                QS_REXIPV4 = "^([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})$";
+// индексы языков
+#define LANGS_AMOUNT 3
+enum langId_t  {English = 0, Russian = 1, Elfian = 2};
 
-const QString   QS_VARTYPES[] {"domname", "text", "ipv4", "unsigned", "password", "maskv4", "ipv6", "maskv6len", "wildcardv4", "maskv4len", "prompt", "hash"};
+// типы переменных
+enum varType_t {Domname = 0, Text, IPv4, Unsigned, Password, MASKv4, IPv6, MASKv6Len, WildcardV4, MASKv4Len, Prompt, Hash, MAX};
 
-enum varType_t       {Domname = 0, Text, IPv4, Unsigned, Password, MASKv4, IPv6, MASKv6Len, WildcardV4, MASKv4Len, Prompt, Hash, MAX};
-const int maxChars[] {        253,  255,   15,       10,      128,     15,   45,         3,         15,         2,     64,  128}; // длины полей ввода в символах
-
-// placeholders text for lineedit widgets in table
-const QString   QS_PLCHLDRS[] {
-                                "max 253 symbols, only latin and hyphens",
-                                "max 255 symbols, unicode",
-                                "___.___.___.___",
-                                "positive integer",
-                                "hidden, max 128 symbols",
-                                "___.___.___.___",
-                                "____:____:____:____:____:____:____:____",
-                                "valid from 0 to 128",
-                                "___.___.___.___",
-                                "valid from 0 to 32",
-                                "max 255 symbols, latin and special",
-                                "max 128 symbols"
-                            };
-
-struct oneRec_t{
+struct oneRec_t {
     int orderNum;
     QString descr;
     QString value;
     varType_t type;
 };
 
-struct oneRecShort_t{
+struct oneRecShort_t {
     QString value;
     varType_t type;
 };
@@ -92,4 +41,4 @@ struct theme_t {
     QColor  bw_fg;
 };
 
-#endif // ALLCONSTS_H
+#endif // COMMON_H

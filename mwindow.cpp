@@ -1,14 +1,45 @@
+#include "common.h"
 #include "mwindow.h"
 #include "settings.h"
 #include "template.h"
+#include "table.h"
+#include "validators.h"
+
 #include <QCommonStyle>
 #include <QLineEdit>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QCloseEvent>
+#include <QScrollBar>
+#include <QHeaderView>
+
 //#include <iostream>
 
 extern NNCGSettings objSett;
 extern theme_t themeCurrent;
 extern NNCGTemplate* objTempl;
 extern QString b2s(bool b);
+
+//enum varType_t            {Domname = 0, Text, IPv4, Unsigned, Password, MASKv4, IPv6, MASKv6Len, WildcardV4, MASKv4Len, Prompt, Hash, MAX}; // типы переменных
+extern const int maxChars[] {        253,  255,   15,       10,      128,     15,   45,         3,         15,         2,     64,  128};      // длины полей ввода в символах
+
+// индексы языков [][0] - eng, [][1] - rus, [][2] - elfian
+//
+// placeholders text
+QString QS_PLCHLDRS[][LANGS_AMOUNT] {
+                                {"max 253 symbols, latin and hyphens", "макс. 253 символа, латиница и дефисы", "_"}, // domname
+                                {"max 255 symbols, unicode", "макс. 255 символов юникод", "_"}, // text
+                                {"___.___.___.___", "", ""}, // ipv4
+                                {"positive integer", "целое беззнаковое", "_"}, // unsigned
+                                {"hidden, max 128 symbols", "скрытый ввод, макс. 128 символов", "_"}, // password
+                                {"___.___.___.___", "", ""}, // ipv4 dotted mask
+                                {"____:____:____:____:____:____:____:____", "", ""}, // ipv6
+                                {"valid from 0 to 128", "значения от 0 до 128", "_"}, // ipv6 mask length
+                                {"___.___.___.___", "", ""}, // ipv4 wildcard
+                                {"valid from 0 to 32", "значения от 0 до 32", "_"}, // ipv4 mask length
+                                {"max 255 symbols, latin and special", "макс. 255 символов, латиница и спецсимволы", "_"}, // system prompt
+                                {"max 128 symbols, latin and special", "макс. 128 символов, латиница и спецсимволы", "_"} // hash
+                            };
 
 // создаём все элементы GUI
 NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWindow(parent, flags) {
@@ -70,7 +101,7 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
 
     vbLayout->addLayout(hbTop);
 
-    table = new QTableWidget();
+    table = new NNCGTable();
     table->setColumnCount(3);
     table->setCornerButtonEnabled(false);
     table->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -82,7 +113,7 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
     table->horizontalHeader()->setStretchLastSection(true);
     table->setFrameShape(QFrame::NoFrame);
     table->setSortingEnabled(false);
-    table->setHorizontalHeaderLabels({tr("#"), tr("Description"), tr("Value")});
+    table->setHorizontalHeaderLabels({"", "", ""});
     table->setColumnWidth(0, 32);
     table->setColumnWidth(1, objSett.colWidth);
     table->horizontalHeaderItem(0)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter); // выравнивание текста вправо для колонки 0
@@ -109,13 +140,23 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
     hbBottom->setSpacing(12);
     hbBottom->setContentsMargins(0, 16, 0, 20);
 
-    btnCsvLoad = new NNCGBtnCsvLoad(80, 32, tr("Load CSV"));
-    btnCsvSave = new NNCGBtnCsvSave(80, 32, tr("Save CSV"));
+    btnCsvLoad = new NNCGBtnCsvLoad(80, 32, "");
+    btnCsvSave = new NNCGBtnCsvSave(80, 32, "");
 
     auto *hbSI = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-    btnTemplLoad = new NNCGButtonLoad(108, 32, tr("Load template"));
-    btnCfgCreate = new NNCGButtonCreate(108, 32, tr("Create config"));
+    btnClearAll = new NNCGBtnClearAll(48, 48, "", this);
+
+    btnEngLang = new NNCGBtnSetLang(32, 32, langId_t::English, this);
+    btnRusLang = new NNCGBtnSetLang(32, 32, langId_t::Russian, this);
+
+    auto btnLangSS = QString(":enabled  {background: transparent}");
+
+    btnEngLang->setStyleSheet(btnLangSS);
+    btnRusLang->setStyleSheet(btnLangSS);
+
+    btnTemplLoad = new NNCGButtonLoad(108, 32, "");
+    btnCfgCreate = new NNCGButtonCreate(108, 32, "");
 
     auto btnSS = QString(
         ":enabled  {background: rgb(216, 216, 216); border: 6px rgb(%1, %2, %3); border-radius: 14px; border-style: outset; font: 12px 'Tahoma'}"
@@ -129,6 +170,13 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
     btnCsvSave->setStyleSheet(btnSS);
     btnTemplLoad->setStyleSheet(btnSS);
     btnCfgCreate->setStyleSheet(btnSS);
+    btnClearAll->setStyleSheet(QString(
+                                   ":enabled  {background: transparent; border: 3px rgb(%1, %2, %3); border-radius: 24px; border-style: outset}"
+                                   ":disabled {background: transparent;    border: 3px rgb(%4, %5, %6); border-radius: 24px; border-style: outset}"
+                                   ":hover    {background: rgb(216, 216, 216); border: 3px rgb(%1, %2, %3); border-radius: 24px; border-style: inset}"
+                                   ":pressed  {background: rgb(216, 216, 216); border: 3px rgb(%1, %2, %3); border-radius:  16px; border-style: inset}"
+                               ).arg(QString::number(objTempl->brandColors[0]), QString::number(objTempl->brandColors[1]), QString::number(objTempl->brandColors[2]),
+                                     QString::number(objTempl->brandColors[3] / 2), QString::number(objTempl->brandColors[4] / 2), QString::number(objTempl->brandColors[5] / 2)));
 
     hbBottom->addWidget(btnCsvLoad);
     hbBottom->addWidget(btnCsvSave);
@@ -143,8 +191,11 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
     connect(btnCsvSave, SIGNAL(clicked()), btnCsvSave, SLOT(slotClicked()), Qt::AutoConnection);
     connect(btnTemplLoad, SIGNAL(clicked()), btnTemplLoad, SLOT(slotClicked()), Qt::AutoConnection);
     connect(btnCfgCreate, SIGNAL(clicked()), btnCfgCreate, SLOT(slotClicked()), Qt::AutoConnection);
+    connect(btnClearAll, SIGNAL(clicked()), btnClearAll, SLOT(slotClicked()), Qt::AutoConnection);
+    connect(btnEngLang, SIGNAL(clicked()), btnEngLang, SLOT(slotClicked()), Qt::AutoConnection);
+    connect(btnRusLang, SIGNAL(clicked()), btnRusLang, SLOT(slotClicked()), Qt::AutoConnection);
 
-   // validators creation
+   // создаём валидаторы
     vldtrs[varType_t::Domname] = new NNCGValidDomname(this);
     vldtrs[varType_t::Text] = nullptr;
     vldtrs[varType_t::IPv4] = new NNCGValidIPv4(this);
@@ -152,11 +203,11 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
     vldtrs[varType_t::Password] = nullptr;
     vldtrs[varType_t::MASKv4] = new NNCGValidMASKv4(this);
     vldtrs[varType_t::IPv6] = new NNCGValidIPv6(this);
-    vldtrs[varType_t::MASKv6Len] = new NNCGValidMASKv6Len(this); // для длины v6-маски такой же валидатор, что и для Unsigned
+    vldtrs[varType_t::MASKv6Len] = new NNCGValidMASKv6Len(this);
     vldtrs[varType_t::WildcardV4] = new NNCGValidIPv4(this);
-    vldtrs[varType_t::MASKv4Len] = new NNCGValidMASKv4Len(this); // для длины v4-маски такой же валидатор, что и для Unsigned
+    vldtrs[varType_t::MASKv4Len] = new NNCGValidMASKv4Len(this);
     vldtrs[varType_t::Prompt] = nullptr;
-    vldtrs[varType_t::Hash] = nullptr;
+    vldtrs[varType_t::Hash] = new NNCGValidHash(this);
 }
 
 
@@ -166,8 +217,8 @@ void NNCGMainWindow::refreshTable() {
     logoLabel->setPixmap(*objTempl->getPtrPixLogo());
     titleLabel->setText(objTempl->getTitle());
     commentLabel->setText(objTempl->getComment());
-    table->clear();
-    table->setHorizontalHeaderLabels({tr("#"), tr("Description"), tr("Value")});
+    table->clear(); // уничтожаются ли дочерние QLineEdit ?
+    table->setHorizontalHeaderLabels({"#", QS_TBLDESCR[objSett.curLang], QS_TBLVALUE[objSett.curLang]});
     table->setRowCount(objTempl->hashVars.size());
     for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
         QTableWidgetItem *oneRow[3];
@@ -184,7 +235,8 @@ void NNCGMainWindow::refreshTable() {
         qle->setFrame(false);
         qle->setMaxLength(maxChars[hIt.value().type]);
         qle->setClearButtonEnabled(true);
-        qle->setPlaceholderText(QS_PLCHLDRS[hIt.value().type]);
+        if (!QS_PLCHLDRS[hIt.value().type][1].isEmpty()) qle->setPlaceholderText(QS_PLCHLDRS[hIt.value().type][objSett.curLang]);
+        else qle->setPlaceholderText(QS_PLCHLDRS[hIt.value().type][0]);
         if (hIt.value().type == varType_t::Password)
             qle->setEchoMode(QLineEdit::Password);
         qle->setValidator(vldtrs[hIt.value().type]);
@@ -197,7 +249,7 @@ void NNCGMainWindow::refreshTable() {
 
 
 // при событии закрытия окна сохраняем настройки в json
-void NNCGMainWindow::closeEvent(QCloseEvent* event) {
+void NNCGMainWindow::closeEvent(QCloseEvent *event) {
     this->hide();
     if (!objTempl->isDemo) objSett.saveSettings(objTempl->getFilePath() + objTempl->getFileName(), QS_DARK, width(), height(), b2s(isMaximized()), table->horizontalHeader()->sectionSize(1));
     else objSett.saveSettings("", QS_DARK, width(), height(), b2s(isMaximized()), table->horizontalHeader()->sectionSize(1));
@@ -211,4 +263,22 @@ void NNCGMainWindow::dumpTableToHash() {
         QLineEdit *cw = (QLineEdit*) table->cellWidget(hIt.value().orderNum, 2);
         objTempl->hashVars[hIt.key()].value = cw->text();
     }
+}
+
+
+// обнуление всех введённых значений в таблице; и в объекте шаблона (необазятельно, но экономит память)
+void NNCGMainWindow::clearTable() {
+    for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
+        hIt.value().value.clear();
+        QLineEdit *cw = (QLineEdit*) table->cellWidget(hIt.value().orderNum, 2);
+        cw->clear();
+    }
+}
+
+
+void NNCGMainWindow::resizeEvent(QResizeEvent *event) {
+    btnClearAll->move(this->width() - 84, 48);
+    btnEngLang->move(this->width() - 184, 90);
+    btnRusLang->move(this->width() - 140, 90);
+    event->accept();
 }

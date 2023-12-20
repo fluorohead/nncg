@@ -1,15 +1,15 @@
 #ifndef VALIDATORS_H
 #define VALIDATORS_H
-#include "common.h"
+
 #include <QValidator>
 
 class NNCGValidIPv4: public QValidator
 {
 private:
-    QRegExp rex {QS_REXIPV4};
+    QRegExp rex;
 
 public:
-    NNCGValidIPv4(QObject *parent = nullptr): QValidator(parent) {};
+    NNCGValidIPv4(QObject * = nullptr);
     QValidator::State validate(QString &, int &) const;
     void fixup(QString &) const;
 };
@@ -18,10 +18,10 @@ public:
 class NNCGValidMASKv4: public QValidator
 {
 private:
-    QRegExp rex {QS_REXIPV4};
+    QRegExp rex;
 
 public:
-    NNCGValidMASKv4(QObject *parent = nullptr): QValidator(parent) {};
+    NNCGValidMASKv4(QObject * = nullptr);
     QValidator::State validate(QString &input, int &pos) const;
     void fixup(QString &) const;
 };
@@ -71,6 +71,14 @@ class NNCGValidMASKv6Len: public QValidator
 {
 public:
     NNCGValidMASKv6Len(QObject *parent = nullptr): QValidator(parent) {};
+    QValidator::State validate(QString &input, int &pos) const;
+};
+
+
+class NNCGValidHash: public QValidator
+{
+public:
+    NNCGValidHash(QObject *parent = nullptr): QValidator(parent) {};
     QValidator::State validate(QString &input, int &pos) const;
 };
 

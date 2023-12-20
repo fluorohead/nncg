@@ -1,6 +1,10 @@
 #include "csv.h"
 
 extern varType_t s2t(const QString &str);
+extern int maxChars[];
+
+const QString QS_CSV {"csv"};
+extern const QString QS_VVT {"\"variable\";\"value\";\"type\""};
 
 // возвращает true, если формат переменной верный
 bool NNCG_csv::inspectLine(const QString &line, QString &varName, QString &varValue, varType_t &varType) {

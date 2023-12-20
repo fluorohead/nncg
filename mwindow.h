@@ -1,12 +1,18 @@
-#ifndef NNCGMAINWINDOW_H
-#define NNCGMAINWINDOW_H
+#ifndef MWINDOW_H
+#define MWINDOW_H
 
+#include "common.h"
 #include "buttons.h"
-#include "validators.h"
+#include "table.h"
+
+#include <QLabel>
+#include <QStatusBar>
+#include <QValidator>
+#include <QTableWidget>
+#include <QMainWindow>
 
 class NNCGMainWindow: public QMainWindow
 {
-    Q_OBJECT
 
 private:
     QWidget *bigWidget;
@@ -14,21 +20,26 @@ private:
     QLabel *logoLabel;
     QLabel *titleLabel;
     QLabel *commentLabel;
-    QTableWidget *table;
+    NNCGTable *table {nullptr};
     QFont fntCons10 {"Consolas", 10, 0}; // фонт для колонки #
     QFont fntCons11 {"Consolas", 11, 0}; // фонт для колонки Description
     QFont fntCons12bold {"Consolas", 12, 100}; // фонт для колонки Value
-    void closeEvent(QCloseEvent* event);
+    void closeEvent(QCloseEvent*);
+    void resizeEvent(QResizeEvent *);
     QValidator *vldtrs[varType_t::MAX];
 
 public:
     NNCGMainWindow(QWidget* = nullptr, Qt::WindowFlags = Qt::WindowFlags());
     void refreshTable();
     void dumpTableToHash();
+    void clearTable();
     NNCGButtonLoad *btnTemplLoad;
     NNCGButtonCreate *btnCfgCreate;
     NNCGBtnCsvLoad *btnCsvLoad;
     NNCGBtnCsvSave *btnCsvSave;
+    NNCGBtnClearAll *btnClearAll;
+    NNCGBtnSetLang *btnEngLang;
+    NNCGBtnSetLang *btnRusLang;
 };
 
-#endif // NNCGMAINWINDOW_H
+#endif // MWINDOW_H

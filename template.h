@@ -1,14 +1,17 @@
-#ifndef NNCGTEMPLATE_H
-#define NNCGTEMPLATE_H
+#ifndef TEMPLATE_H
+#define TEMPLATE_H
 
 #include "common.h"
+#include <QFile>
+#include <QString>
+#include <QPixmap>
 
 class NNCGTemplate: public QObject
 {
 
 private:
     QFile qFile;
-    QString serChar; // service char / служебный символ / первый символ строки №[4]
+    QString serChar; // service char / служебный символ / первый символ строки №[8]
     QPixmap pixLogo;
     bool inspectLine(const QString &, QString &, QString &, varType_t &);
     void inspectBrandColors();
@@ -37,4 +40,4 @@ public:
 
 };
 
-#endif // NNCGTEMPLATE_H
+#endif // TEMPLATE_H

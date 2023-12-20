@@ -2,9 +2,14 @@
 #define NNCGSETTINGS_H
 
 #include "common.h"
+#include <QFile>
+#include <QJsonDocument>
+
+extern const QString QS_DARK;
 
 class NNCGSettings: public QObject
 {
+
 private:
     QFile qFile;
     QJsonDocument jsDoc;
@@ -13,6 +18,7 @@ public:
     int width {800};
     int height {600}; // main window size
     bool maximized {false};
+    int curLang {0};
     QString templFpFn {""}; // template file path with file name
     QString themeName {QS_DARK}; // название цветовой темы : dark, light
     bool noLastErr {false};

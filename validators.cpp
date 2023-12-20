@@ -1,7 +1,10 @@
 #include "validators.h"
+
 #include <QRegExp>
 
 extern QString b2s(bool b);
+
+const QString QS_REXIPV4 {"^([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})$"};
 
 bool simpleIPv4Check(QString &s) { // check for common ipv4-address format requirements
     // разрешены только цифры и точки
@@ -9,10 +12,9 @@ bool simpleIPv4Check(QString &s) { // check for common ipv4-address format requi
         if (s[idx].unicode() > 57) return false;
         if ((s[idx].unicode() < 48) && (s[idx].unicode() != 46)) return false;
     }
-    // проверка на символы прошла успешно
-    if (s.startsWith('.')) return false; // ip не может начинаться с точки
-    if (s.contains("..")) return false; // не может быть двух точек подряд
-    if (s.count('.') > 3) return false; // не может быть более 3 точек всего
+    // проверка на символы прошла успешно.
+    // ip не может начинаться с точки, не может быть двух точек подряд, не может быть более 3 точек всего
+    if (s.startsWith('.') || s.contains("..") || (s.count('.') > 3) ) return false;
     return true;
 }
 
@@ -26,13 +28,25 @@ bool isCorrectMASKv4_Octet(int octet) {
     return false;
 }
 
-// проверяем на цифровые символы
-bool onlyDigits(QString &s){
+
+// проверяет на принадлежность к диапазону (включая сами границы)
+bool inRange(QString &s, int lowLimit, int highLimit) {
     for (auto idx = 0; idx < s.length(); idx++) {
-        if ((s[idx].unicode() < 48) || (s[idx].unicode() > 57)) return false;
+        if ((s[idx].unicode() < lowLimit) || (s[idx].unicode() > highLimit)) return false;
     }
     return true;
 }
+
+
+// проверяем на цифровые символы
+bool onlyDigits(QString &s){
+    return inRange(s, 48, 57);
+}
+
+
+NNCGValidIPv4::NNCGValidIPv4(QObject *parent):QValidator(parent) {
+    rex.setPattern(QS_REXIPV4);
+};
 
 
 QValidator::State NNCGValidIPv4::validate(QString &input, int &pos) const {
@@ -43,7 +57,7 @@ QValidator::State NNCGValidIPv4::validate(QString &input, int &pos) const {
             input.clear(); // чистим строку, будем пересобирать её заново
             for (auto idx = 1; idx <= 4; idx++) {
                 int octet;
-                octet = rex.cap(idx).toInt();
+                octet = rex.cap(idx).toUInt();
                 if (octet > 255) octet = 255;
                 input.append(QString::number(octet) + '.');
             }
@@ -61,8 +75,12 @@ void NNCGValidIPv4::fixup(QString &input) const {
 }
 
 
+NNCGValidMASKv4::NNCGValidMASKv4(QObject *parent): QValidator(parent) {
+    rex.setPattern(QS_REXIPV4);
+};
+
+
 QValidator::State NNCGValidMASKv4::validate(QString &input, int &pos) const {
-    //std::cout << "current mask to inspect : " << input.toStdString() << "; cursor position : " << pos << std::endl;
     if (!simpleIPv4Check(input)) return Invalid;
     else {
         if (rex.indexIn(input) != -1) { // проверка на regexp
@@ -71,7 +89,7 @@ QValidator::State NNCGValidMASKv4::validate(QString &input, int &pos) const {
             int bitsArr[4];
             for (int idx = 1; idx <= 4; idx++) {
                 int octet;
-                octet = rex.cap(idx).toInt();
+                octet = rex.cap(idx).toUInt();
                 if (octet > 255) octet = 255;
                 input.append(QString::number(octet) + '.');
                 bitsArr[idx - 1] = octet;
@@ -120,14 +138,13 @@ void NNCGValidDomname::fixup(QString &input) const {
             else break;
         } while (n > 0);
         input.chop(cntHyph); // удаление всех "-" в конце строки
-        if (input.endsWith('.')) input.chop(1); // удаление послдней точки
+        if (input.endsWith('.')) input.chop(1); // удаление последней точки
     }
 }
 
 
 QValidator::State NNCGValidUnsigned::validate(QString &input, int &pos) const {
-    if (!onlyDigits(input)) return Invalid;
-    if (input.startsWith("0")) return Invalid; // не может начинаться с нуля
+    if ((!onlyDigits(input)) || input.startsWith("0")) return Invalid; // не может начинаться с нуля
     if (input.toLongLong() > UINT32_MAX) input.setNum(UINT32_MAX);
     return Acceptable;
 }
@@ -189,7 +206,7 @@ QValidator::State NNCGValidIPv6::validate(QString &input, int &pos) const {
         input.clear(); // будем пересобирать строку заново
         input.append(rex.cap(1));
         for (int gr = 2; gr <= 5; gr++) {
-            if (rex.cap(gr).toInt() > 255) input.append("255.");
+            if (rex.cap(gr).toUInt() > 255) input.append("255.");
             else input.append(rex.cap(gr) + '.');
         }
         input.chop(1); // откусываем последнюю точку
@@ -199,24 +216,25 @@ QValidator::State NNCGValidIPv6::validate(QString &input, int &pos) const {
 
 
 void NNCGValidIPv6::fixup(QString &input) const {
-//    std::cout << "ipv6 fixup called" << std::endl;
     input = "::1";
 }
 
 
 QValidator::State NNCGValidMASKv4Len::validate(QString &input, int &pos) const {
-    if (!onlyDigits(input)) return Invalid;
-    if (input.startsWith("0")) return Invalid; // не может начинаться с нуля
-    if (input.toLongLong() > 32) input.setNum(32); // макс значение = 32
-
+    if ((!onlyDigits(input)) || input.startsWith("0")) return Invalid; // не может начинаться с нуля
+    if (input.toUInt() > 32) input.setNum(32); // макс значение = 32
     return Acceptable;
 }
 
 
 QValidator::State NNCGValidMASKv6Len::validate(QString &input, int &pos) const {
-    if (!onlyDigits(input)) return Invalid;
-    if (input.startsWith("0")) return Invalid; // не может начинаться с нуля
-    if (input.toLongLong() > 128) input.setNum(128); // макс значение = 128
+    if ((!onlyDigits(input)) || input.startsWith("0")) return Invalid; // не может начинаться с нуля
+    if (input.toUInt() > 128) input.setNum(128); // макс значение = 128
+    return Acceptable;
+}
 
+
+QValidator::State NNCGValidHash::validate(QString &input, int &pos) const {
+    if (!inRange(input, 33, 126)) return Invalid;
     return Acceptable;
 }

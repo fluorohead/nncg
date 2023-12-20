@@ -1,8 +1,37 @@
 #include "template.h"
+#include "settings.h"
+#include "mwindow.h"
+
+#include <QFileInfo>
 
 extern varType_t s2t(const QString &str);
+extern NNCGSettings objSett;
 
-const QString defLogo {":/icons8-router-96.png"};
+// тексты, связанные с объектом шаблона
+const QString QS_DEFLOGO {":/rtr.png"};
+const QString QS_REPVAR [LANGS_AMOUNT] {"repeating of variable at line : ", "повтор переменной в строке : ", "_"};
+const QString QS_WRSYNTX [LANGS_AMOUNT] {"wrong syntax at line : ", "неверный синтаксис в строке : ", "_"};
+const QString QS_TOOMCHVAR [LANGS_AMOUNT] {"too much variables (allowed 1000 MAX)", "слишком много переменных (макс. 1000)", "_"};
+const QString QS_WRSTRTSYMB [LANGS_AMOUNT] {"wrong start symbol at line : ", "неверный начальный символ в строке : ", "_"};
+const QString QS_TMPLTLDD [LANGS_AMOUNT] {"template loaded : ", "загружен шаблон : ", "_"};
+const QString QS_INCORHDR [LANGS_AMOUNT] {"incorrect header", "неверный заголовок", "_"};
+const QString QS_TOOSHRTHDR [LANGS_AMOUNT] {"too short header", "слишком короткий заголовок", "_"};
+const QString QS_TOOBIGTMPLT [LANGS_AMOUNT] {"too big template (allowed 5_000_000 bytes MAX)", "слишком большой размер (макс. 5 000 000 байт)", "_"};
+const QString QS_ERROPNNGTMPL [LANGS_AMOUNT] {"error opening template file", "ошибка при открытии шаблона", "_"};
+extern const QString QS_VARTYPES[] {"domname", "text", "ipv4", "unsigned", "password", "maskv4", "ipv6", "maskv6len", "wildcardv4", "maskv4len", "prompt", "hash"};
+
+// обязательные строки заголовка
+const QString   QS_NNCT {"NETWORK_NODE_CONFIG_TEMPLATE"},
+                QS_SOFTVER {"SOFTWARE_VERSION:"},
+                QS_TITLE {"TITLE:"},
+                QS_COMMENT {"COMMENT:"},
+                QS_LOGO {"LOGO:"},
+                QS_BRCOLORS {"BRAND_COLORS:"},
+                QS_DELIM_OPEN {"DELIMITER_OPEN:"},
+                QS_DELIM_CLOSE {"DELIMITER_CLOSE:"},
+                QS_BEGVARS {"BEGIN_VARIABLES"},
+                QS_ENDVARS {"END_VARIABLES"};
+
 
 QString NNCGTemplate::getTitle(){
     return strList[2].mid(6);
@@ -30,7 +59,6 @@ QPixmap* NNCGTemplate::getPtrPixLogo(){
 
 // возвращает true, если формат переменной верный
 bool NNCGTemplate::inspectLine(const QString &line, QString &varName, QString &varDescr, varType_t &varType) {
-    //QRegExp rex(serChar + QString(" *(\\%1.+\\%2) *, *\"(.*)\" *, *([a-zA-Z0-9]+) *").arg(delimOpen, delimClose));
     if (rex.indexIn(line) != -1) {
         varName = rex.cap(1);
         varDescr = rex.cap(2);
@@ -67,17 +95,6 @@ void NNCGTemplate::inspectBrandColors() {
 }
 
 
-const QString   QS_NNCT = "NETWORK_NODE_CONFIG_TEMPLATE",
-                QS_SOFTVER = "SOFTWARE_VERSION:",
-                QS_TITLE = "TITLE:",
-                QS_COMMENT = "COMMENT:",
-                QS_LOGO = "LOGO:",
-                QS_BRCOLORS = "BRAND_COLORS:",
-                QS_DELIM_OPEN = "DELIMITER_OPEN:",
-                QS_DELIM_CLOSE = "DELIMITER_CLOSE:",
-                QS_BEGVARS = "BEGIN_VARIABLES",
-                QS_ENDVARS = "END_VARIABLES";
-
 // конструктор demo-шаблона
 NNCGTemplate::NNCGTemplate() {
     beginConfig = 8;
@@ -101,7 +118,7 @@ NNCGTemplate::NNCGTemplate() {
     hashVars["{phy1_mask}"] = {4, "IPv4 mask ->", "255.255.255.0", MASKv4};
     noOpenErr = true;
     lastErrMsg = tr("demo template loaded");
-    pixLogo.load(defLogo);
+    pixLogo.load(QS_DEFLOGO);
     isDemo = true;
 }
 
@@ -155,27 +172,27 @@ NNCGTemplate::NNCGTemplate(const QString &fn)
                                             varsCount++;
                                         } else { // такой ключ уже есть, повторение -> ошибка, выходим
                                             noOpenErr = false;
-                                            lastErrMsg = tr("repeating of variable at line : ");
+                                            lastErrMsg = QS_REPVAR[objSett.curLang];
                                             lastErrMsg.append(QString::number(++h));
                                             hashVars.clear();
                                             return;
                                         }
                                     } else { // инспекция линии не успешна -> ошибка, выход
                                         noOpenErr = false;
-                                        lastErrMsg = tr("wrong syntax at line : ");
+                                        lastErrMsg = QS_WRSYNTX[objSett.curLang];
                                         lastErrMsg.append(QString::number(++h));
                                         hashVars.clear();
                                         return;
                                     }
                                 } else { // превышено количество переменных
                                     noOpenErr = false;
-                                    lastErrMsg = tr("too much variables (allowed 1000 MAX)");
+                                    lastErrMsg = QS_TOOMCHVAR[objSett.curLang];
                                     hashVars.clear();
                                     return;
                                 }
                             } else { // встретился посторонний символ -> больше не ищем переменных и выходим с ошибкой
                                 noOpenErr = false;
-                                lastErrMsg = tr("syntax error at line : ");
+                                lastErrMsg = QS_WRSTRTSYMB[objSett.curLang];
                                 lastErrMsg.append(QString::number(++h));
                                 hashVars.clear();
                                 return;
@@ -185,27 +202,27 @@ NNCGTemplate::NNCGTemplate(const QString &fn)
                     ///// тут, если всё корректно по заголовку и по переменным
                     inspectBrandColors();
                     noOpenErr = true;
-                    lastErrMsg = tr("template loaded : ");
+                    lastErrMsg = QS_TMPLTLDD[objSett.curLang];
                     lastErrMsg.append(fn.section('\\', -1, -1));
                     // загружаем файл логотипа
-                    if (!pixLogo.load(getFilePath() + "/" + strList[4].mid(5, -1).simplified())) pixLogo.load(defLogo);
+                    if (!pixLogo.load(getFilePath() + "/" + strList[4].mid(5, -1).simplified())) pixLogo.load(QS_DEFLOGO);
 
                     /////
                 } else {
                     noOpenErr = false;
-                    lastErrMsg = tr("incorrect header");
+                    lastErrMsg = QS_INCORHDR[objSett.curLang];
                 }
             } else {
                 noOpenErr = false;
-                lastErrMsg = tr("too short header");
+                lastErrMsg = QS_TOOSHRTHDR[objSett.curLang];
             }
         } else {
             noOpenErr = false;
-            lastErrMsg = tr("too big template (allowed 5_000_000 bytes MAX)");
+            lastErrMsg = QS_TOOBIGTMPLT[objSett.curLang];
         }
     } else {
         noOpenErr = false;
-        lastErrMsg = tr("error opening template file");
+        lastErrMsg = QS_ERROPNNGTMPL[objSett.curLang];
     }
 }
 

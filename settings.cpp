@@ -1,5 +1,16 @@
 #include "settings.h"
 
+#include <QDir>
+
+extern const QString    QS_TEMPLATE {"template"},
+                        QS_THEME {"theme"},
+                        QS_MXMZD {"maximized"},
+                        QS_WIDTH {"width"},
+                        QS_HEIGHT {"height"},
+                        QS_COLWIDTH {"col_width"},
+                        QS_DARK {"dark"},
+                        QS_LIGHT {"light"};
+
 NNCGSettings::NNCGSettings() {
     QDir qDir;
     QString strDir {QDir::homePath() + "/.nncg/"};

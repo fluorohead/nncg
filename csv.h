@@ -1,8 +1,11 @@
-#ifndef NNCG_CSV_H
-#define NNCG_CSV_H
-
+#ifndef CSV_H
+#define CSV_H
 
 #include "common.h"
+
+#include <QFile>
+#include <QStringList>
+#include <QHash>
 
 class NNCG_csv: public QObject
 {
@@ -21,4 +24,4 @@ public:
     NNCG_csv(const QString &, const QString &, const QString &);
 };
 
-#endif // NNCG_CSV_H
+#endif // CSV_H
