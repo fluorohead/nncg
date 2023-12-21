@@ -30,14 +30,14 @@ QString QS_PLCHLDRS[][LANGS_AMOUNT] {
                                 {"max 253 symbols, latin and hyphens", "макс. 253 символа, латиница и дефисы"}, // domname
                                 {"max 255 symbols, unicode", "макс. 255 символов юникод"}, // text
                                 {"___.___.___.___", ""}, // ipv4
-                                {"positive integer", "целое беззнаковое"}, // unsigned
+                                {"unsigned integer", "целое беззнаковое"}, // unsigned
                                 {"hidden, max 128 symbols", "скрытый ввод, макс. 128 символов"}, // password
                                 {"___.___.___.___", ""}, // ipv4 dotted mask
                                 {"____:____:____:____:____:____:____:____", ""}, // ipv6
-                                {"valid from 0 to 128", "значения от 0 до 128"}, // ipv6 mask length
+                                {"integer from 0 to 128", "целое от 0 до 128"}, // ipv6 mask length
                                 {"___.___.___.___", ""}, // ipv4 wildcard
-                                {"valid from 0 to 32", "значения от 0 до 32"}, // ipv4 mask length
-                                {"max 255 symbols, latin and special", "макс. 255 символов, латиница и спецсимволы"}, // system prompt
+                                {"integer from 0 to 32", "целое от 0 до 32"}, // ipv4 mask length
+                                {"max 64 symbols, latin and special", "макс. 64 символа, латиница и спецсимволы"}, // system prompt
                                 {"max 128 symbols, latin and special", "макс. 128 символов, латиница и спецсимволы"} // hash
                             };
 
@@ -157,6 +157,7 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
         ":disabled {background: rgb(96, 96, 96);    border: 6px rgb(%4, %5, %6); border-radius: 14px; border-style: outset; font: 12px 'Tahoma'}"
         ":hover    {background: rgb(216, 216, 216); border: 6px rgb(%1, %2, %3); border-radius: 14px; border-style: inset;  font: 12px 'Tahoma'}"
         ":pressed  {background: rgb(216, 216, 216); border: 6px rgb(%1, %2, %3); border-radius:  8px; border-style: inset;  font: 12px 'Tahoma'}"
+        "QToolTip:enabled {background : white; color: black; border: 0px}"
     ).arg(QString::number(objTempl->brandColors[0]), QString::number(objTempl->brandColors[1]), QString::number(objTempl->brandColors[2]),
           QString::number(objTempl->brandColors[3] / 2), QString::number(objTempl->brandColors[4] / 2), QString::number(objTempl->brandColors[5] / 2));
 
@@ -169,6 +170,7 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
                                    ":disabled {background: transparent;    border: 3px rgb(%4, %5, %6); border-radius: 24px; border-style: outset}"
                                    ":hover    {background: rgb(216, 216, 216); border: 3px rgb(%1, %2, %3); border-radius: 24px; border-style: inset}"
                                    ":pressed  {background: rgb(216, 216, 216); border: 3px rgb(%1, %2, %3); border-radius:  16px; border-style: inset}"
+                                   "QToolTip:enabled {background : white; color: black; border: 0px}"
                                ).arg(QString::number(objTempl->brandColors[0]), QString::number(objTempl->brandColors[1]), QString::number(objTempl->brandColors[2]),
                                      QString::number(objTempl->brandColors[3] / 2), QString::number(objTempl->brandColors[4] / 2), QString::number(objTempl->brandColors[5] / 2)));
 

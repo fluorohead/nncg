@@ -64,6 +64,7 @@ class NNCGBtnClearAll: public QPushButton
 
 public:
     NNCGBtnClearAll(int, int, const QString &, QWidget * = nullptr);
+    void changeEvent(QEvent *);
 
 public slots:
     void slotClicked();

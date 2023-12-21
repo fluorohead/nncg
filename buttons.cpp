@@ -5,6 +5,7 @@
 #include "settings.h"
 
 #include <QMessageBox>
+#include <QToolTip>
 #include <QFileDialog>
 #include <QApplication>
 
@@ -20,33 +21,42 @@ extern QString QS_VVT;
 
 // тексты, связанные с работой кнопок
 const QString QS_LOADCSV [LANGS_AMOUNT] {"Load CSV", "Загр. CSV"};
+const QString QS_TT_LOADCSV [LANGS_AMOUNT] {"Loading previously saved values from a CSV file.", "Загрузка ранее сохранённых значений из файла CSV."};
 const QString QS_SAVECSV [LANGS_AMOUNT] {"Save CSV", "Сохр. CSV"};
+const QString QS_TT_SAVECSV [LANGS_AMOUNT] {"Saving entered values to a CSV file.", "Сохранение введённых значений в файл CSV."};
 const QString QS_CSVFILES [LANGS_AMOUNT] {"CSV files (*.csv)", "Файлы CSV (*.csv)"};
 const QString QS_DIAGERR [LANGS_AMOUNT] {"Error!", "Ошибка!"};
 const QString QS_DIAGINFO [LANGS_AMOUNT] {"Information", "Информация"};
 const QString QS_OPNNGCSV [LANGS_AMOUNT] {"Opening CSV", "Открытие CSV"};
 const QString QS_SVNGCSV [LANGS_AMOUNT] {"Saving CSV", "Сохранение CSV"};
 const QString QS_LDTMPLT [LANGS_AMOUNT] {"Load template", "Загр. шаблон"};
+const QString QS_TT_LDTMPLT [LANGS_AMOUNT] {"Loading a template from a file.", "Загрузка шаблона из файла."};
 const QString QS_OPNNGTMPLT [LANGS_AMOUNT] {"Opening template", "Открытие шаблона"};
 const QString QS_TXTFILES [LANGS_AMOUNT] {"Text files (*.txt)", "Текстовые файлы (*.txt)"};
 const QString QS_SVNGCFG [LANGS_AMOUNT] {"Saving config", "Сохранение конфига"};
 const QString QS_CFGFILES [LANGS_AMOUNT] {"CFG files (*.cfg)", "Файлы CFG (*.cfg)"};
 const QString QS_CRTCFG [LANGS_AMOUNT] {"Create config", "Созд. конфиг"};
+const QString QS_TT_CRTCFG [LANGS_AMOUNT] {"Creating a device configuration.", "Создание конфигурации устройства."};
 const QString QS_CSV_SSC [LANGS_AMOUNT] {"csv saved successfully", "csv успешно сохранён"};
 const QString QS_CSV_ERWR [LANGS_AMOUNT] {"error writing csv", "ошибка записи в csv"};
 const QString QS_CSV_ERSV [LANGS_AMOUNT] {"error creating csv", "ошибка при создании csv"};
 const QString QS_CFG_SSC [LANGS_AMOUNT] {"config saved successfully", "конфиг успешно сохранён"};
 const QString QS_CFG_ERWE [LANGS_AMOUNT] {"error writing config", "ошибка при записи конфига"};
 const QString QS_CFG_ERSV [LANGS_AMOUNT] {"error creating config", "ошибка при создании конфига"};
-
+const QString QS_TT_LANGSW [LANGS_AMOUNT] {"Switching the application interface language.", "Переключение языка интерфейса приложения."};
+const QString QS_TT_CLRALL [LANGS_AMOUNT] {"Clear the entire table.", "Очистить всю таблицу."};
 
 NNCGBtnCsvLoad::NNCGBtnCsvLoad(int w, int h, const QString &text, QWidget *parent): QPushButton(text, parent) {
     setFixedSize(w, h);
+    setToolTip(QS_TT_LOADCSV[objSett.curLang]);
 }
 
 void NNCGBtnCsvLoad::changeEvent(QEvent *event) {
-    if (event->type() == QEvent::LanguageChange) setText(QS_LOADCSV[objSett.curLang]);
-    else QPushButton::changeEvent(event);
+    if (event->type() == QEvent::LanguageChange) {
+        setText(QS_LOADCSV[objSett.curLang]);
+        setToolTip(QS_TT_LOADCSV[objSett.curLang]);
+    }
+    event->accept();
 }
 
 void NNCGBtnCsvLoad::slotClicked() {
@@ -76,11 +86,15 @@ void NNCGBtnCsvLoad::slotClicked() {
 
 NNCGBtnCsvSave::NNCGBtnCsvSave(int w, int h, const QString &text, QWidget *parent): QPushButton(text, parent) {
     setFixedSize(w, h);
+    setToolTip(QS_TT_SAVECSV[objSett.curLang]);
 }
 
 void NNCGBtnCsvSave::changeEvent(QEvent *event) {
-    if (event->type() == QEvent::LanguageChange) setText(QS_SAVECSV[objSett.curLang]);
-    else QPushButton::changeEvent(event);
+    if (event->type() == QEvent::LanguageChange) {
+        setText(QS_SAVECSV[objSett.curLang]);
+        setToolTip(QS_TT_SAVECSV[objSett.curLang]);
+    }
+    event->accept();
 }
 
 void NNCGBtnCsvSave::slotClicked() {
@@ -112,12 +126,17 @@ void NNCGBtnCsvSave::slotClicked() {
 
 NNCGButtonLoad::NNCGButtonLoad(int w, int h, const QString &text, QWidget *parent): QPushButton(text, parent) {
     setFixedSize(w, h);
+    setToolTip(QS_TT_LDTMPLT[objSett.curLang]);
 }
 
 void NNCGButtonLoad::changeEvent(QEvent *event) {
-    if (event->type() == QEvent::LanguageChange) setText(QS_LDTMPLT[objSett.curLang]);
-    else QPushButton::changeEvent(event);
+    if (event->type() == QEvent::LanguageChange) {
+        setText(QS_LDTMPLT[objSett.curLang]);
+        setToolTip(QS_TT_LDTMPLT[objSett.curLang]);
+    }
+    event->accept();
 }
+
 
 void NNCGButtonLoad::slotClicked() {
     QString newFN = QFileDialog::getOpenFileName(this, QS_OPNNGTMPLT[objSett.curLang], "./",  QS_TXTFILES[objSett.curLang]);
@@ -143,11 +162,15 @@ void NNCGButtonLoad::slotClicked() {
 
 NNCGButtonCreate::NNCGButtonCreate(int w, int h, const QString &text, QWidget *parent): QPushButton(text, parent) {
     setFixedSize(w, h);
+    setToolTip(QS_TT_CRTCFG[objSett.curLang]);
 }
 
 void NNCGButtonCreate::changeEvent(QEvent *event) {
-    if (event->type() == QEvent::LanguageChange) setText(QS_CRTCFG[objSett.curLang]);
-    else QPushButton::changeEvent(event);
+    if (event->type() == QEvent::LanguageChange) {
+        setText(QS_CRTCFG[objSett.curLang]);
+        setToolTip(QS_TT_CRTCFG[objSett.curLang]);
+    }
+    event->accept();
 }
 
 void NNCGButtonCreate::slotClicked() {
@@ -184,8 +207,15 @@ NNCGBtnClearAll::NNCGBtnClearAll(int w, int h, const QString &text, QWidget *par
     setFixedSize(w, h);
     setIconSize({40, 40});
     setIcon(QIcon(":/ca.png"));
+    setToolTip(QS_TT_CLRALL[objSett.curLang]);
 }
 
+void NNCGBtnClearAll::changeEvent(QEvent *event) {
+    if (event->type() == QEvent::LanguageChange) {
+        setToolTip(QS_TT_CLRALL[objSett.curLang]);
+    }
+    event->accept();
+}
 
 void NNCGBtnClearAll::slotClicked() {
     mainWindow->clearTable();
@@ -197,10 +227,12 @@ NNCGBtnSetLang::NNCGBtnSetLang(int w, int h, QWidget *parent): QPushButton(paren
     setStyleSheet(QString(":enabled {background: transparent; image : url(:/mt.png)}"
                           ":hover   {background: transparent; image : url(:/mth.png)}"
                           ":pressed {background: transparent; image : url(:/mtp.png)}"));
+    setToolTip(QS_TT_LANGSW[objSett.curLang]);
 }
 
 void NNCGBtnSetLang::slotClicked() {
     if (objSett.curLang == langId_t::English) objSett.curLang = langId_t::Russian;
     else objSett.curLang = langId_t::English;
+    setToolTip(QS_TT_LANGSW[objSett.curLang]);
     app->postEvent(mainWindow, new QEvent(QEvent::LanguageChange));
 }
