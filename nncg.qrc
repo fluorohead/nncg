@@ -2,7 +2,9 @@
     <qresource prefix="/">
         <file>rtr.png</file>
         <file>ca.png</file>
-        <file>rus.png</file>
+        <file>mt.png</file>
         <file>eng.png</file>
+        <file>mtp.png</file>
+        <file>mth.png</file>
     </qresource>
 </RCC>

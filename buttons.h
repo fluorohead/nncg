@@ -74,12 +74,8 @@ class NNCGBtnSetLang: public QPushButton
 {
     Q_OBJECT
 
-private :
-    QString natEmblems[LANGS_AMOUNT] {":/eng.png",":/rus.png"};
-    langId_t newLang {langId_t::English};
-
 public:
-    NNCGBtnSetLang(int, int, langId_t, QWidget * = nullptr);
+    NNCGBtnSetLang(int, int, QWidget * = nullptr);
 
 public slots:
     void slotClicked();

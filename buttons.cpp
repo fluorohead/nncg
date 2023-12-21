@@ -192,14 +192,15 @@ void NNCGBtnClearAll::slotClicked() {
 }
 
 
-NNCGBtnSetLang::NNCGBtnSetLang(int w, int h, langId_t lang, QWidget *parent): QPushButton(parent) {
+NNCGBtnSetLang::NNCGBtnSetLang(int w, int h, QWidget *parent): QPushButton(parent) {
     setFixedSize(w, h);
-    setIconSize({w, h});
-    setIcon(QIcon(natEmblems[lang]));
-    newLang = lang;
+    setStyleSheet(QString(":enabled {background: transparent; image : url(:/mt.png)}"
+                          ":hover   {background: transparent; image : url(:/mth.png)}"
+                          ":pressed {background: transparent; image : url(:/mtp.png)}"));
 }
 
 void NNCGBtnSetLang::slotClicked() {
-    objSett.curLang = newLang;
+    if (objSett.curLang == langId_t::English) objSett.curLang = langId_t::Russian;
+    else objSett.curLang = langId_t::English;
     app->postEvent(mainWindow, new QEvent(QEvent::LanguageChange));
 }

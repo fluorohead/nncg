@@ -147,13 +147,7 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
 
     btnClearAll = new NNCGBtnClearAll(48, 48, "", this);
 
-    btnEngLang = new NNCGBtnSetLang(32, 32, langId_t::English, this);
-    btnRusLang = new NNCGBtnSetLang(32, 32, langId_t::Russian, this);
-
-    auto btnLangSS = QString(":enabled  {background: transparent}");
-
-    btnEngLang->setStyleSheet(btnLangSS);
-    btnRusLang->setStyleSheet(btnLangSS);
+    btnSwitchLang = new NNCGBtnSetLang(32, 32, this);
 
     btnTemplLoad = new NNCGButtonLoad(108, 32, "");
     btnCfgCreate = new NNCGButtonCreate(108, 32, "");
@@ -192,8 +186,7 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
     connect(btnTemplLoad, SIGNAL(clicked()), btnTemplLoad, SLOT(slotClicked()), Qt::AutoConnection);
     connect(btnCfgCreate, SIGNAL(clicked()), btnCfgCreate, SLOT(slotClicked()), Qt::AutoConnection);
     connect(btnClearAll, SIGNAL(clicked()), btnClearAll, SLOT(slotClicked()), Qt::AutoConnection);
-    connect(btnEngLang, SIGNAL(clicked()), btnEngLang, SLOT(slotClicked()), Qt::AutoConnection);
-    connect(btnRusLang, SIGNAL(clicked()), btnRusLang, SLOT(slotClicked()), Qt::AutoConnection);
+    connect(btnSwitchLang, SIGNAL(clicked()), btnSwitchLang, SLOT(slotClicked()), Qt::AutoConnection);
 
    // создаём валидаторы
     vldtrs[varType_t::Domname] = new NNCGValidDomname(this);
@@ -278,7 +271,6 @@ void NNCGMainWindow::clearTable() {
 
 void NNCGMainWindow::resizeEvent(QResizeEvent *event) {
     btnClearAll->move(this->width() - 84, 48);
-    btnEngLang->move(this->width() - 184, 90);
-    btnRusLang->move(this->width() - 140, 90);
+    btnSwitchLang->move(this->width() - 140, 90);
     event->accept();
 }

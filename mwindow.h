@@ -38,8 +38,7 @@ public:
     NNCGBtnCsvLoad *btnCsvLoad;
     NNCGBtnCsvSave *btnCsvSave;
     NNCGBtnClearAll *btnClearAll;
-    NNCGBtnSetLang *btnEngLang;
-    NNCGBtnSetLang *btnRusLang;
+    NNCGBtnSetLang *btnSwitchLang;
 };
 
 #endif // MWINDOW_H
