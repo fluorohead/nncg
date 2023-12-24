@@ -15,31 +15,37 @@
 
 //#include <iostream>
 
+using namespace std;
+
 extern NNCGSettings objSett;
 extern theme_t themeCurrent;
 extern NNCGTemplate* objTempl;
 extern QString b2s(bool b);
 
-//enum varType_t            {Domname = 0, Text, IPv4, Unsigned, Password, MASKv4, IPv6, MASKv6Len, WildcardV4, MASKv4Len, Prompt, Hash, MAX}; // типы переменных
-extern const int maxChars[] {        253,  255,   15,       10,      128,     15,   45,         3,         15,         2,     64,  128};      // длины полей ввода в символах
+extern array<QString, LANGS_AMOUNT> QS_TBLDESCR;
+extern array<QString, LANGS_AMOUNT> QS_TBLVALUE;
+
+//enum varType_t                                      {Domname = 0, Text, IPv4, Unsigned, Password, MASKv4, IPv6, MASKv6Len, WildcardV4, MASKv4Len, Prompt, Hash, MAX}; // типы переменных
+extern const array<int, int(varType_t::MAX)> maxChars {        253,  255,   15,       10,      128,     15,   45,         3,         15,         2,     64,  128};      // длины полей ввода в символах
 
 // индексы языков [][0] - eng, [][1] - rus, [][2] - elfian
 //
 // placeholders text
-QString QS_PLCHLDRS[][LANGS_AMOUNT] {
-                                {"max 253 symbols, latin and hyphens", "макс. 253 символа, латиница и дефисы"}, // domname
-                                {"max 255 symbols, unicode", "макс. 255 символов юникод"}, // text
-                                {"___.___.___.___", ""}, // ipv4
-                                {"unsigned integer", "целое беззнаковое"}, // unsigned
-                                {"hidden, max 128 symbols", "скрытый ввод, макс. 128 символов"}, // password
-                                {"___.___.___.___", ""}, // ipv4 dotted mask
-                                {"____:____:____:____:____:____:____:____", ""}, // ipv6
-                                {"integer from 0 to 128", "целое от 0 до 128"}, // ipv6 mask length
-                                {"___.___.___.___", ""}, // ipv4 wildcard
-                                {"integer from 0 to 32", "целое от 0 до 32"}, // ipv4 mask length
-                                {"max 64 symbols, latin and special", "макс. 64 символа, латиница и спецсимволы"}, // system prompt
-                                {"max 128 symbols, latin and special", "макс. 128 символов, латиница и спецсимволы"} // hash
-                            };
+const extern array<array<QString, LANGS_AMOUNT>, int(varType_t::MAX)> QS_PLCHLDRS {{
+        {"max 253 symbols, latin and hyphens", "макс. 253 символа, латиница и дефисы"}, // domname
+        {"max 255 symbols, unicode", "макс. 255 символов юникод"}, // text
+        {"___.___.___.___", ""}, // ipv4
+        {"unsigned integer", "целое беззнаковое"}, // unsigned
+        {"hidden, max 128 symbols", "скрытый ввод, макс. 128 символов"}, // password
+        {"___.___.___.___", ""}, // ipv4 dotted mask
+        {"____:____:____:____:____:____:____:____", ""}, // ipv6
+        {"integer from 0 to 128", "целое от 0 до 128"}, // ipv6 mask length
+        {"___.___.___.___", ""}, // ipv4 wildcard
+        {"integer from 0 to 32", "целое от 0 до 32"}, // ipv4 mask length
+        {"max 64 symbols, latin and special", "макс. 64 символа, латиница и спецсимволы"}, // system prompt
+        {"max 128 symbols, latin and special", "макс. 128 символов, латиница и спецсимволы"} // hash
+      }};
+
 
 // создаём все элементы GUI
 NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWindow(parent, flags) {
@@ -48,6 +54,7 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
     if (objSett.maximized) setWindowState(Qt::WindowMaximized);
     bigWidget = new QWidget(this, Qt::Widget);
     statusBar = new QStatusBar(this);
+    statusBar->showMessage(APPVER);
 
     setFont(QFont("Tahoma", 10, 0, false));
     setAutoFillBackground(true);
@@ -213,10 +220,10 @@ void NNCGMainWindow::refreshTable() {
     titleLabel->setText(objTempl->getTitle());
     commentLabel->setText(objTempl->getComment());
     table->clear(); // уничтожаются ли дочерние QLineEdit ?
-    table->setHorizontalHeaderLabels({"#", QS_TBLDESCR[objSett.curLang], QS_TBLVALUE[objSett.curLang]});
+    table->setHorizontalHeaderLabels({"#", QS_TBLDESCR.at(objSett.curLang), QS_TBLVALUE.at(objSett.curLang)});
     table->setRowCount(objTempl->hashVars.size());
     for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
-        QTableWidgetItem *oneRow[3];
+        array <QTableWidgetItem*, 3> oneRow {};
         oneRow[0] = new QTableWidgetItem(QString::number(hIt.value().orderNum + 1), 0);
         oneRow[0]->setFont(fntCons10);
         oneRow[0]->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
@@ -228,16 +235,16 @@ void NNCGMainWindow::refreshTable() {
         auto qle = new QLineEdit;
         qle->setFont(fntCons12bold);
         qle->setFrame(false);
-        qle->setMaxLength(maxChars[hIt.value().type]);
+        qle->setMaxLength(maxChars.at(hIt.value().type));
         qle->setClearButtonEnabled(true);
-        if (!QS_PLCHLDRS[hIt.value().type][1].isEmpty()) qle->setPlaceholderText(QS_PLCHLDRS[hIt.value().type][objSett.curLang]);
-        else qle->setPlaceholderText(QS_PLCHLDRS[hIt.value().type][0]);
+        if (!QS_PLCHLDRS.at(hIt.value().type).at(1).isEmpty()) qle->setPlaceholderText(QS_PLCHLDRS.at(hIt.value().type).at(objSett.curLang));
+        else qle->setPlaceholderText(QS_PLCHLDRS.at(hIt.value().type).at(0));
         if (hIt.value().type == varType_t::Password)
             qle->setEchoMode(QLineEdit::Password);
-        qle->setValidator(vldtrs[hIt.value().type]);
+        qle->setValidator(vldtrs.at(int(hIt.value().type)));
         qle->setText(hIt.value().value);
         table->setCellWidget(hIt.value().orderNum, 2, qle);
-        for (int col = 0; col < 2; col++) table->setItem(hIt.value().orderNum, col, oneRow[col]);
+        for (int col = 0; col < 2; col++) table->setItem(hIt.value().orderNum, col, oneRow.at(col));
     };
     this->show();
 };
@@ -255,7 +262,7 @@ void NNCGMainWindow::closeEvent(QCloseEvent *event) {
 // сброс данных из таблицы в хэш объекта шаблона
 void NNCGMainWindow::dumpTableToHash() {
     for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
-        QLineEdit *cw = (QLineEdit*) table->cellWidget(hIt.value().orderNum, 2);
+        auto *cw = dynamic_cast<QLineEdit*>(table->cellWidget(hIt.value().orderNum, 2));
         objTempl->hashVars[hIt.key()].value = cw->text();
     }
 }
@@ -265,7 +272,7 @@ void NNCGMainWindow::dumpTableToHash() {
 void NNCGMainWindow::clearTable() {
     for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
         hIt.value().value.clear();
-        QLineEdit *cw = (QLineEdit*) table->cellWidget(hIt.value().orderNum, 2);
+        auto *cw = dynamic_cast<QLineEdit*>(table->cellWidget(hIt.value().orderNum, 2));
         cw->clear();
     }
 }

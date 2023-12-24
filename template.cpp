@@ -4,21 +4,23 @@
 
 #include <QFileInfo>
 
+using namespace std;
+
 extern varType_t s2t(const QString &str);
 extern NNCGSettings objSett;
 
 // тексты, связанные с объектом шаблона
 const QString QS_DEFLOGO {":/rtr.png"};
-const QString QS_REPVAR [LANGS_AMOUNT] {"repeating of variable at line : ", "повтор переменной в строке : "};
-const QString QS_WRSYNTX [LANGS_AMOUNT] {"wrong syntax at line : ", "неверный синтаксис в строке : "};
-const QString QS_TOOMCHVAR [LANGS_AMOUNT] {"too much variables (allowed 1000 MAX)", "слишком много переменных (макс. 1000)"};
-const QString QS_WRSTRTSYMB [LANGS_AMOUNT] {"wrong start symbol at line : ", "неверный начальный символ в строке : "};
-const QString QS_TMPLTLDD [LANGS_AMOUNT] {"template loaded : ", "загружен шаблон : "};
-const QString QS_INCORHDR [LANGS_AMOUNT] {"incorrect header", "неверный заголовок"};
-const QString QS_TOOSHRTHDR [LANGS_AMOUNT] {"too short header", "слишком короткий заголовок"};
-const QString QS_TOOBIGTMPLT [LANGS_AMOUNT] {"too big template (allowed 5_000_000 bytes MAX)", "слишком большой размер (макс. 5 000 000 байт)"};
-const QString QS_ERROPNNGTMPL [LANGS_AMOUNT] {"error opening template file", "ошибка при открытии шаблона"};
-extern const QString QS_VARTYPES[] {"domname", "text", "ipv4", "unsigned", "password", "maskv4", "ipv6", "maskv6len", "wildcardv4", "maskv4len", "prompt", "hash"};
+array<QString, LANGS_AMOUNT> QS_REPVAR {"repeating of variable at line : ", "повтор переменной в строке : "};
+array<QString, LANGS_AMOUNT> QS_WRSYNTX {"wrong syntax at line : ", "неверный синтаксис в строке : "};
+array<QString, LANGS_AMOUNT> QS_TOOMCHVAR {"too much variables (allowed 1000 MAX)", "слишком много переменных (макс. 1000)"};
+array<QString, LANGS_AMOUNT> QS_WRSTRTSYMB {"wrong start symbol at line : ", "неверный начальный символ в строке : "};
+array<QString, LANGS_AMOUNT> QS_TMPLTLDD {"template loaded : ", "загружен шаблон : "};
+array<QString, LANGS_AMOUNT> QS_INCORHDR {"incorrect header", "неверный заголовок"};
+array<QString, LANGS_AMOUNT> QS_TOOSHRTHDR {"too short header", "слишком короткий заголовок"};
+array<QString, LANGS_AMOUNT> QS_TOOBIGTMPLT {"too big template (allowed 5_000_000 bytes MAX)", "слишком большой размер (макс. 5 000 000 байт)"};
+array<QString, LANGS_AMOUNT> QS_ERROPNNGTMPL {"error opening template file", "ошибка при открытии шаблона"};
+extern const array<QString, int(varType_t::MAX)> QS_VARTYPES {"domname", "text", "ipv4", "unsigned", "password", "maskv4", "ipv6", "maskv6len", "wildcardv4", "maskv4len", "prompt", "hash"};
 
 // обязательные строки заголовка
 const QString   QS_NNCT {"NETWORK_NODE_CONFIG_TEMPLATE"},
@@ -76,22 +78,23 @@ bool NNCGTemplate::inspectLine(const QString &line, QString &varName, QString &v
 
 void NNCGTemplate::inspectBrandColors() {
     QRegExp rex("([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3})");
+    const int maxComp = 6; // max components
     if (rex.indexIn(strList[5]) != -1) {
-        int colors[6];
+        array<int, maxComp> colors {};
         bool badGamma {false};
-        for (int c = 0; c < 6; c++) {
-            colors[c] = rex.cap(c + 1).toInt();
-            if ((colors[c] < 0) or (colors[c] > 255)) {
+        for (int c = 0; c < maxComp; c++) {
+            colors.at(c) = rex.cap(c + 1).toInt();
+            if ((colors.at(c) < 0) || (colors.at(c) > 255)) {
                 badGamma = true;
                 break;
             }
         }
         if (!badGamma) {
-            for (int c = 0; c < 6; c++) {
-                brandColors[c] = colors[c];
+            for (int c = 0; c < maxComp; c++) {
+                brandColors.at(c) = colors.at(c);
             }
         } // иначе просто оставляем гамму по-умолчанию (при инициализации объекта)
-    }
+    } // иначе просто оставляем гамму по-умолчанию (при инициализации объекта)
 }
 
 
@@ -172,27 +175,27 @@ NNCGTemplate::NNCGTemplate(const QString &fn)
                                             varsCount++;
                                         } else { // такой ключ уже есть, повторение -> ошибка, выходим
                                             noOpenErr = false;
-                                            lastErrMsg = QS_REPVAR[objSett.curLang];
+                                            lastErrMsg = QS_REPVAR.at(objSett.curLang);
                                             lastErrMsg.append(QString::number(++h));
                                             hashVars.clear();
                                             return;
                                         }
                                     } else { // инспекция линии не успешна -> ошибка, выход
                                         noOpenErr = false;
-                                        lastErrMsg = QS_WRSYNTX[objSett.curLang];
+                                        lastErrMsg = QS_WRSYNTX.at(objSett.curLang);
                                         lastErrMsg.append(QString::number(++h));
                                         hashVars.clear();
                                         return;
                                     }
                                 } else { // превышено количество переменных
                                     noOpenErr = false;
-                                    lastErrMsg = QS_TOOMCHVAR[objSett.curLang];
+                                    lastErrMsg = QS_TOOMCHVAR.at(objSett.curLang);
                                     hashVars.clear();
                                     return;
                                 }
                             } else { // встретился посторонний символ -> больше не ищем переменных и выходим с ошибкой
                                 noOpenErr = false;
-                                lastErrMsg = QS_WRSTRTSYMB[objSett.curLang];
+                                lastErrMsg = QS_WRSTRTSYMB.at(objSett.curLang);
                                 lastErrMsg.append(QString::number(++h));
                                 hashVars.clear();
                                 return;
@@ -202,7 +205,7 @@ NNCGTemplate::NNCGTemplate(const QString &fn)
                     ///// тут, если всё корректно по заголовку и по переменным
                     inspectBrandColors();
                     noOpenErr = true;
-                    lastErrMsg = QS_TMPLTLDD[objSett.curLang];
+                    lastErrMsg = QS_TMPLTLDD.at(objSett.curLang);
                     lastErrMsg.append(fn.section('\\', -1, -1));
                     // загружаем файл логотипа
                     if (!pixLogo.load(getFilePath() + "/" + strList[4].mid(5, -1).simplified())) pixLogo.load(QS_DEFLOGO);
@@ -210,19 +213,19 @@ NNCGTemplate::NNCGTemplate(const QString &fn)
                     /////
                 } else {
                     noOpenErr = false;
-                    lastErrMsg = QS_INCORHDR[objSett.curLang];
+                    lastErrMsg = QS_INCORHDR.at(objSett.curLang);
                 }
             } else {
                 noOpenErr = false;
-                lastErrMsg = QS_TOOSHRTHDR[objSett.curLang];
+                lastErrMsg = QS_TOOSHRTHDR.at(objSett.curLang);
             }
         } else {
             noOpenErr = false;
-            lastErrMsg = QS_TOOBIGTMPLT[objSett.curLang];
+            lastErrMsg = QS_TOOBIGTMPLT.at(objSett.curLang);
         }
     } else {
         noOpenErr = false;
-        lastErrMsg = QS_ERROPNNGTMPL[objSett.curLang];
+        lastErrMsg = QS_ERROPNNGTMPL.at(objSett.curLang);
     }
 }
 

@@ -2,7 +2,7 @@
 
 #include <QDir>
 
-extern const QString    QS_TEMPLATE {"template"},
+const QString    QS_TEMPLATE {"template"},
                         QS_THEME {"theme"},
                         QS_MXMZD {"maximized"},
                         QS_WIDTH {"width"},
@@ -11,6 +11,18 @@ extern const QString    QS_TEMPLATE {"template"},
                         QS_DARK {"dark"},
                         QS_LIGHT {"light"},
                         QS_LANG {"lang"};
+
+
+
+                        const theme_t themeDark {
+                            {37, 37, 37, 255}, // big widget background
+                            {169, 169, 169, 255} // big widget foreground
+                        };
+
+                        theme_t themeCurrent {
+                            {37, 37, 37, 255}, // big widget background
+                            {169, 169, 169, 255} // big widget foreground
+                        };
 
 NNCGSettings::NNCGSettings() {
     QDir qDir;
@@ -61,7 +73,7 @@ NNCGSettings::NNCGSettings() {
     }
 }
 
-bool NNCGSettings::saveSettings(const QString& fpfn, const QString& theme, int w, int h, const QString& mxmzd, int colWidth, langId_t lang) {
+bool NNCGSettings::saveSettings(const QString& fpfn, const QString& theme, int w, int h, const QString& mxmzd, int colWidth, int lang) {
     qFile.resize(0);
     QString writeStr =  QString("{\r\n"
                                 " \"%1\": \"%2\",\r\n"

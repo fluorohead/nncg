@@ -6,6 +6,8 @@
 #include <QString>
 #include <QPixmap>
 
+using namespace std;
+
 class NNCGTemplate: public QObject
 {
 
@@ -34,7 +36,7 @@ public:
     QString getDelimClose(); // возвр. конечный ограничитель
     int beginConfig {0}; // начало конфига в списке strList
     QStringList strList;
-    int brandColors[6] {0, 139, 224, 255, 255, 255};
+    array<int, 6> brandColors {0, 139, 224, 255, 255, 255};
     NNCGTemplate(); // для demo-шаблона
     NNCGTemplate(const QString &);
 

@@ -29,9 +29,6 @@ public:
 
 class NNCGValidDomname: public QValidator
 {
-private:
-    const QString forbidden {"'\"`!@#$%^&*()+=\\/{}[],;<>?:"};
-
 public:
     NNCGValidDomname(QObject *parent = nullptr): QValidator(parent) {};
     QValidator::State validate(QString &, int &) const;
@@ -49,9 +46,6 @@ public:
 
 class NNCGValidIPv6: public QValidator
 {
-private:
-    const QString allowed {"0123456789:.ABCDEFabcdef"};
-
 public:
     NNCGValidIPv6(QObject *parent = nullptr): QValidator(parent) {};
     QValidator::State validate(QString &, int &) const;

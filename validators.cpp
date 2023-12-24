@@ -2,37 +2,40 @@
 
 #include <QRegExp>
 
+using namespace std;
+
 extern QString b2s(bool b);
 
-const QString QS_REXIPV4 {"^([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})$"};
+const QString QS_REXIPV4 {R"(^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$)"};
+const QString allowedInIPv6 {"0123456789:.ABCDEFabcdef"};
+const QString forbidInDomname {"'\"`!@#$%^&*()+=\\/{}[],;<>?:_"};
 
 bool simpleIPv4Check(QString &s) { // check for common ipv4-address format requirements
     // разрешены только цифры и точки
-    for (auto idx = 0; idx < s.length(); idx++) {
-        if (s[idx].unicode() > 57) return false;
-        if ((s[idx].unicode() < 48) && (s[idx].unicode() != 46)) return false;
+    for (auto && unoChar : s) {
+        if (unoChar.unicode() > 57) return false;
+        if ((unoChar.unicode() < 48) && (unoChar.unicode() != 46)) return false;
     }
     // проверка на символы прошла успешно.
     // ip не может начинаться с точки, не может быть двух точек подряд, не может быть более 3 точек всего
-    if (s.startsWith('.') || s.contains("..") || (s.count('.') > 3) ) return false;
-    return true;
+    return !(s.startsWith('.') || s.contains("..") || (s.count('.') > 3));
 }
 
 
 // проверяет октет маски на соответствие одному из 9 предопределённых значений
 bool isCorrectMASKv4_Octet(int octet) {
-    const int rightValues[] {255, 254, 252, 248, 240, 224, 192, 128, 0};
+    const array<int, 9> rightValues {255, 254, 252, 248, 240, 224, 192, 128, 0};
     for (int m = 0; m <= 8; m++) {
-        if (octet == rightValues[m]) return true;
+        if (octet == rightValues.at(m)) return true;
     }
     return false;
 }
 
 
-// проверяет на принадлежность к диапазону (включая сами границы)
+// проверяет на принадлежность к непрерывному диапазону (включая сами границы)
 bool inRange(QString &s, int lowLimit, int highLimit) {
-    for (auto idx = 0; idx < s.length(); idx++) {
-        if ((s[idx].unicode() < lowLimit) || (s[idx].unicode() > highLimit)) return false;
+    for (auto && unoChar : s) {
+        if ((unoChar.unicode() < lowLimit) || (unoChar.unicode() > highLimit)) return false;
     }
     return true;
 }
@@ -50,8 +53,7 @@ NNCGValidIPv4::NNCGValidIPv4(QObject *parent):QValidator(parent) {
 
 
 QValidator::State NNCGValidIPv4::validate(QString &input, int &pos) const {
-    if (!simpleIPv4Check(input)) return Invalid;
-    else {
+    if (simpleIPv4Check(input)) {
         if (rex.indexIn(input) != -1) { // проверка на regexp
             // все октеты на месте, далее проверяем каждый
             input.clear(); // чистим строку, будем пересобирать её заново
@@ -65,6 +67,8 @@ QValidator::State NNCGValidIPv4::validate(QString &input, int &pos) const {
         } else { // не прошли проверку на regexp, значит незавершённый ввод
             return Intermediate;
         }
+    } else {
+        return Invalid;
     }
     return Acceptable;
 }
@@ -81,27 +85,28 @@ NNCGValidMASKv4::NNCGValidMASKv4(QObject *parent): QValidator(parent) {
 
 
 QValidator::State NNCGValidMASKv4::validate(QString &input, int &pos) const {
-    if (!simpleIPv4Check(input)) return Invalid;
-    else {
+    if (!simpleIPv4Check(input)) {
         if (rex.indexIn(input) != -1) { // проверка на regexp
             // все октеты на месте, далее проверяем каждый
             input.clear(); // чистим строку, будем пересобирать её заново
-            int bitsArr[4];
+            array<int, 4> bitsArr {};
             for (int idx = 1; idx <= 4; idx++) {
                 int octet;
                 octet = rex.cap(idx).toUInt();
                 if (octet > 255) octet = 255;
                 input.append(QString::number(octet) + '.');
-                bitsArr[idx - 1] = octet;
+                bitsArr.at(idx-1) = octet;
             }
             input.chop(1); // откусываем лишнюю точку в конце
             for (int ar = 0; ar <= 3; ar++){ // проверяем каждый октет : могут иметь только одно из 9 определённых значений
-                if (!isCorrectMASKv4_Octet(bitsArr[ar])) return Intermediate;
+                if (!isCorrectMASKv4_Octet(bitsArr.at(ar))) return Intermediate;
             }
-            if (!(bitsArr[0] >= bitsArr[1]) || !(bitsArr[1] >= bitsArr[2]) || !(bitsArr[2] >= bitsArr[3])) return Intermediate;
+            if (!(bitsArr.at(0) >= bitsArr.at(1)) || !(bitsArr.at(1) >= bitsArr.at(2)) || !(bitsArr.at(2) >= bitsArr.at(3))) return Intermediate;
         } else { // не прошли проверку на regexp, значит незавершённый ввод
             return Intermediate;
         }
+    } else {
+        return Invalid;
     }
     return Acceptable;
 }
@@ -113,10 +118,12 @@ void NNCGValidMASKv4::fixup(QString &input) const {
 
 
 QValidator::State NNCGValidDomname::validate(QString &input, int &pos) const {
-    for (auto idx = 0; idx < input.length(); idx ++) {
-        for (auto f = 0; f < forbidden.length(); f++) {
-            if (input[idx] == forbidden[f]) return Invalid;
+    for (auto && unoChar : input) {
+        for (auto && forbChar : forbidInDomname) {
+            if (unoChar == forbChar) return Invalid;
         }
+        auto c = unoChar.unicode();
+        if ((c < 45) || (c > 122)) return Invalid;
     }
     input = input.toLower();
     if (input.startsWith('-')) return Invalid; // имя хоста не может начинаться с "-"
@@ -152,10 +159,10 @@ QValidator::State NNCGValidUnsigned::validate(QString &input, int &pos) const {
 
 QValidator::State NNCGValidIPv6::validate(QString &input, int &pos) const {
     bool overlap; // совпадение со списком разрешённых символов
-    for (int idx = 0; idx < input.length(); idx++) {
+    for (auto && unoChar : input) {
         overlap = false;
-        for (int alwd = 0; alwd < allowed.length(); alwd++) {
-            if (input[idx] == allowed[alwd]) {
+        for (auto && alwd : allowedInIPv6) {
+            if (unoChar == alwd) {
                 overlap = true;
                 break;
             }
@@ -201,7 +208,7 @@ QValidator::State NNCGValidIPv6::validate(QString &input, int &pos) const {
     }
     if (input.endsWith('.')) return Intermediate;
     // если здесь, значит в полном виде присутствует интегрированный ipv4; проверяем его октеты
-    rex.setPattern("^(.*:)([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})$");
+    rex.setPattern(R"(^(.*:)([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$)");
     if (rex.indexIn(input) != -1) { // нашли ipv6 + 4 октета ipv4
         input.clear(); // будем пересобирать строку заново
         input.append(rex.cap(1));

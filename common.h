@@ -3,6 +3,8 @@
 
 #include <QColor>
 
+#define APPVER " v0.0.1 : GIA : 2023"
+
 #define MIN_WIDTH 800
 #define MIN_HEIGHT 600
 

@@ -7,17 +7,22 @@
 
 #include <iostream>
 
+using namespace std;
+
 extern NNCGSettings objSett;
 extern NNCGTemplate *objTempl;
-extern QString QS_PLCHLDRS[][LANGS_AMOUNT];
+extern array<array<QString, LANGS_AMOUNT>, int(varType_t::MAX)> QS_PLCHLDRS;
+
+extern const array<QString, LANGS_AMOUNT> QS_TBLDESCR {"Description", "Описание"};
+extern const array<QString, LANGS_AMOUNT> QS_TBLVALUE {"Value", "Значение"};
 
 void NNCGTable::changeEvent(QEvent *event) {
     if (event->type() == QEvent::LanguageChange) { // переводим текст своих дочерних элементов
-        this->setHorizontalHeaderLabels({"#", QS_TBLDESCR[objSett.curLang], QS_TBLVALUE[objSett.curLang]});
+        this->setHorizontalHeaderLabels({"#", QS_TBLDESCR.at(objSett.curLang), QS_TBLVALUE.at(objSett.curLang)});
         for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
-            QLineEdit *cw = (QLineEdit*) this->cellWidget(hIt.value().orderNum, 2);
-            if (!QS_PLCHLDRS[hIt.value().type][1].isEmpty()) cw->setPlaceholderText(QS_PLCHLDRS[hIt.value().type][objSett.curLang]);
-            else cw->setPlaceholderText(QS_PLCHLDRS[hIt.value().type][0]);
+            auto *cw = dynamic_cast<QLineEdit*>(this->cellWidget(hIt.value().orderNum, 2));
+            if (!QS_PLCHLDRS.at(hIt.value().type).at(1).isEmpty()) cw->setPlaceholderText(QS_PLCHLDRS.at(hIt.value().type).at(objSett.curLang));
+            else cw->setPlaceholderText(QS_PLCHLDRS.at(hIt.value().type).at(0));
         }
     } else QTableWidget::changeEvent(event);
 }

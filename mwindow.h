@@ -11,6 +11,8 @@
 #include <QTableWidget>
 #include <QMainWindow>
 
+using namespace std;
+
 class NNCGMainWindow: public QMainWindow
 {
 
@@ -26,7 +28,7 @@ private:
     QFont fntCons12bold {"Consolas", 12, 100}; // фонт для колонки Value
     void closeEvent(QCloseEvent*);
     void resizeEvent(QResizeEvent *);
-    QValidator *vldtrs[varType_t::MAX];
+    array <QValidator*, int(varType_t::MAX)> vldtrs {};
 
 public:
     NNCGMainWindow(QWidget* = nullptr, Qt::WindowFlags = Qt::WindowFlags());
