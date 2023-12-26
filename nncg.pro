@@ -2,7 +2,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++11
+CONFIG += c++14
 
 #QMAKE_CXXFLAGS += -save-temps
 
@@ -46,4 +46,11 @@ RESOURCES += \
     nncg.qrc
 
 RC_ICONS = nncg.ico
+
+VERSION = 0.1.0.0
+QMAKE_TARGET_COMPANY = "Gurov Ivan"
+QMAKE_TARGET_PRODUCT = "NNCG"
+QMAKE_TARGET_DESCRIPTION = "Network Node Configuration Generator"
+QMAKE_TARGET_COPYRIGHT = "Free"
+
 

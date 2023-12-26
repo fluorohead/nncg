@@ -23,9 +23,9 @@ const array<array<QString, LANGS_AMOUNT>, int(themeId_t::UnknownTheme)> QS_THEME
 //"color: rgb(190, 190, 190); gridline-color: rgb(50, 50, 50); background-color: rgb(60, 60, 60)");
 
 extern const array<theme_t, themeId_t::UnknownTheme> gamma {
-    //       background           table fg (text)        table gridline        table bg               vert. handle    title and comment fg
-    theme_t{{37,   37,  37, 255}, {190, 190, 190, 255}, { 50,  50,  50, 255}, { 60,  60,  60, 255}, { 60,  60,  60}, {169, 169, 169, 255}}, // dark theme gamma
-    theme_t{{255, 255, 255, 255}, {  0,   0,   0, 255}, {150, 150, 150, 255}, {255, 255, 255, 255}, {160, 160, 160}, {0  ,   0,   0, 255}} // light theme gamma
+    //       bg               table fg (text)  table gridline   table bg         vert. handle     title
+    theme_t{{37,   37,  37}, {190, 190, 190}, { 50,  50,  50}, { 60,  60,  60}, { 60,  60,  60}, {169, 169, 169}}, // dark theme gamma
+    theme_t{{210, 202, 188}, {  0,   0,   0}, {150, 150, 150}, {240, 239, 229}, {160, 160, 160}, { 97,  88,  96}} // light theme gamma
 };
 
 NNCGSettings::NNCGSettings() {

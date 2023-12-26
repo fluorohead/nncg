@@ -3,7 +3,7 @@
 
 #include <QColor>
 
-#define APPVER "v0.0.1 : GIA : 2023"
+#define DISPLAY_APPVER "v0.1.0 : GIA : 2023"
 
 #define MIN_WIDTH 800
 #define MIN_HEIGHT 600
@@ -41,13 +41,15 @@ struct oneRecShort_t {
     varType_t type;
 };
 
+struct rgb {int r; int g; int b;};
+
 struct theme_t {
-    QColor  bw_bg; // big widget bg
-    QColor  tbl_fg; //table fg
-    QColor  tbl_gr; // table gridline
-    QColor  tbl_bg; // table bg
-    QColor  vh; // vetical scroll handle
-    QColor  ttl_fg; // title fg
+    rgb  bw_bg; // big widget bg
+    rgb  tbl_fg; //table fg
+    rgb  tbl_gr; // table gridline
+    rgb  tbl_bg; // table bg
+    rgb  vh; // vetical scroll handle
+    rgb  ttl_fg; // title fg
 };
 
 #endif // COMMON_H

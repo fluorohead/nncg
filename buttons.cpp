@@ -246,8 +246,8 @@ void NNCGBtnLangSwitch::slotClicked() {
 NNCGBtnThemeSwitch::NNCGBtnThemeSwitch(int w, int h, QWidget *parent): QPushButton(parent) {
     setFixedSize(w, h);
     setStyleSheet(QString(":enabled {background: transparent; image : url(:/tm.png)}"
-                          ":hover   {background: transparent; image : url(:/tm.png)}"
-                          ":pressed {background: transparent; image : url(:/tm.png)}"));
+                          ":hover   {background: transparent; image : url(:/tmh.png)}"
+                          ":pressed {background: transparent; image : url(:/tmp.png)}"));
 }
 
 

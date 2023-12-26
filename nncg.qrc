@@ -6,5 +6,7 @@
         <file>mtp.png</file>
         <file>mth.png</file>
         <file>tm.png</file>
+        <file>tmh.png</file>
+        <file>tmp.png</file>
     </qresource>
 </RCC>

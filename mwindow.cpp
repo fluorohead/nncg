@@ -57,7 +57,7 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
     if (objSett.maximized) setWindowState(Qt::WindowMaximized);
     bigWidget = new QWidget(this, Qt::Widget);
     statusBar = new QStatusBar(this);
-    statusBar->showMessage(APPVER);
+    statusBar->showMessage(DISPLAY_APPVER);
 
     this->setAutoFillBackground(true);
 
@@ -283,9 +283,10 @@ void NNCGMainWindow::clearTable() {
 
 
 void NNCGMainWindow::resizeEvent(QResizeEvent *event) {
-    btnClearAll->move(this->width() - 84, 48);
-    btnLangSwitch->move(this->width() - 140, 90);
-    btnThemeSwitch->move(this->width() - 32, 4);
+    auto w = this->width();
+    btnClearAll->move(w - 84, 48);
+    btnLangSwitch->move(w - 140, 90);
+    btnThemeSwitch->move(w - 188, 90);
     event->accept();
 }
 
@@ -297,27 +298,30 @@ void NNCGMainWindow::repaintWithTheme() {
     this->setDisabled(true);
 
     QPalette tmpPal;
+    QColor tmpCol;
 
     tmpPal = bigWidget->palette();
-    tmpPal.setColor(QPalette::Background, gamma.at(objSett.curThemeId).bw_bg);
+    tmpCol = {gamma.at(objSett.curThemeId).bw_bg.r, gamma.at(objSett.curThemeId).bw_bg.g, gamma.at(objSett.curThemeId).bw_bg.b, 255};
+    tmpPal.setColor(QPalette::Background, tmpCol);
     bigWidget->setPalette(tmpPal);
 
     tmpPal = titleLabel->palette();
-    tmpPal.setColor(QPalette::Foreground, gamma.at(objSett.curThemeId).ttl_fg);
+    tmpCol = {gamma.at(objSett.curThemeId).ttl_fg.r, gamma.at(objSett.curThemeId).ttl_fg.g, gamma.at(objSett.curThemeId).ttl_fg.b, 255};
+    tmpPal.setColor(QPalette::Foreground, tmpCol);
     titleLabel->setPalette(tmpPal);
     commentLabel->setPalette(tmpPal);
 
     table->setStyleSheet(QString("color: rgb(%1, %2, %3); gridline-color: rgb(%4, %5, %6); background-color: rgb(%7, %8, %9)")
                                     .arg(
-                                         QString::number(gamma.at(objSett.curThemeId).tbl_fg.red()),
-                                         QString::number(gamma.at(objSett.curThemeId).tbl_fg.green()),
-                                         QString::number(gamma.at(objSett.curThemeId).tbl_fg.blue()),
-                                         QString::number(gamma.at(objSett.curThemeId).tbl_gr.red()),
-                                         QString::number(gamma.at(objSett.curThemeId).tbl_gr.green()),
-                                         QString::number(gamma.at(objSett.curThemeId).tbl_gr.blue()),
-                                         QString::number(gamma.at(objSett.curThemeId).tbl_bg.red()),
-                                         QString::number(gamma.at(objSett.curThemeId).tbl_bg.green()),
-                                         QString::number(gamma.at(objSett.curThemeId).tbl_bg.blue())
+                                         QString::number(gamma.at(objSett.curThemeId).tbl_fg.r),
+                                         QString::number(gamma.at(objSett.curThemeId).tbl_fg.g),
+                                         QString::number(gamma.at(objSett.curThemeId).tbl_fg.b),
+                                         QString::number(gamma.at(objSett.curThemeId).tbl_gr.r),
+                                         QString::number(gamma.at(objSett.curThemeId).tbl_gr.g),
+                                         QString::number(gamma.at(objSett.curThemeId).tbl_gr.b),
+                                         QString::number(gamma.at(objSett.curThemeId).tbl_bg.r),
+                                         QString::number(gamma.at(objSett.curThemeId).tbl_bg.g),
+                                         QString::number(gamma.at(objSett.curThemeId).tbl_bg.b)
                                         )
                          );
 
@@ -327,12 +331,12 @@ void NNCGMainWindow::repaintWithTheme() {
                                                       "::sub-line:vertical {height: 0px}"
                                                       "::add-line:vertical {height: 0px}")
                                               .arg(
-                                                     QString::number(gamma.at(objSett.curThemeId).bw_bg.red()),
-                                                     QString::number(gamma.at(objSett.curThemeId).bw_bg.green()),
-                                                     QString::number(gamma.at(objSett.curThemeId).bw_bg.blue()),
-                                                     QString::number(gamma.at(objSett.curThemeId).vh.red()),
-                                                     QString::number(gamma.at(objSett.curThemeId).vh.green()),
-                                                     QString::number(gamma.at(objSett.curThemeId).vh.blue())
+                                                     QString::number(gamma.at(objSett.curThemeId).bw_bg.r),
+                                                     QString::number(gamma.at(objSett.curThemeId).bw_bg.g),
+                                                     QString::number(gamma.at(objSett.curThemeId).bw_bg.b),
+                                                     QString::number(gamma.at(objSett.curThemeId).vh.r),
+                                                     QString::number(gamma.at(objSett.curThemeId).vh.g),
+                                                     QString::number(gamma.at(objSett.curThemeId).vh.b)
                                                   )
                                               );
 
