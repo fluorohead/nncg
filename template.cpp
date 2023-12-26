@@ -77,7 +77,7 @@ bool NNCGTemplate::inspectLine(const QString &line, QString &varName, QString &v
 }
 
 void NNCGTemplate::inspectBrandColors() {
-    QRegExp rex("([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3})");
+    static QRegExp rex("([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3})");
     const int maxComp = 6; // max components
     if (rex.indexIn(strList[5]) != -1) {
         array<int, maxComp> colors {};
@@ -101,7 +101,7 @@ void NNCGTemplate::inspectBrandColors() {
 // конструктор demo-шаблона
 NNCGTemplate::NNCGTemplate() {
     beginConfig = 8;
-    QString demoStr =   QS_NNCT + "\r\n" +
+    static QString demoStr =   QS_NNCT + "\r\n" +
                         QS_SOFTVER + " 0.0.1\r\n" +
                         QS_TITLE + " Network Node Configuration Demo Template\r\n" +
                         QS_COMMENT + " created 2023-12-05-21-03\r\n" +

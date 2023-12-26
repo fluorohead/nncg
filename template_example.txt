@@ -1,7 +1,7 @@
 NETWORK_NODE_CONFIG_TEMPLATE
 SOFTWARE_VERSION:0.0.1
-TITLE:Template Example For Abstract Network Node
-COMMENT:version 2023-12-05-21-03
+TITLE:Template Example For An Abstract Network Node
+COMMENT:version 2023-12-26-18-00
 LOGO:
 BRAND_COLORS:
 DELIMITER_OPEN:{

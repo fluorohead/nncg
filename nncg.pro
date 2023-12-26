@@ -45,5 +45,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     nncg.qrc
 
-RC_ICONS = icons8-router-96.ico
+RC_ICONS = nncg.ico
 

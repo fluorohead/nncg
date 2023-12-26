@@ -1,5 +1,5 @@
-#ifndef NNCGSETTINGS_H
-#define NNCGSETTINGS_H
+#ifndef SETTINGS_H
+#define SETTINGS_H
 
 #include "common.h"
 #include <QFile>
@@ -20,12 +20,12 @@ public:
     bool maximized {false};
     int curLang {int(langId_t::English)};
     QString templFpFn {""}; // template file path with file name
-    QString themeName {QS_DARK}; // название цветовой темы : dark, light
+    int curThemeId {themeId_t::Dark};
     bool noLastErr {false};
     QString lastErrMsg;
     int colWidth {BASE_WIDTH_COLUMN_DESCR};
     NNCGSettings();
-    bool saveSettings(const QString &, const QString &, int, int, const QString &, int, int);
+    bool saveSettings(const QString &, int, int, int, const QString &, int, int);
 };
 
-#endif // NNCGSETTINGS_H
+#endif // SETTINGS_H

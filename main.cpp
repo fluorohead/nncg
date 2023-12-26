@@ -59,8 +59,9 @@ int main(int argc, char *argv[]) {
         mainWindow->btnClearAll->setDisabled(true);
     }
 
-    mainWindow->refreshTable();
-    QApplication::postEvent(mainWindow, new QEvent(QEvent::LanguageChange));
+    mainWindow->repaintWithTheme(); // раскраска дочерних в соотв. в текущей темой
+    QApplication::postEvent(mainWindow, new QEvent(QEvent::LanguageChange)); // перевод надписей на текущий язык
+    mainWindow->refreshTable(); // обновление таблицы в соотв. с текущим шаблоном и показ главного окна
 
     QApplication::exec();
 

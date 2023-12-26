@@ -3,7 +3,7 @@
 
 #include <QColor>
 
-#define APPVER " v0.0.1 : GIA : 2023"
+#define APPVER "v0.0.1 : GIA : 2023"
 
 #define MIN_WIDTH 800
 #define MIN_HEIGHT 600
@@ -26,6 +26,9 @@ enum langId_t  {English = 0, Russian = 1, Elfian = LANGS_AMOUNT};
 // типы переменных
 enum varType_t {Domname = 0, Text, IPv4, Unsigned, Password, MASKv4, IPv6, MASKv6Len, WildcardV4, MASKv4Len, Prompt, Hash, MAX};
 
+// типы графических схем
+enum themeId_t {Dark = 0, Light = 1, UnknownTheme};
+
 struct oneRec_t {
     int orderNum;
     QString descr;
@@ -39,8 +42,12 @@ struct oneRecShort_t {
 };
 
 struct theme_t {
-    QColor  bw_bg;
-    QColor  bw_fg;
+    QColor  bw_bg; // big widget bg
+    QColor  tbl_fg; //table fg
+    QColor  tbl_gr; // table gridline
+    QColor  tbl_bg; // table bg
+    QColor  vh; // vetical scroll handle
+    QColor  ttl_fg; // title fg
 };
 
 #endif // COMMON_H

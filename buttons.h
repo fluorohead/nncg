@@ -71,16 +71,29 @@ public slots:
 };
 
 
-class NNCGBtnSetLang: public QPushButton
+class NNCGBtnLangSwitch: public QPushButton
 {
     Q_OBJECT
 
 public:
-    NNCGBtnSetLang(int, int, QWidget * = nullptr);
+    NNCGBtnLangSwitch(int, int, QWidget * = nullptr);
+    void changeEvent(QEvent *);
 
 public slots:
     void slotClicked();
 };
 
+
+class NNCGBtnThemeSwitch: public QPushButton
+{
+    Q_OBJECT
+
+public:
+    NNCGBtnThemeSwitch(int, int, QWidget * = nullptr);
+    void changeEvent(QEvent *);
+
+public slots:
+    void slotClicked();
+};
 
 #endif // BUTTONS_H

@@ -6,6 +6,7 @@ extern varType_t s2t(const QString &str);
 extern array<int, int(varType_t::MAX)> maxChars;
 
 const QString QS_CSV {"csv"};
+
 extern const QString QS_VVT {R"("variable";"value";"type")"};
 
 // возвращает true, если формат переменной верный

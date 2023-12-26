@@ -15,6 +15,7 @@ using namespace std;
 
 class NNCGMainWindow: public QMainWindow
 {
+    Q_OBJECT
 
 private:
     QWidget *bigWidget;
@@ -40,7 +41,12 @@ public:
     NNCGBtnCsvLoad *btnCsvLoad;
     NNCGBtnCsvSave *btnCsvSave;
     NNCGBtnClearAll *btnClearAll;
-    NNCGBtnSetLang *btnSwitchLang;
+    NNCGBtnLangSwitch *btnLangSwitch;
+    NNCGBtnThemeSwitch *btnThemeSwitch;
+
+public :
+    void repaintWithTheme();
+
 };
 
 #endif // MWINDOW_H

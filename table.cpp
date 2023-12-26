@@ -4,8 +4,11 @@
 
 #include <QEvent>
 #include <QLineEdit>
+#include <QHeaderView>
+#include <QScrollBar>
+#include <QCommonStyle>
 
-#include <iostream>
+//#include <iostream>
 
 using namespace std;
 
@@ -24,7 +27,8 @@ void NNCGTable::changeEvent(QEvent *event) {
             if (!QS_PLCHLDRS.at(hIt.value().type).at(1).isEmpty()) cw->setPlaceholderText(QS_PLCHLDRS.at(hIt.value().type).at(objSett.curLang));
             else cw->setPlaceholderText(QS_PLCHLDRS.at(hIt.value().type).at(0));
         }
-    } else QTableWidget::changeEvent(event);
+    }
+    event->accept();
 }
 
 

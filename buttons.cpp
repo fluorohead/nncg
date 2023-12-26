@@ -46,10 +46,10 @@ const array<QString, LANGS_AMOUNT> QS_CFG_ERWE {"error writing config", "оши�
 const array<QString, LANGS_AMOUNT> QS_CFG_ERSV {"error creating config", "ошибка при создании конфига"};
 const array<QString, LANGS_AMOUNT> QS_TT_LANGSW {"Switching the interface language.", "Переключение языка интерфейса."};
 const array<QString, LANGS_AMOUNT> QS_TT_CLRALL {"Clear the entire table.", "Очистить всю таблицу."};
+const array<QString, LANGS_AMOUNT> QS_TT_THMCHNG {"Change the GUI theme.", "Сменить тему оформления."};
 
 NNCGBtnCsvLoad::NNCGBtnCsvLoad(int w, int h, const QString &text, QWidget *parent): QPushButton(text, parent) {
     setFixedSize(w, h);
-    setToolTip(QS_TT_LOADCSV.at(objSett.curLang));
 }
 
 void NNCGBtnCsvLoad::changeEvent(QEvent *event) {
@@ -87,7 +87,6 @@ void NNCGBtnCsvLoad::slotClicked() {
 
 NNCGBtnCsvSave::NNCGBtnCsvSave(int w, int h, const QString &text, QWidget *parent): QPushButton(text, parent) {
     setFixedSize(w, h);
-    setToolTip(QS_TT_SAVECSV.at(objSett.curLang));
 }
 
 void NNCGBtnCsvSave::changeEvent(QEvent *event) {
@@ -127,7 +126,6 @@ void NNCGBtnCsvSave::slotClicked() {
 
 NNCGButtonLoad::NNCGButtonLoad(int w, int h, const QString &text, QWidget *parent): QPushButton(text, parent) {
     setFixedSize(w, h);
-    setToolTip(QS_TT_LDTMPLT.at(objSett.curLang));
 }
 
 void NNCGButtonLoad::changeEvent(QEvent *event) {
@@ -163,7 +161,6 @@ void NNCGButtonLoad::slotClicked() {
 
 NNCGButtonCreate::NNCGButtonCreate(int w, int h, const QString &text, QWidget *parent): QPushButton(text, parent) {
     setFixedSize(w, h);
-    setToolTip(QS_TT_CRTCFG.at(objSett.curLang));
 }
 
 void NNCGButtonCreate::changeEvent(QEvent *event) {
@@ -208,7 +205,6 @@ NNCGBtnClearAll::NNCGBtnClearAll(int w, int h, const QString &text, QWidget *par
     setFixedSize(w, h);
     setIconSize({40, 40});
     setIcon(QIcon(":/ca.png"));
-    setToolTip(QS_TT_CLRALL.at(objSett.curLang));
 }
 
 void NNCGBtnClearAll::changeEvent(QEvent *event) {
@@ -223,17 +219,47 @@ void NNCGBtnClearAll::slotClicked() {
 }
 
 
-NNCGBtnSetLang::NNCGBtnSetLang(int w, int h, QWidget *parent): QPushButton(parent) {
+NNCGBtnLangSwitch::NNCGBtnLangSwitch(int w, int h, QWidget *parent): QPushButton(parent) {
     setFixedSize(w, h);
     setStyleSheet(QString(":enabled {background: transparent; image : url(:/mt.png)}"
                           ":hover   {background: transparent; image : url(:/mth.png)}"
                           ":pressed {background: transparent; image : url(:/mtp.png)}"));
-    setToolTip(QS_TT_LANGSW.at(objSett.curLang));
 }
 
-void NNCGBtnSetLang::slotClicked() {
+
+void NNCGBtnLangSwitch::changeEvent(QEvent *event) {
+    if (event->type() == QEvent::LanguageChange) {
+        setToolTip(QS_TT_CLRALL.at(objSett.curLang));
+    }
+    event->accept();
+}
+
+
+void NNCGBtnLangSwitch::slotClicked() {
     if (objSett.curLang == langId_t::English) objSett.curLang = langId_t::Russian;
     else objSett.curLang = langId_t::English;
     setToolTip(QS_TT_LANGSW.at(objSett.curLang));
     QApplication::postEvent(mainWindow, new QEvent(QEvent::LanguageChange));
+}
+
+
+NNCGBtnThemeSwitch::NNCGBtnThemeSwitch(int w, int h, QWidget *parent): QPushButton(parent) {
+    setFixedSize(w, h);
+    setStyleSheet(QString(":enabled {background: transparent; image : url(:/tm.png)}"
+                          ":hover   {background: transparent; image : url(:/tm.png)}"
+                          ":pressed {background: transparent; image : url(:/tm.png)}"));
+}
+
+
+void NNCGBtnThemeSwitch::slotClicked() {
+    objSett.curThemeId++; // меняем тему на следующую
+    if (objSett.curThemeId >= themeId_t::UnknownTheme) objSett.curThemeId = 0;
+    mainWindow->repaintWithTheme(); // перерисовываем главное окно и его дочерние виджеты в соотв. с выставленной темой
+}
+
+void NNCGBtnThemeSwitch::changeEvent(QEvent *event) {
+    if (event->type() == QEvent::LanguageChange) {
+        setToolTip(QS_TT_THMCHNG.at(objSett.curLang));
+    }
+    event->accept();
 }

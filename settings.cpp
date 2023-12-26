@@ -1,28 +1,32 @@
+#include "common.h"
 #include "settings.h"
 
 #include <QDir>
 
-const QString    QS_TEMPLATE {"template"},
-                        QS_THEME {"theme"},
-                        QS_MXMZD {"maximized"},
-                        QS_WIDTH {"width"},
-                        QS_HEIGHT {"height"},
-                        QS_COLWIDTH {"col_width"},
-                        QS_DARK {"dark"},
-                        QS_LIGHT {"light"},
-                        QS_LANG {"lang"};
+using namespace std;
 
+const QString QS_TEMPLATE {"template"};
+const QString QS_THEME {"theme"};
+const QString QS_MXMZD {"maximized"};
+const QString QS_WIDTH {"width"};
+const QString QS_HEIGHT {"height"};
+const QString QS_COLWIDTH {"col_width"};
+const QString QS_DARK {"dark"};
+const QString QS_LIGHT {"light"};
+const QString QS_LANG {"lang"};
 
+const array<array<QString, LANGS_AMOUNT>, int(themeId_t::UnknownTheme)> QS_THEMESNAMES {{
+                                                                                        {"Dark", "Тёмная"},
+                                                                                        {"Light", "Светлая"}
+                                                                                      }};
 
-                        const theme_t themeDark {
-                            {37, 37, 37, 255}, // big widget background
-                            {169, 169, 169, 255} // big widget foreground
-                        };
+//"color: rgb(190, 190, 190); gridline-color: rgb(50, 50, 50); background-color: rgb(60, 60, 60)");
 
-                        theme_t themeCurrent {
-                            {37, 37, 37, 255}, // big widget background
-                            {169, 169, 169, 255} // big widget foreground
-                        };
+extern const array<theme_t, themeId_t::UnknownTheme> gamma {
+    //       background           table fg (text)        table gridline        table bg               vert. handle    title and comment fg
+    theme_t{{37,   37,  37, 255}, {190, 190, 190, 255}, { 50,  50,  50, 255}, { 60,  60,  60, 255}, { 60,  60,  60}, {169, 169, 169, 255}}, // dark theme gamma
+    theme_t{{255, 255, 255, 255}, {  0,   0,   0, 255}, {150, 150, 150, 255}, {255, 255, 255, 255}, {160, 160, 160}, {0  ,   0,   0, 255}} // light theme gamma
+};
 
 NNCGSettings::NNCGSettings() {
     QDir qDir;
@@ -45,8 +49,8 @@ NNCGSettings::NNCGSettings() {
                     width = jsDoc[QS_WIDTH].toInt();
                     height = jsDoc[QS_HEIGHT].toInt();
                     templFpFn = jsDoc[QS_TEMPLATE].toString();
-                    themeName = jsDoc[QS_THEME].toString().toLower();
-                    if ((themeName != QS_DARK) && (themeName != QS_LIGHT)) themeName = QS_DARK;
+                    curThemeId = (themeId_t) jsDoc[QS_THEME].toInt();
+                    if (curThemeId < 0 || curThemeId >= themeId_t::UnknownTheme) curThemeId = themeId_t::Dark;
                     maximized = jsDoc[QS_MXMZD].toBool();
                     colWidth = jsDoc[QS_COLWIDTH].toInt();
                     if (colWidth < 39) colWidth = 39;
@@ -73,17 +77,17 @@ NNCGSettings::NNCGSettings() {
     }
 }
 
-bool NNCGSettings::saveSettings(const QString& fpfn, const QString& theme, int w, int h, const QString& mxmzd, int colWidth, int lang) {
+bool NNCGSettings::saveSettings(const QString& fpfn, int theme, int w, int h, const QString& mxmzd, int colWidth, int lang) {
     qFile.resize(0);
     QString writeStr =  QString("{\r\n"
                                 " \"%1\": \"%2\",\r\n"
-                                " \"%3\": \"%4\",\r\n"
+                                " \"%3\": %4,\r\n"
                                 " \"%5\": %6,\r\n"
                                 " \"%7\": %8,\r\n"
                                 " \"%9\": %10,\r\n"
                                 " \"%11\": %12,\r\n"
                                 " \"%13\": %14\r\n"
-                                "}").arg(QS_TEMPLATE, fpfn, QS_THEME, theme, QS_WIDTH, QString::number(w), QS_HEIGHT, QString::number(h),
+                                "}").arg(QS_TEMPLATE, fpfn, QS_THEME, QString::number(theme), QS_WIDTH, QString::number(w), QS_HEIGHT, QString::number(h),
                                          QS_MXMZD, mxmzd, QS_COLWIDTH, QString::number(colWidth), QS_LANG, QString::number(lang));
     qFile.write(writeStr.toUtf8());
     qFile.flush();
