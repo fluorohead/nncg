@@ -1,7 +1,5 @@
 # NNCG "Network Node Configuration Generator"
-
-<center>![nncg screenshot](screenshot.png)</center>
-
+![nncg screenshot](screenshot.png)
 <b>A simple templates-based config generator for network devices.</b>
 
 Usefull for industrial type equipment, like : Routers, Switches, DSLAM, OLT, WDM and etc...
