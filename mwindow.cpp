@@ -16,8 +16,6 @@
 #include <QApplication>
 #include <QPalette>
 
-#include <iostream>
-
 using namespace std;
 
 extern NNCGSettings objSett;
@@ -289,8 +287,8 @@ void NNCGMainWindow::clearTable() {
 void NNCGMainWindow::resizeEvent(QResizeEvent *event) {
     auto w = this->width();
     btnClearAll->move(w - 84, 48);
-    btnLangSwitch->move(w - 140, 90);
-    btnThemeSwitch->move(w - 188, 90);
+    btnLangSwitch->move(w - 130, 90);
+    btnThemeSwitch->move(w - 178, 90);
     event->accept();
 }
 
