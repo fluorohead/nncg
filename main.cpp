@@ -6,8 +6,6 @@
 #include <QApplication>
 #include <QWindowStateChangeEvent>
 
-//#include <iostream>
-
 using namespace std;
 
 QApplication *app;
@@ -52,6 +50,7 @@ int main(int argc, char *argv[]) {
     }
 
     mainWindow = new NNCGMainWindow(nullptr, Qt::Window);
+
     if (objTempl->isDemo) {
         mainWindow->btnCfgCreate->setDisabled(true);
         mainWindow->btnCsvLoad->setDisabled(true);
@@ -59,7 +58,7 @@ int main(int argc, char *argv[]) {
         mainWindow->btnClearAll->setDisabled(true);
     }
 
-    mainWindow->repaintWithTheme(); // раскраска дочерних в соотв. в текущей темой
+    mainWindow->repaintWithTheme(); // раскраска дочерних элеметов в соотв. в текущей темой
     QApplication::postEvent(mainWindow, new QEvent(QEvent::LanguageChange)); // перевод надписей на текущий язык
     mainWindow->refreshTable(); // обновление таблицы в соотв. с текущим шаблоном и показ главного окна
 

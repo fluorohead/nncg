@@ -1,7 +1,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <QColor>
+#include <QString>
 
 #define DISPLAY_APPVER "v0.1.0 : GIA : 2023"
 
@@ -17,6 +17,8 @@
 #define MAX_VAR_NAME_LEN 100 // максимальная длина имени переменной (включая фигурные скобки)
 #define MAX_VAR_DESCR_LEN 100 // максимальная длина описания переменной (без учёта двойных кавычек)
 
+#define TABLE_ZERO_COLUMN_WIDTH 32 // ширина нулевой колонки таблицы
+
 #define BASE_WIDTH_COLUMN_DESCR 324
 
 // индексы языков
@@ -30,15 +32,15 @@ enum varType_t {Domname = 0, Text, IPv4, Unsigned, Password, MASKv4, IPv6, MASKv
 enum themeId_t {Dark = 0, Light = 1, UnknownTheme};
 
 struct oneRec_t {
-    int orderNum;
-    QString descr;
-    QString value;
-    varType_t type;
+    int         orderNum;
+    QString     descr;
+    QString     value;
+    varType_t   type;
 };
 
 struct oneRecShort_t {
-    QString value;
-    varType_t type;
+    QString     value;
+    varType_t   type;
 };
 
 struct rgb {int r; int g; int b;};

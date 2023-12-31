@@ -1,5 +1,7 @@
 # NNCG "Network Node Configuration Generator"
+
 ![nncg screenshot](screenshot.png)
+
 <b>A simple templates-based config generator for network devices.</b>
 
 Usefull for industrial type equipment, like : Routers, Switches, DSLAM, OLT, WDM and etc...
@@ -16,4 +18,4 @@ The application also provides a function for saving entered values in CSV format
 
 Having a template file and once saved a CSV dump, you can make your life much easier, and in the time freed from routine, drink coffee or read documentation about network technologies.
 
-The software is written using the Qt 5.14.2 framework and uses icons from https://icons8.com/
+The software is written using the Qt 6.6.1 framework and uses icons from https://icons8.com/

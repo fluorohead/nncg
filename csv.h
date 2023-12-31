@@ -6,9 +6,11 @@
 #include <QFile>
 #include <QStringList>
 #include <QHash>
+#include <QRegExp>
 
 class NNCG_csv: public QObject
 {
+
 private:
     QFile qFile;
     QStringList strList;

@@ -1,7 +1,5 @@
 #include "validators.h"
 
-#include <QRegExp>
-
 using namespace std;
 
 extern QString b2s(bool b);

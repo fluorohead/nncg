@@ -28,6 +28,7 @@ void NNCGTable::changeEvent(QEvent *event) {
             else cw->setPlaceholderText(QS_PLCHLDRS.at(hIt.value().type).at(0));
         }
     }
+    QTableWidget::changeEvent(event);
     event->accept();
 }
 

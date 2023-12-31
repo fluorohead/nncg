@@ -2,6 +2,7 @@
 #define VALIDATORS_H
 
 #include <QValidator>
+#include <QRegExp>
 
 class NNCGValidIPv4: public QValidator
 {

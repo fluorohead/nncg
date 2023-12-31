@@ -30,7 +30,7 @@ NNCG_csv::NNCG_csv(const QString &fn, const QString &dlmOpen, const QString &dlm
 {   qFile.setFileName(fn);
     if (qFile.open(QIODevice::ReadOnly)) {
         if (qFile.size() <= MAX_CSV_FILE_SIZE) {
-            strList = QStringList(QString(qFile.readAll()).split("\r\n", QString::SkipEmptyParts));
+            strList = QStringList(QString(qFile.readAll()).split("\r\n", Qt::SkipEmptyParts));
             if (strList.length() > 1) {
                 if (strList[0] == QS_VVT) {
                     delimOpen = dlmOpen;

@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QString>
 #include <QPixmap>
+#include <QRegExp>
 
 using namespace std;
 

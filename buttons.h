@@ -1,8 +1,6 @@
 #ifndef BUTTONS_H
 #define BUTTONS_H
 
-#include "common.h"
-
 #include <QPushButton>
 #include <QEvent>
 

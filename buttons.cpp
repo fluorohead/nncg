@@ -105,9 +105,9 @@ void NNCGBtnCsvSave::slotClicked() {
         if (fileCSV.open(QIODevice::WriteOnly)) {
             QByteArray ba;
             mainWindow->dumpTableToHash();
-            ba.append(QS_VVT);
+            ba.append(QString(QS_VVT).toStdString());
             for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
-                  ba.append(QString("\r\n\"%1\";\"%2\";\"%3\"").arg(hIt.key(), hIt.value().value, t2s(hIt.value().type)));
+                ba.append(QString(QString("\r\n\"%1\";\"%2\";\"%3\"").arg(hIt.key(), hIt.value().value, t2s(hIt.value().type))).toStdString());
             }
             if (fileCSV.write(ba)) {
                 QMessageBox(QMessageBox::Information, QS_DIAGINFO.at(objSett.curLang), QS_CSV_SSC.at(objSett.curLang), QMessageBox::Ok, mainWindow).exec();
@@ -184,7 +184,7 @@ void NNCGButtonCreate::slotClicked() {
                 for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
                     tmp = tmp.replace(hIt.key(), hIt.value().value, Qt::CaseSensitive);
                 }
-                ba.append(tmp + "\r\n");
+                ba.append(QString(tmp + "\r\n").toStdString());
             }
             if (fileCFG.write(ba)) {
                 QMessageBox(QMessageBox::Information, QS_DIAGINFO.at(objSett.curLang), QS_CFG_SSC.at(objSett.curLang), QMessageBox::Ok, mainWindow).exec();

@@ -1,6 +1,5 @@
 #include "template.h"
 #include "settings.h"
-#include "mwindow.h"
 
 #include <QFileInfo>
 
@@ -46,7 +45,7 @@ QString NNCGTemplate::getComment(){
 // возвращает только путь к файлу, без имени файла
 QString NNCGTemplate::getFilePath() {
     QString path = QFileInfo(qFile).canonicalPath();
-    if (path[path.length()-1] != "/") path.append("/");
+    if (path[path.length()-1] != '/') path.append('/');
     return path;
 }
 
