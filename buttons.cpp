@@ -227,7 +227,7 @@ NNCGBtnLangSwitch::NNCGBtnLangSwitch(int w, int h, QWidget *parent): QPushButton
 
 void NNCGBtnLangSwitch::changeEvent(QEvent *event) {
     if (event->type() == QEvent::LanguageChange) {
-        setToolTip(QS_TT_CLRALL.at(objSett.curLang));
+        setToolTip(QS_TT_LANGSW.at(objSett.curLang));
     }
     event->accept();
 }
