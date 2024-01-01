@@ -1,6 +1,7 @@
 *
 !/*.h
 !/*.cpp
+nncg_plugin_import.cpp
 !/*.pro
 !/*.qrc
 !/.gitignore

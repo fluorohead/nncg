@@ -2,7 +2,7 @@ QT       += core gui core5compat
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++11
+CONFIG += c++11 static
 
 #QMAKE_CXXFLAGS += -save-temps
 

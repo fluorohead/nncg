@@ -190,6 +190,7 @@ void NNCGMainWindow::refreshTable() {
         oneRow[1]->setFont(fntCons11);
         oneRow[1]->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
         oneRow[1]->setFlags(Qt::NoItemFlags | Qt::ItemIsEnabled);
+        for (int col = 0; col < 2; col++) table->setItem(hIt.value().orderNum, col, oneRow.at(col));
         auto qle = new QLineEdit;
         qle->setFont(fntCons12bold);
         qle->setFrame(false);
@@ -202,9 +203,7 @@ void NNCGMainWindow::refreshTable() {
         qle->setValidator(vldtrs.at(int(hIt.value().type)));
         qle->setText(hIt.value().value);
         table->setCellWidget(hIt.value().orderNum, 2, qle);
-        for (int col = 0; col < 2; col++) table->setItem(hIt.value().orderNum, col, oneRow.at(col));
     };
-
     int colW = table->columnWidth(1);
     table->horizontalHeader()->setStyleSheet(QString("::section {background-color: rgb(%1, %2, %3); color: rgb(%4, %5, %6); font: bold 14px 'Consolas'}")
                                              .arg(QString::number(objTempl->brandColors[0]),

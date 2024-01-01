@@ -1,8 +1,8 @@
 #ifndef VALIDATORS_H
 #define VALIDATORS_H
 
+#include "QtCore5Compat/qregexp.h"
 #include <QValidator>
-#include <QRegExp>
 
 class NNCGValidIPv4: public QValidator
 {

@@ -1,11 +1,11 @@
 #ifndef TEMPLATE_H
 #define TEMPLATE_H
 
+#include "QtCore5Compat/qregexp.h"
 #include "common.h"
 #include <QFile>
 #include <QString>
 #include <QPixmap>
-#include <QRegExp>
 
 using namespace std;
 

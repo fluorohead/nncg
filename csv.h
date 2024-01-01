@@ -1,12 +1,12 @@
 #ifndef CSV_H
 #define CSV_H
 
+#include "QtCore5Compat/qregexp.h"
 #include "common.h"
 
 #include <QFile>
 #include <QStringList>
 #include <QHash>
-#include <QRegExp>
 
 class NNCG_csv: public QObject
 {
