@@ -23,18 +23,33 @@ The software is written using the Qt 6.6.1 framework and uses icons from https:/
 
 <b>List of variable types and description of checks performed when entering values.</b>
 
-Domname - checking the correctness of the domain name, max. length 253 characters, only Latin alphabet and hyphens
-Prompt - prompt in the device console, max. 64 Unicode characters
-Text - plain text without language restrictions, max. length 255 unicode characters
-IPv4 - check for compliance with IPv4 address
-IPv6 - checking for compliance with IPv6 address
-Unsigned - unsigned 32-bit integer in the range from 0 to 4_294_967_295
-Password - password, hidden input field, max. length 128 unicode characters
-MASKv4 - checking the correctness of the mask for IPv4 in dotted format
-MASKv4Len - IPv4 mask length, integer from 0 to 32
-MASKv6Len - mask length for IPv6 address, integer from 0 to 128
-WildcardV4 - inverted wildcard bitmask for IPv4, check for correctness
-WildcardV6 - inverted wildcard bitmask for IPv6, check for correctness
-Hash - hash sequence, only Latin and special characters, max. length 128 characters
+<b>Domname</b> - checking the correctness of the domain name, max. length 253 characters, only Latin alphabet and hyphens
+
+<b>Prompt</b> - prompt in the device console, max. 64 Unicode characters
+
+<b>Text</b> - plain text without language restrictions, max. length 255 unicode characters
+
+<b>IPv4</b> - check for compliance with IPv4 address
+
+<b>IPv6</b> - checking for compliance with IPv6 address
+
+<b>Unsigned</b> - unsigned 32-bit integer in the range from 0 to 4_294_967_295
+
+<b>Password</b> - password, hidden input field, max. length 128 unicode characters
+
+<b>MASKv4</b> - checking the correctness of the mask for IPv4 in dotted format
+
+<b>MASKv4Len</b> - IPv4 mask length, integer from 0 to 32
+
+<b>MASKv6Len</b> - mask length for IPv6 address, integer from 0 to 128
+
+<b>WildcardV4</b> - inverted wildcard bitmask for IPv4, check for correctness
+
+<b>WildcardV6</b> - inverted wildcard bitmask for IPv6, check for correctness
+
+<b>Hash</b> - hash sequence, only Latin and special characters, max. length 128 characters
+
 
 Capital and small letters in type names do not play a role. For example, the following names are identical: Domname, dOMName, DonName, etc.
+
+
