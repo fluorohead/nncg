@@ -226,15 +226,17 @@ void NNCGValidIPv6::fixup(QString &input) const {
 
 
 QValidator::State NNCGValidMASKv4Len::validate(QString &input, int &pos) const {
-    if ((!onlyDigits(input)) || input.startsWith("0")) return Invalid; // не может начинаться с нуля
+    if (!onlyDigits(input)) return Invalid; // д.б. только цифры
     if (input.toUInt() > 32) input.setNum(32); // макс значение = 32
+    if (input.startsWith("0") && (input.length() > 1)) return Invalid; // может быть = 0, но не может быть 01, 02 и т.д.
     return Acceptable;
 }
 
 
 QValidator::State NNCGValidMASKv6Len::validate(QString &input, int &pos) const {
-    if ((!onlyDigits(input)) || input.startsWith("0")) return Invalid; // не может начинаться с нуля
+    if (!onlyDigits(input)) return Invalid; // д.б. только цифры
     if (input.toUInt() > 128) input.setNum(128); // макс значение = 128
+    if (input.startsWith("0") && (input.length() > 1)) return Invalid; // может быть = 0, но не может быть 01, 02 и т.д.
     return Acceptable;
 }
 

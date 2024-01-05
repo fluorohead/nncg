@@ -1,7 +1,7 @@
 NETWORK_NODE_CONFIG_TEMPLATE
-SOFTWARE_VERSION:0.0.1
+SOFTWARE_VERSION:0.1.0
 TITLE:Template Example For An Abstract Network Node
-COMMENT:version 2023-12-26-18-00
+COMMENT:version 2024-05-01-21-52
 LOGO:
 BRAND_COLORS:
 DELIMITER_OPEN:{
@@ -9,87 +9,67 @@ DELIMITER_CLOSE:}
 #BEGIN_VARIABLES
 #{domname},         "Domain name :",                             Domname
 #{prompt},          "System prompt :",                           Prompt
-#{node},            "Node number (1 or 2) :",                    Unsigned
-#{loopback_ip},     "Interface Loopback IPv4 address :",         IPv4
-#{loopback_ipv6},   "Interface Loopback IPv6 address :",         IPv6
-#{ett1_ip},         "Interface Eth-Trunk1 IPv4 address :",       IPv4
+#{node},            "Node ID number :",                          Unsigned
+#{lpb_v4_ip},       "Interface Loopback IPv4 address :",         IPv4
+#{lpb_v6_ip},       "Interface Loopback IPv6 address :",         IPv6
+#{ett1_v4_ip},      "Interface Eth-Trunk1 IPv4 address :",       IPv4
+#{ett1_v4_ml},      "Interface Eth-Trunk1 IPv4 mask length :",   MASKv4Len
+#{ett1_v6_ip},      "Interface Eth-Trunk1 IPv6 address :",       IPv6
+#{ett1_v6_ml},      "Interface Eth-Trunk1 IPv6 mask length :",   MASKv6Len
 #{ett1_descr},      "Interface Eth-Trunk1 description :",        Text
 #{ett1_cost},       "Interface Eth-Trunk1 OSPF cost :",          Unsigned
-#{ett2_ip},         "Interface Eth-Trunk2 IPv4 address : :",     IPv4
-#{ett2_descr},      "Interface Eth-Trunk2 description :",        Text
-#{ett2_cost},       "Interface Eth-Trunk2 OSPF cost :",          Unsigned
-#{phy1_descr},      "Phys. interface GE0/0/1 description :",     Text
-#{phy2_descr},      "Phys. interface GE0/0/2 description :",     Text
+#{ospf_hash},       "OSPF sessions hash cipher :",               Hash
+#{tacacs_key},      "Tacacs key :",                              Password
+#{acl_v4_net},      "Access ACL allowed IPv4 net :",             IPv4
+#{acl_v4_wc},       "Access ACL allowed IPv4 wildcard :",        WildcardV4
+#{acl_v6_net},      "Access ACL allowed IPv6 net :",             IPv6
+#{acl_v6_wc},       "Access ACL allowed IPv6 wildcard :",        WildcardV6
 #{mgmt_ip},         "Interface MGMT IPv4 address :",             IPv4
 #{mgmt_mask},       "Interface MGMT IPv4 mask :",                MASKv4
-#{mgmt_gw},         "MGMT gateway IPv4 address :",               IPv4
-#{mgmt_descr},      "Interface MGMT description :",              Text
-#{acl},             "Access ipv4 ACL wildcard :",                WildcardV4
-#{ett1_bfd_nei_ip}, "BFD neighbor IPv4 address on Eth-Trunk1 :", IPv4
-#{ett2_bfd_nei_ip}, "BFD neighbor IPv4 address on Eth-Trunk2 :", IPv4
-#{iccp_nei_ip},     "ICCP neighbor IPv4 address :",              IPv4
-#{ospf_pwd},        "OSPF sessions password hash :",             Hash
-#{asn},             "AS number :",                               Unsigned
-#{tacacs_key},      "Tacacs key :",                              Password
-#{v4ml},            "Test v4 mask length :",                     MASKv4Len
-#{v6ml},            "Test v6 mask length :",                     MASKv6Len
+#{mgmt_vrf},        "Management Vrf :",                          Text
 #END_VARIABLES
 
 sysname {prompt}
 
-ospf 1 router-id {loopback_ip}
+ospf 1 router-id {lpb_v4_ip}
  hostname {domname}
 
-mpls lsr-id {loopback_ip}
+mpls lsr-id {lpb_v4_ip}
 
-interface LoopBack3
- ip address {loopback_ip} 255.255.255.255
- ipv6 address {loopback_ipv6)/128
+interface LoopBack0
+ ip address {lpb_v4_ip} 255.255.255.255
+ ipv6 address {lpb_v6_ip}/128
 
 interface Eth-Trunk1
  description {ett1_descr}
- ip address {ett1_ip} 255.255.255.252
+ ipv4 address {ett1_v4_ip}/{ett1_v4_ml}
+ ipv6 address {ett1_v6_ip}/{ett1_v6_ml}
  ospf cost {ett1_cost}
+ ospf cipher {ospf_hash}
 
-interface Eth-Trunk2
- description {ett2_descr}
- ip address {ett2_ip} 255.255.255.252
- ospf cost {ett2_cost}
-
-bfd bfd-ethtrunk1 bind link-bundle peer-ip {ett1_bfd_nei_ip} interface Eth-Trunk1 source-ip {ett1_ip}
- min-tx-interval 250
- min-rx-interval 250
-
-bfd bfd-ethtrunk2 bind link-bundle peer-ip {ett2_bfd_nei_ip} interface Eth-Trunk2 source-ip {ett2_ip}
- min-tx-interval 250
- min-rx-interval 250
-
-ip vpn-instance mgmtVrf
+ip vpn-instance {mgmt_vrf}
  ipv4-family
 
 interface Ethernet0/0/0
- description {mgmt_descr}
- ip binding vpn-instance mgmtVrf
+ ip binding vpn-instance {mgmt_vrf}
  ip address {mgmt_ip} {mgmt_mask}
 
-ip route-static vpn-instance mgmtVrf 10.1.2.3 255.255.255.255 {mgmt_gw}
-ip route-static vpn-instance mgmtVrf 10.4.5.6 255.255.255.255 {mgmt_gw}
-
-interface GE0/0/1
- description {phy1_descr}
- eth-trunk 1
-
-interface GE0/0/2
- description {phy2_descr}
- eth-trunk 2
-
-bgp {asn}
- router-id {loopback_ip}
-
 hwtacacs-server template tacacs-template
- hwtacacs-server source-ip {loopback_ip}
+ hwtacacs-server source-ip {lpb_v4_ip}
  hwtacacs-server shared-key {tacacs_key}
 
 iccp redundancy group 303
- peer-ip {iccp_nei_ip}
  mlacp node-id {node}
+ 
+ipv4 access-list acl-v4-allow-noc-only
+10 permit source {acl_v4_net} {acl_v4_wc}
+20 deny any any
+
+ipv6 access-list acl-v6-allow-noc-only
+10 permit source {acl_v6_net} {acl_v6_wc}
+20 deny any any
+
+line vty
+ acl ipv4 acl-v4-allow-noc-only
+ acl ipv6 acl-v6-allow-noc-only
+ 

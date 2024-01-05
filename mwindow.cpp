@@ -27,8 +27,8 @@ extern QString b2s(bool b);
 extern array<QString, LANGS_AMOUNT> QS_TBLDESCR;
 extern array<QString, LANGS_AMOUNT> QS_TBLVALUE;
 
-//enum varType_t                                      {Domname = 0, Text, IPv4, Unsigned, Password, MASKv4, IPv6, MASKv6Len, WildcardV4, MASKv4Len, Prompt, Hash, MAX}; // типы переменных
-extern const array<int, int(varType_t::MAX)> maxChars {        253,  255,   15,       10,      128,     15,   45,         3,         15,         2,     64,  128};      // длины полей ввода в символах
+//enum varType_t                                      {Domname = 0, Text, IPv4, Unsigned, Password, MASKv4, IPv6, MASKv6Len, WildcardV4, MASKv4Len, Prompt, Hash, WildcardV6, Separator, MAX}; // типы переменных
+extern const array<int, int(varType_t::MAX)> maxChars {        253,  255,   15,       10,      128,     15,   45,         3,         15,         2,     64,  128,         45,         0};      // длины полей ввода в символах
 
 // индексы языков [][0] - eng, [][1] - rus, [][2] - elfian
 //
@@ -45,7 +45,9 @@ const extern array<array<QString, LANGS_AMOUNT>, int(varType_t::MAX)> QS_PLCHLDR
         {"___.___.___.___", ""}, // ipv4 wildcard
         {"integer from 0 to 32", "целое от 0 до 32"}, // ipv4 mask length
         {"max 64 unicode symbols", "макс. 64 символа юникод"}, // system prompt
-        {"max 128 symbols, latin and special", "макс. 128 символов, латиница и спецсимволы"} // hash
+        {"max 128 symbols, latin and special", "макс. 128 символов, латиница и спецсимволы"}, // hash
+        {"____:____:____:____:____:____:____:____", ""}, // wildcardv6
+        {"separator", "разделитель"} // separator, for future use
       }};
 
 
@@ -168,6 +170,8 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
     vldtrs[varType_t::MASKv4Len] = new NNCGValidMASKv4Len(this);
     vldtrs[varType_t::Prompt] = nullptr;
     vldtrs[varType_t::Hash] = new NNCGValidHash(this);
+    vldtrs[varType_t::WildcardV6] = new NNCGValidIPv6(this);
+    vldtrs[varType_t::Separator] = nullptr;
 }
 
 

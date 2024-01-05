@@ -8,6 +8,8 @@
 #include <QFileDialog>
 #include <QApplication>
 
+//#include <iostream>
+
 using namespace std;
 
 extern QApplication *app;

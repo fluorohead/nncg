@@ -10,16 +10,18 @@ extern NNCGSettings objSett;
 
 // тексты, связанные с объектом шаблона
 const QString QS_DEFLOGO {":/rtr.png"};
-array<QString, LANGS_AMOUNT> QS_REPVAR {"repeating of variable at line : ", "повтор переменной в строке : "};
-array<QString, LANGS_AMOUNT> QS_WRSYNTX {"wrong syntax at line : ", "неверный синтаксис в строке : "};
-array<QString, LANGS_AMOUNT> QS_TOOMCHVAR {"too much variables (allowed 1000 MAX)", "слишком много переменных (макс. 1000)"};
-array<QString, LANGS_AMOUNT> QS_WRSTRTSYMB {"wrong start symbol at line : ", "неверный начальный символ в строке : "};
-array<QString, LANGS_AMOUNT> QS_TMPLTLDD {"template loaded : ", "загружен шаблон : "};
-array<QString, LANGS_AMOUNT> QS_INCORHDR {"incorrect header", "неверный заголовок"};
-array<QString, LANGS_AMOUNT> QS_TOOSHRTHDR {"too short header", "слишком короткий заголовок"};
-array<QString, LANGS_AMOUNT> QS_TOOBIGTMPLT {"too big template (allowed 5_000_000 bytes MAX)", "слишком большой размер (макс. 5 000 000 байт)"};
-array<QString, LANGS_AMOUNT> QS_ERROPNNGTMPL {"error opening template file", "ошибка при открытии шаблона"};
-extern const array<QString, int(varType_t::MAX)> QS_VARTYPES {"domname", "text", "ipv4", "unsigned", "password", "maskv4", "ipv6", "maskv6len", "wildcardv4", "maskv4len", "prompt", "hash"};
+const array<QString, LANGS_AMOUNT> QS_REPVAR {"repeating of variable at line : ", "повтор переменной в строке : "};
+const array<QString, LANGS_AMOUNT> QS_WRSYNTX {"wrong syntax at line : ", "неверный синтаксис в строке : "};
+const array<QString, LANGS_AMOUNT> QS_TOOMCHVAR {"too much variables (allowed 1000 MAX)", "слишком много переменных (макс. 1000)"};
+const array<QString, LANGS_AMOUNT> QS_WRSTRTSYMB {"wrong start symbol at line : ", "неверный начальный символ в строке : "};
+const array<QString, LANGS_AMOUNT> QS_TMPLTLDD {"template loaded : ", "загружен шаблон : "};
+const array<QString, LANGS_AMOUNT> QS_INCORHDR {"incorrect header", "неверный заголовок"};
+const array<QString, LANGS_AMOUNT> QS_TOOSHRTHDR {"too short header", "слишком короткий заголовок"};
+const array<QString, LANGS_AMOUNT> QS_TOOBIGTMPLT {"too big template (allowed 5_000_000 bytes MAX)", "слишком большой размер (макс. 5 000 000 байт)"};
+const array<QString, LANGS_AMOUNT> QS_ERROPNNGTMPL {"error opening template file", "ошибка при открытии шаблона"};
+
+// все типы переменных
+extern const array<QString, int(varType_t::MAX)> QS_VARTYPES {"domname", "text", "ipv4", "unsigned", "password", "maskv4", "ipv6", "maskv6len", "wildcardv4", "maskv4len", "prompt", "hash", "wildcardv6", "separator"};
 
 // обязательные строки заголовка
 const QString   QS_NNCT {"NETWORK_NODE_CONFIG_TEMPLATE"},
@@ -116,7 +118,7 @@ NNCGTemplate::NNCGTemplate() {
     hashVars["{hostname}"] = {0, "Network node hostname ->", "demo-sr01", Domname};
     hashVars["{phy1_ifname}"] = {1, "Interface name ->", "Giga0/1/0/7", Text};
     hashVars["{phy1_descr}"] = {2, "Interface description ->", "to Internet", Text};
-    hashVars["{phy1_ip}"] = {3, "IPv4 address -> ", "192.168.0.2", IPv4};
+    hashVars["{phy1_ip}"] = {3, "IPv4 address ->", "192.168.0.2", IPv4};
     hashVars["{phy1_mask}"] = {4, "IPv4 mask ->", "255.255.255.0", MASKv4};
     noOpenErr = true;
     lastErrMsg = tr("demo template loaded");
