@@ -105,19 +105,19 @@ DELIMITER_CLOSE:
 > BRAND_COLORS:0,139,224,255,255,255
 
 
-***DELIMITER_OPEN
+***DELIMITER_OPEN, 
 DELIMITER_CLOSE***
 > Opening and closing variable name delimiters. They can
 > consist of more than 1 character. For empty values there will be
 > use curly braces { }. Examples:
 >
-> DELIMITER_OPEN:("
-> DELIMITER_CLOSE:")
+     DELIMITER_OPEN:("
+     DELIMITER_CLOSE:")
 >
 > or
 >
-> DELIMITER_OPEN:<('
-> DELIMITER_CLOSE:')>
+     DELIMITER_OPEN:<('
+     DELIMITER_CLOSE:')>
 > etc.
 
 ***#BEGIN_VARIABLES
