@@ -63,16 +63,16 @@ Capital and small letters in types do not play a role. For example, the followin
 
 **The following fields are required, although the values after the colons may be missing.**
 
-NETWORK_NODE_CONFIG_TEMPLATE
-SOFTWARE_VERSION:
-TITLE:
-COMMENT:
-LOGO:
-BRAND_COLORS:
-DELIMITER_OPEN:
-DELIMITER_CLOSE:
-#BEGIN_VARIABLES
-#END_VARIABLES
+NETWORK_NODE_CONFIG_TEMPLATE  
+SOFTWARE_VERSION:  
+TITLE:  
+COMMENT:  
+LOGO:  
+BRAND_COLORS:  
+DELIMITER_OPEN:  
+DELIMITER_CLOSE:  
+\#BEGIN_VARIABLES  
+\#END_VARIABLES  
 
 ***NETWORK_NODE_CONFIG_TEMPLATE***
 > First line of the template file.
@@ -123,7 +123,7 @@ DELIMITER_CLOSE***
 \#END_VARIABLES***
 > Mark the beginning and end of a block of variables.
 
-**The variable block is located between the #BEGIN_VARIABLES and #END_VARIABLES fields.**
+**The variable block is located between the \#BEGIN_VARIABLES and \#END_VARIABLES fields.**
 
 Each line must have the following format:
 
