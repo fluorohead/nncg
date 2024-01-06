@@ -57,7 +57,7 @@ The software is written using the Qt 6.6.1 framework and uses icons from https:/
 ***Hash***
 > hash sequence, only Latin and special characters, max. 128 characters
 
-Capital and small letters in types do not play a role. For example, the following names are identical: ***Domname***, ***dOMName***, ***DomName***, etc.
+Capital and small letters in types do not play a role. For example, the following names are identical: ***Domname***, ***dOMName***, ***DomName***, etc.  
 
 ## Example template file header
 
@@ -102,10 +102,9 @@ DELIMITER_CLOSE:
 > RGB values for background, then RGB values for text, 6 in total
 > values. Decimal numbers are used, for example:
 >
-> BRAND_COLORS:0,139,224,255,255,255
+     BRAND_COLORS:0,139,224,255,255,255
 
-
-***DELIMITER_OPEN, 
+***DELIMITER_OPEN  
 DELIMITER_CLOSE***
 > Opening and closing variable name delimiters. They can
 > consist of more than 1 character. For empty values there will be
@@ -120,16 +119,15 @@ DELIMITER_CLOSE***
      DELIMITER_CLOSE:')>
 > etc.
 
-***#BEGIN_VARIABLES
-#END_VARIABLES***
-Mark the beginning and end of a block of variables.
-
+***\#BEGIN_VARIABLES  
+\#END_VARIABLES***
+> Mark the beginning and end of a block of variables.
 
 **The variable block is located between the #BEGIN_VARIABLES and #END_VARIABLES fields.**
 
 Each line must have the following format:
 
-#<delimiter_open><variable_name><delimiter_close>,<comment>,<variable_type>
+\#\<delimiter_open\>\<variable_name\>\<delimiter_close\>,\<comment\>,\<variable_type\>
 
 The comment must be surrounded by double quotes.
 
