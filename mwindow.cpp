@@ -27,8 +27,23 @@ extern QString b2s(bool b);
 extern array<QString, LANGS_AMOUNT> QS_TBLDESCR;
 extern array<QString, LANGS_AMOUNT> QS_TBLVALUE;
 
-//enum varType_t                                      {Domname = 0, Text, IPv4, Unsigned, Password, MASKv4, IPv6, MASKv6Len, WildcardV4, MASKv4Len, Prompt, Hash, WildcardV6, Separator, MAX}; // типы переменных
-extern const array<int, int(varType_t::MAX)> maxChars {        253,  255,   15,       10,      128,     15,   45,         3,         15,         2,     64,  128,         45,         0};      // длины полей ввода в символах
+// длины полей ввода в символах
+extern const array<int, int(varType_t::MAX)> maxChars {       253, // Domname
+                                                              255, // Text
+                                                               15, // IPv4
+                                                               10, // Unsigned
+                                                              128, // Password
+                                                               15, // MASKv4
+                                                               45, // IPv6
+                                                                3, // MASKv6Len
+                                                               15, // WildcardV4
+                                                                2, // MASKv4Len
+                                                               64, // Prompt
+                                                              128, // Hash
+                                                               45, // WildcardV6
+                                                                 0 // MAX
+};
+
 
 // индексы языков [][0] - eng, [][1] - rus, [][2] - elfian
 //
