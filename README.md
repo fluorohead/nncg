@@ -147,7 +147,12 @@ For example :
 After the header, the device configuration text is inserted, where variable values are replaced by their names, framed by delimiters.
 
 For example :
-
+     NETWORK_NODE_CONFIG_TEMPLATE
+     SOFTWARE_VERSION:0.1.0
+     TITLE:Example template
+     COMMENT:demo version
+     LOGO:brandlogo.png
+     BRAND_COLORS:0,139,224,255,255,255
      DELIMITER_OPEN:{
      DELIMITER_CLOSE:}
      \#BEGIN_VARIABLES
