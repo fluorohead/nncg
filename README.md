@@ -137,12 +137,12 @@ For example :
 
      DELIMITER_OPEN:{
      DELIMITER_CLOSE:}
-     \#BEGIN_VARIABLES
-     \#{domname}, "Domain name :", Domname
-     \#{prompt}, "System prompt :", Prompt
-     \#{node}, "Node ID number :", Unsigned
-     \#{lpb_v4_ip}, "Interface Loopback IPv4 address :", IPv4
-     \#END_VARIABLES
+     #BEGIN_VARIABLES
+     #{domname}, "Domain name :", Domname
+     #{prompt}, "System prompt :", Prompt
+     #{node}, "Node ID number :", Unsigned
+     #{lpb_v4_ip}, "Interface Loopback IPv4 address :", IPv4
+     #END_VARIABLES
 
 After the header, the device configuration text is inserted, where variable values are replaced by their names, framed by delimiters.
 
@@ -156,10 +156,10 @@ For example :
      BRAND_COLORS:0,139,224,255,255,255
      DELIMITER_OPEN:{
      DELIMITER_CLOSE:}
-     \#BEGIN_VARIABLES
-     \#{domname}, "Domain name :", Domname
-     \#{lpb_v4_ip}, "Interface Loopback IPv4 address :", IPv4
-     \#END_VARIABLES
+     #BEGIN_VARIABLES
+     #{domname}, "Domain name :", Domname
+     #{lpb_v4_ip}, "Interface Loopback IPv4 address :", IPv4
+     #END_VARIABLES
      hostname {domname}
      interface LoopBack0
       ip address {lpb_v4_ip} 255.255.255.255
