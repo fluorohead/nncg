@@ -19,7 +19,6 @@
 using namespace std;
 
 extern NNCGSettings objSett;
-//extern theme_t themeCurrent;
 extern array<theme_t, themeId_t::UnknownTheme> gammaApp;
 extern NNCGTemplate* objTempl;
 extern QString b2s(bool b);
@@ -27,7 +26,7 @@ extern QString b2s(bool b);
 extern array<QString, LANGS_AMOUNT> QS_TBLDESCR;
 extern array<QString, LANGS_AMOUNT> QS_TBLVALUE;
 
-// длины полей ввода в символах
+// размеры полей ввода в символах
 extern const array<int, int(varType_t::MAX)> maxChars {       253, // Domname
                                                               255, // Text
                                                                15, // IPv4
@@ -74,6 +73,8 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
     bigWidget = new QWidget(this, Qt::Widget);
     statusBar = new QStatusBar(this);
     statusBar->showMessage(DISPLAY_APPVER);
+
+    sepPixmap.load(":/sep.png");
 
     this->setAutoFillBackground(true);
 
@@ -208,20 +209,31 @@ void NNCGMainWindow::refreshTable() {
         oneRow[1] = new QTableWidgetItem(hIt.value().descr, 0);
         oneRow[1]->setFont(fntCons11);
         oneRow[1]->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        oneRow[1]->setFlags(Qt::NoItemFlags | Qt::ItemIsEnabled);
+        oneRow[1]->setFlags(Qt::NoItemFlags);
         for (int col = 0; col < 2; col++) table->setItem(hIt.value().orderNum, col, oneRow.at(col));
-        auto qle = new QLineEdit;
-        qle->setFont(fntCons12bold);
-        qle->setFrame(false);
-        qle->setMaxLength(maxChars.at(hIt.value().type));
-        qle->setClearButtonEnabled(true);
-        if (!QS_PLCHLDRS.at(hIt.value().type).at(1).isEmpty()) qle->setPlaceholderText(QS_PLCHLDRS.at(hIt.value().type).at(objSett.curLang));
-        else qle->setPlaceholderText(QS_PLCHLDRS.at(hIt.value().type).at(0));
-        if (hIt.value().type == varType_t::Password)
-            qle->setEchoMode(QLineEdit::Password);
-        qle->setValidator(vldtrs.at(int(hIt.value().type)));
-        qle->setText(hIt.value().value);
-        table->setCellWidget(hIt.value().orderNum, 2, qle);
+        if (hIt.value().type != varType_t::Separator) {
+            auto qle = new QLineEdit;
+            qle->setFont(fntCons12bold);
+            qle->setFrame(false);
+            qle->setMaxLength(maxChars.at(hIt.value().type));
+            qle->setClearButtonEnabled(true);
+            if (!QS_PLCHLDRS.at(hIt.value().type).at(1).isEmpty()) qle->setPlaceholderText(QS_PLCHLDRS.at(hIt.value().type).at(objSett.curLang));
+            else qle->setPlaceholderText(QS_PLCHLDRS.at(hIt.value().type).at(0));
+            if (hIt.value().type == varType_t::Password)
+                qle->setEchoMode(QLineEdit::Password);
+            qle->setValidator(vldtrs.at(int(hIt.value().type)));
+            qle->setText(hIt.value().value);
+            table->setCellWidget(hIt.value().orderNum, 2, qle);
+        } else {
+            auto ql = new QLabel; // separator QLabel
+            ql->setScaledContents(true);
+            ql->setPixmap(sepPixmap);
+            table->setCellWidget(hIt.value().orderNum, 1, ql);
+            ql = new QLabel; // separator QLabel
+            ql->setScaledContents(true);
+            ql->setPixmap(sepPixmap);
+            table->setCellWidget(hIt.value().orderNum, 2, ql);
+        }
     };
     int colW = table->columnWidth(1);
     table->horizontalHeader()->setStyleSheet(QString("::section {background-color: rgb(%1, %2, %3); color: rgb(%4, %5, %6); font: bold 14px 'Consolas'}")
@@ -277,7 +289,7 @@ void NNCGMainWindow::refreshTable() {
 // при событии закрытия окна сохраняем настройки в json
 void NNCGMainWindow::closeEvent(QCloseEvent *event) {
     this->hide();
-    if (!objTempl->isDemo) objSett.saveSettings(objTempl->getFilePath() + objTempl->getFileName(), objSett.curThemeId, width(), height(), b2s(isMaximized()), table->horizontalHeader()->sectionSize(1), objSett.curLang);
+    if (!objTempl->isDemo) objSett.saveSettings(objTempl->getFilePath() + objTempl->getFileName(), objSett.curThemeId, this->width(), this->height(), b2s(isMaximized()), table->horizontalHeader()->sectionSize(1), objSett.curLang);
     else objSett.saveSettings("", themeId_t::Dark, width(), height(), b2s(isMaximized()), table->horizontalHeader()->sectionSize(1), objSett.curLang);
     event->accept();
 }
@@ -286,8 +298,10 @@ void NNCGMainWindow::closeEvent(QCloseEvent *event) {
 // сброс данных из таблицы в хэш объекта шаблона
 void NNCGMainWindow::dumpTableToHash() {
     for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
-        auto *cw = dynamic_cast<QLineEdit*>(table->cellWidget(hIt.value().orderNum, 2));
-        objTempl->hashVars[hIt.key()].value = cw->text();
+        if (hIt.value().type != varType_t::Separator) {
+            auto *cw = dynamic_cast<QLineEdit*>(table->cellWidget(hIt.value().orderNum, 2));
+            objTempl->hashVars[hIt.key()].value = cw->text();
+        }
     }
 }
 
@@ -295,9 +309,11 @@ void NNCGMainWindow::dumpTableToHash() {
 // обнуление всех введённых значений в таблице; и в объекте шаблона (необязательно, но экономит память)
 void NNCGMainWindow::clearTable() {
     for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
-        hIt.value().value.clear();
-        auto *cw = dynamic_cast<QLineEdit*>(table->cellWidget(hIt.value().orderNum, 2));
-        cw->clear();
+        if (hIt.value().type != varType_t::Separator) {
+            hIt.value().value.clear();
+            auto *cw = dynamic_cast<QLineEdit*>(table->cellWidget(hIt.value().orderNum, 2));
+            cw->clear();
+        }
     }
 }
 

@@ -18,7 +18,7 @@ constexpr auto MAX_VAR_NAME_LEN = 100; // максимальная длина и
 constexpr auto MAX_VAR_DESCR_LEN = 100; // максимальная длина описания переменной (без учёта двойных кавычек)
 
 constexpr auto TABLE_ZERO_COLUMN_WIDTH = 32; // ширина нулевой колонки таблицы
-constexpr auto BASE_WIDTH_COLUMN_DESCR = 324;
+constexpr auto BASE_WIDTH_COLUMN_DESCR = 324; // начальная ширина 1-й колонки таблицы
 
 // индексы языков
 constexpr auto LANGS_AMOUNT = 2;

@@ -6,6 +6,8 @@
 #include <QApplication>
 #include <QWindowStateChangeEvent>
 
+// #include <iostream>
+
 using namespace std;
 
 QApplication *app;

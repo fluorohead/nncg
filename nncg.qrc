@@ -8,5 +8,6 @@
         <file>tm.png</file>
         <file>tmh.png</file>
         <file>tmp.png</file>
+        <file>sep.png</file>
     </qresource>
 </RCC>

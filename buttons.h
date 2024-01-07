@@ -10,7 +10,7 @@ class NNCGBtnCsvLoad: public QPushButton
 
 public:
     NNCGBtnCsvLoad(int, int, const QString &, QWidget * = nullptr);
-    void changeEvent(QEvent *);
+    void changeEvent(QEvent *) override;
 
 public slots:
     void slotClicked();
@@ -23,7 +23,7 @@ class NNCGBtnCsvSave: public QPushButton
 
 public:
     NNCGBtnCsvSave(int, int, const QString &, QWidget * = nullptr);
-    void changeEvent(QEvent *);
+    void changeEvent(QEvent *) override;
 
 public slots:
     void slotClicked();
@@ -36,7 +36,7 @@ class NNCGButtonLoad: public QPushButton
 
 public:
     NNCGButtonLoad(int, int, const QString &, QWidget * = nullptr);
-    void changeEvent(QEvent *);
+    void changeEvent(QEvent *) override;
 
 public slots:
     void slotClicked();
@@ -49,7 +49,7 @@ class NNCGButtonCreate: public QPushButton
 
 public:
     NNCGButtonCreate(int, int, const QString &, QWidget * = nullptr);
-    void changeEvent(QEvent *);
+    void changeEvent(QEvent *) override;
 
 public slots:
     void slotClicked();
@@ -62,7 +62,7 @@ class NNCGBtnClearAll: public QPushButton
 
 public:
     NNCGBtnClearAll(int, int, const QString &, QWidget * = nullptr);
-    void changeEvent(QEvent *);
+    void changeEvent(QEvent *) override;
 
 public slots:
     void slotClicked();
@@ -75,7 +75,7 @@ class NNCGBtnLangSwitch: public QPushButton
 
 public:
     NNCGBtnLangSwitch(int, int, QWidget * = nullptr);
-    void changeEvent(QEvent *);
+    void changeEvent(QEvent *) override;
 
 public slots:
     void slotClicked();
@@ -88,7 +88,7 @@ class NNCGBtnThemeSwitch: public QPushButton
 
 public:
     NNCGBtnThemeSwitch(int, int, QWidget * = nullptr);
-    void changeEvent(QEvent *);
+    void changeEvent(QEvent *) override;
 
 public slots:
     void slotClicked();

@@ -7,11 +7,15 @@ BRAND_COLORS:
 DELIMITER_OPEN:{
 DELIMITER_CLOSE:}
 #BEGIN_VARIABLES
+#{sep9},            "---------------------------------------",   Separator
 #{domname},         "Domain name :",                             Domname
 #{prompt},          "System prompt :",                           Prompt
+#{sep1},            "---------------------------------------",   Separator
 #{node},            "Node ID number :",                          Unsigned
+#{sep10},            "---------------------------------------",   Separator
 #{lpb_v4_ip},       "Interface Loopback IPv4 address :",         IPv4
 #{lpb_v6_ip},       "Interface Loopback IPv6 address :",         IPv6
+#{sep2},            "---------------------------------------",   Separator
 #{ett1_v4_ip},      "Interface Eth-Trunk1 IPv4 address :",       IPv4
 #{ett1_v4_ml},      "Interface Eth-Trunk1 IPv4 mask length :",   MASKv4Len
 #{ett1_v6_ip},      "Interface Eth-Trunk1 IPv6 address :",       IPv6
@@ -19,14 +23,18 @@ DELIMITER_CLOSE:}
 #{ett1_descr},      "Interface Eth-Trunk1 description :",        Text
 #{ett1_cost},       "Interface Eth-Trunk1 OSPF cost :",          Unsigned
 #{ospf_hash},       "OSPF sessions hash cipher :",               Hash
+#{sep3},            "---------------------------------------",   Separator
 #{tacacs_key},      "Tacacs key :",                              Password
+#{sep4},            "---------------------------------------",   Separator
 #{acl_v4_net},      "Access ACL allowed IPv4 net :",             IPv4
 #{acl_v4_wc},       "Access ACL allowed IPv4 wildcard :",        WildcardV4
 #{acl_v6_net},      "Access ACL allowed IPv6 net :",             IPv6
 #{acl_v6_wc},       "Access ACL allowed IPv6 wildcard :",        WildcardV6
+#{sep5},            "---------------------------------------",   Separator
 #{mgmt_ip},         "Interface MGMT IPv4 address :",             IPv4
 #{mgmt_mask},       "Interface MGMT IPv4 mask :",                MASKv4
 #{mgmt_vrf},        "Management Vrf :",                          Text
+#{sep8},            "---------------------------------------",   Separator
 #END_VARIABLES
 
 sysname {prompt}

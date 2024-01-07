@@ -107,7 +107,9 @@ void NNCGBtnCsvSave::slotClicked() {
             mainWindow->dumpTableToHash();
             ba.append(QString(QS_VVT).toStdString());
             for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
-                ba.append(QString(QString("\r\n\"%1\";\"%2\";\"%3\"").arg(hIt.key(), hIt.value().value, t2s(hIt.value().type))).toStdString());
+                if (hIt.value().type != varType_t::Separator) { // пишем в csv всё, кроме разделителя, т.к. у него всего пустое значение
+                    ba.append(QString(QString("\r\n\"%1\";\"%2\";\"%3\"").arg(hIt.key(), hIt.value().value, t2s(hIt.value().type))).toStdString());
+                }
             }
             if (fileCSV.write(ba)) {
                 QMessageBox(QMessageBox::Information, QS_DIAGINFO.at(objSett.curLang), QS_CSV_SSC.at(objSett.curLang), QMessageBox::Ok, mainWindow).exec();

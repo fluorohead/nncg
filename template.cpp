@@ -66,8 +66,12 @@ bool NNCGTemplate::inspectLine(const QString &line, QString &varName, QString &v
         varName = rex.cap(1);
         varDescr = rex.cap(2);
         if ((varName.length() >= 3) && (varName.length() <= MAX_VAR_NAME_LEN) && (rex.cap(3).length() != 0)) {
-            if (varDescr.length() > MAX_VAR_DESCR_LEN) varDescr.truncate(MAX_VAR_DESCR_LEN); // обрезаем излишне длинное описание переменной
             varType = s2t(rex.cap(3));
+            if (varType != varType_t::Separator) {
+                if (varDescr.length() > MAX_VAR_DESCR_LEN) varDescr.truncate(MAX_VAR_DESCR_LEN); // обрезаем излишне длинное описание переменной
+            } else {
+                varDescr.clear();
+            }
         } else {
             return false;
         }
@@ -210,7 +214,6 @@ NNCGTemplate::NNCGTemplate(const QString &fn)
                     lastErrMsg.append(fn.section('\\', -1, -1));
                     // загружаем файл логотипа
                     if (!pixLogo.load(getFilePath() + "/" + strList[4].mid(5, -1).simplified())) pixLogo.load(QS_DEFLOGO);
-
                     /////
                 } else {
                     noOpenErr = false;

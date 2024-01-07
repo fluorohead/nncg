@@ -14,54 +14,11 @@ The application also provides a function for saving entered values in CSV format
 
 Having a template file and once saved a CSV dump, you can make your life much easier, and in the time freed from routine, drink coffee or read documentation about network technologies.
 
-The software is written using the Qt 6.6.1 framework and uses icons from https://icons8.com/
-
-## List of variable types and description of checks performed
-
-***Domname***
-> checking the correctness of the domain name, max. 253 characters, only Latin and hyphens
-
-***Prompt***
-> prompt in the device console, max. 64 unicode characters
-
-***Text***
-> plain text without language restrictions, max. 255 unicode characters
-
-***IPv4***
-> checking for compliance with IPv4 address
-
-***IPv6***
-> checking for compliance with IPv6 address
-
-***Unsigned***
-> unsigned 32-bit integer in the range from 0 to 4_294_967_295
-
-***Password***
-> password, hidden input field, max. 128 unicode characters
-
-***MASKv4***
-> checking the correctness of the mask for IPv4 in dotted format
-
-***MASKv4Len***
-> IPv4 mask length, integer from 0 to 32
-
-***MASKv6Len***
-> mask length for IPv6 address, integer from 0 to 128
-
-***WildcardV4***
-> inverted wildcard bitmask for IPv4, check for correctness
-
-***WildcardV6***
-> inverted wildcard bitmask for IPv6, check for correctness
-
-***Hash***
-> hash sequence, only Latin and special characters, max. 128 characters
-
-Capital and small letters in types do not play a role. For example, the following names are identical: ***Domname***, ***dOMName***, ***DomName***, etc.  
+The software is written using the Qt 6.6.1 framework and uses icons from https://icons8.com website.
 
 ## Example template file header
 
-**The following fields are required, although the values after the colons may be missing.**
+**The following fields are mandatory, although the values after the colons may be missing.**
 
 NETWORK_NODE_CONFIG_TEMPLATE  
 SOFTWARE_VERSION:  
@@ -116,12 +73,57 @@ DELIMITER_CLOSE***
 > or
 >
      DELIMITER_OPEN:<('
-     DELIMITER_CLOSE:')>
-> etc.
+     DELIMITER_CLOSE:')>  
 
 ***\#BEGIN_VARIABLES  
 \#END_VARIABLES***
 > Mark the beginning and end of a block of variables.
+
+## List of variable types and description of checks performed
+
+***Domname***
+> checking the correctness of the domain name, max. 253 characters, only Latin and hyphens
+
+***Prompt***
+> prompt in the device console, max. 64 unicode characters
+
+***Text***
+> plain text without language restrictions, max. 255 unicode characters
+
+***IPv4***
+> checking for compliance with IPv4 address
+
+***IPv6***
+> checking for compliance with IPv6 address
+
+***Unsigned***
+> unsigned 32-bit integer in the range from 0 to 4_294_967_295
+
+***Password***
+> password, hidden input field, max. 128 unicode characters
+
+***MASKv4***
+> checking the correctness of the mask for IPv4 in dotted format
+
+***MASKv4Len***
+> IPv4 mask length, integer from 0 to 32
+
+***MASKv6Len***
+> mask length for IPv6 address, integer from 0 to 128
+
+***WildcardV4***
+> inverted wildcard bitmask for IPv4, check for correctness
+
+***WildcardV6***
+> inverted wildcard bitmask for IPv6, check for correctness
+
+***Hash***
+> hash sequence, only Latin and special characters, max. 128 characters
+
+***Separator***
+> serves to divide variables into logical blocks and internal comments
+
+Capital and small letters in types do not play a role. For example, the following names are identical: ***Domname***, ***dOMName***, ***DomName***, etc.  
 
 **The variable block is located between the \#BEGIN_VARIABLES and \#END_VARIABLES fields.**
 
@@ -135,12 +137,12 @@ For example :
 
      DELIMITER_OPEN:{
      DELIMITER_CLOSE:}
-     #BEGIN_VARIABLES
-     #{domname}, "Domain name :", Domname
-     #{prompt}, "System prompt :", Prompt
-     #{node}, "Node ID number :", Unsigned
-     #{lpb_v4_ip}, "Interface Loopback IPv4 address :", IPv4
-     #END_VARIABLES
+     \#BEGIN_VARIABLES
+     \#{domname}, "Domain name :", Domname
+     \#{prompt}, "System prompt :", Prompt
+     \#{node}, "Node ID number :", Unsigned
+     \#{lpb_v4_ip}, "Interface Loopback IPv4 address :", IPv4
+     \#END_VARIABLES
 
 After the header, the device configuration text is inserted, where variable values are replaced by their names, framed by delimiters.
 
@@ -148,10 +150,10 @@ For example :
 
      DELIMITER_OPEN:{
      DELIMITER_CLOSE:}
-     #BEGIN_VARIABLES
-     #{domname}, "Domain name :", Domname
-     #{lpb_v4_ip}, "Interface Loopback IPv4 address :", IPv4
-     #END_VARIABLES
+     \#BEGIN_VARIABLES
+     \#{domname}, "Domain name :", Domname
+     \#{lpb_v4_ip}, "Interface Loopback IPv4 address :", IPv4
+     \#END_VARIABLES
      hostname {domname}
      interface LoopBack0
       ip address {lpb_v4_ip} 255.255.255.255
