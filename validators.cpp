@@ -1,5 +1,7 @@
 #include "validators.h"
 
+//#include <iostream>
+
 using namespace std;
 
 extern QString b2s(bool b);
@@ -174,7 +176,8 @@ QValidator::State NNCGValidIPv6::validate(QString &input, int &pos) const {
     if (input.count("::") > 1) return Invalid; // нельзя использовать "::" более одного раза
     if (input.count('.') > 3) return Invalid; // не может быть более 3 точек всего
     if (!input.contains(':')) return Intermediate; // если вообще нет символа ":" => неполный ввод
-    if (input.count(':') < 2) return Intermediate; // если всего символов ":" меньше двух => неполный ввод
+    if ((input.count(':') < 7) && (!input.contains("::"))) return Intermediate;
+    if (input.count(':') > 7) return Invalid;
     if (input.contains('.') && input.endsWith(':')) return Invalid;
     if (input.contains('.') && (!input.contains(':'))) return Invalid;
     QRegExp rex;

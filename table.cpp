@@ -30,7 +30,7 @@ void NNCGTable::changeEvent(QEvent *event) {
             }
         }
     }
-//    QTableWidget::changeEvent(event);
+  //  QTableWidget::changeEvent(event);
   //  event->accept();
 }
 

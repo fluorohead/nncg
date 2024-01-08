@@ -16,7 +16,7 @@ Having a template file and once saved a CSV dump, you can make your life much ea
 
 The software is written using the Qt 6.6.1 framework and uses icons from https://icons8.com website.
 
-## Example template file header
+## Example of template file header
 
 **The following fields are mandatory, although the values after the colons may be missing.**
 

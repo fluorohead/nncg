@@ -134,10 +134,6 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
     table->horizontalHeader()->setStretchLastSection(true);
     table->setFrameShape(QFrame::NoFrame);
     table->setSortingEnabled(false);
-    table->setHorizontalHeaderLabels({"", "", ""});
-    table->horizontalHeaderItem(0)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter); // выравнивание текста вправо для колонки 0
-    table->horizontalHeaderItem(1)->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter); // выравнивание текста вправо для колонки 0
-    table->horizontalHeaderItem(2)->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter); // выравнивание текста вправо для колонки 0
     table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
 
     auto *hbBottom = new QHBoxLayout(nullptr);
@@ -197,8 +193,7 @@ void NNCGMainWindow::refreshTable() {
     logoLabel->setPixmap(*objTempl->getPtrPixLogo());
     titleLabel->setText(objTempl->getTitle());
     commentLabel->setText(objTempl->getComment());
-    table->clear(); // уничтожаются ли дочерние QLineEdit ?
-    table->setHorizontalHeaderLabels({"#", QS_TBLDESCR.at(objSett.curLang), QS_TBLVALUE.at(objSett.curLang)});
+    table->clearContents();
     table->setRowCount((int)objTempl->hashVars.size());
     for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
         array <QTableWidgetItem*, 3> oneRow {};
@@ -229,7 +224,10 @@ void NNCGMainWindow::refreshTable() {
             ql->setScaledContents(true);
             ql->setPixmap(sepPixmap);
             table->setCellWidget(hIt.value().orderNum, 1, ql);
-            ql = new QLabel; // separator QLabel
+            oneRow[2] = new QTableWidgetItem(hIt.value().descr, 0); // важно создать этот Item,
+            oneRow[2]->setFlags(Qt::NoItemFlags); // чтобы выставить такой флаг => будет перескок при нажатии Tab
+            table->setItem(hIt.value().orderNum, 2, oneRow.at(2));
+            ql = new QLabel;
             ql->setScaledContents(true);
             ql->setPixmap(sepPixmap);
             table->setCellWidget(hIt.value().orderNum, 2, ql);
