@@ -35,28 +35,27 @@ DELIMITER_CLOSE:
 > First line of the template file.
 
 ***SOFTWARE_VERSION***
-> After the colon, the minimum software version required for
+> After the colon, the minimum software version required to
 > open the file. In the current version of the application this field is not checked,
-> made for the future. It is recommended to always set it to 0.1.0.
+> made for future use. Always set it to 0.1.0.
 
 ***TITLE***
 > Template title. Displayed in large font. It is recommended to always fill it out.
 
 ***COMMENT***
 > Comment displayed below the title in smaller font.
-> It is recommended to indicate the creation date or version of the template here, but it is acceptable
-> any other text.
+> It is recommended to indicate the template creation date or template version here, but any other text is acceptable.
 
 ***LOGO***
 > Logo file. Must be in the same directory as the file
-> template. It is recommended to use framed images in the format
-> PNG with a resolution of no more than 512x512. When empty or in case
-> errors, the application logo is displayed.
+> template. It is recommended to use square images in the PNG format
+> with a resolution of no more than 512x512. When empty or in case of
+> errors, the default application logo is displayed.
 
 ***BRAND_COLORS***
 > Using a template you can color the interface
 > applications in different colors. Listed after a colon, separated by a comma
-> RGB values for background, then RGB values for text, 6 in total
+> RGB values for background, then RGB values for text : total 6
 > values. Decimal numbers are used, for example:
 >
      BRAND_COLORS:0,139,224,255,255,255
@@ -121,7 +120,7 @@ DELIMITER_CLOSE***
 > hash sequence, only Latin and special characters, max. 128 characters
 
 ***Separator***
-> serves to divide variables into logical blocks and internal comments
+> serves to divide variables into logical blocks and for internal comments
 
 Capital and small letters in types do not play a role. For example, the following names are identical: ***Domname***, ***dOMName***, ***DomName***, etc.  
 

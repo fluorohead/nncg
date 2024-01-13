@@ -122,7 +122,7 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
 
     table = new NNCGTable();
     table->setColumnCount(3);
-    table->setColumnWidth(0, TABLE_ZERO_COLUMN_WIDTH);
+    table->setColumnWidth(0, TABLE_COLUMN_ZERO_FIXED_WIDTH);
     table->setColumnWidth(1, objSett.colWidth);
     table->setCornerButtonEnabled(false);
     table->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -242,7 +242,7 @@ void NNCGMainWindow::refreshTable() {
                                                   QString::number(objTempl->brandColors[4]),
                                                   QString::number(objTempl->brandColors[5]))
                                              );
-    table->setColumnWidth(0, TABLE_ZERO_COLUMN_WIDTH);
+    table->setColumnWidth(0, TABLE_COLUMN_ZERO_FIXED_WIDTH);
     table->setColumnWidth(1, colW);
 
     auto sbPal = statusBar->palette();
@@ -297,7 +297,7 @@ void NNCGMainWindow::closeEvent(QCloseEvent *event) {
 void NNCGMainWindow::dumpTableToHash() {
     for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
         if (hIt.value().type != varType_t::Separator) {
-            auto *cw = dynamic_cast<QLineEdit*>(table->cellWidget(hIt.value().orderNum, 2));
+            auto *cw = static_cast<QLineEdit*>(table->cellWidget(hIt.value().orderNum, 2));
             objTempl->hashVars[hIt.key()].value = cw->text();
         }
     }
@@ -309,7 +309,7 @@ void NNCGMainWindow::clearTable() {
     for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
         if (hIt.value().type != varType_t::Separator) {
             hIt.value().value.clear();
-            auto *cw = dynamic_cast<QLineEdit*>(table->cellWidget(hIt.value().orderNum, 2));
+            auto *cw = static_cast<QLineEdit*>(table->cellWidget(hIt.value().orderNum, 2));
             cw->clear();
         }
     }
@@ -348,7 +348,7 @@ void NNCGMainWindow::repaintWithTheme() {
 
     int colW = table->columnWidth(1);
     table->setStyleSheet(QString("color: rgb(%1, %2, %3); gridline-color: rgb(%4, %5, %6); background-color: rgb(%7, %8, %9)")
-                                    .arg(
+                             .arg(
                                  QString::number(gammaApp.at(objSett.curThemeId).tbl_fg.r),
                                  QString::number(gammaApp.at(objSett.curThemeId).tbl_fg.g),
                                  QString::number(gammaApp.at(objSett.curThemeId).tbl_fg.b),
@@ -358,9 +358,9 @@ void NNCGMainWindow::repaintWithTheme() {
                                  QString::number(gammaApp.at(objSett.curThemeId).tbl_bg.r),
                                  QString::number(gammaApp.at(objSett.curThemeId).tbl_bg.g),
                                  QString::number(gammaApp.at(objSett.curThemeId).tbl_bg.b)
-                                        )
+                                 )
                          );
-    table->setColumnWidth(0, TABLE_ZERO_COLUMN_WIDTH);
+    table->setColumnWidth(0, TABLE_COLUMN_ZERO_FIXED_WIDTH);
     table->setColumnWidth(1, colW);
 
     table->verticalScrollBar()->setStyle(new QCommonStyle);
@@ -368,14 +368,14 @@ void NNCGMainWindow::repaintWithTheme() {
                                                       "::handle:vertical {background-color: rgb(%4, %5, %6); border: 4px solid rgb(%1, %2, %3); border-radius: 8px; max-width: 20px}"
                                                       "::sub-line:vertical {height: 0px}"
                                                       "::add-line:vertical {height: 0px}")
-                                              .arg(
+                                                  .arg(
                                                       QString::number(gammaApp.at(objSett.curThemeId).bw_bg.r),
                                                       QString::number(gammaApp.at(objSett.curThemeId).bw_bg.g),
                                                       QString::number(gammaApp.at(objSett.curThemeId).bw_bg.b),
                                                       QString::number(gammaApp.at(objSett.curThemeId).vh.r),
                                                       QString::number(gammaApp.at(objSett.curThemeId).vh.g),
                                                       QString::number(gammaApp.at(objSett.curThemeId).vh.b)
-                                                  )
+                                                      )
                                               );
 
     this->setEnabled(true);

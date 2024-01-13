@@ -11,11 +11,12 @@ extern const QString QS_VVT {R"("variable";"value";"type")"};
 
 // возвращает true, если формат переменной верный
 bool NNCG_csv::inspectLine(const QString &line, QString &varName, QString &varValue, varType_t &varType) {
-    if (rex.indexIn(line) != -1) {
-        varName = rex.cap(1);
-        varValue = rex.cap(2);
-        if ((varName.length() >= 3) && (varName.length() <= MAX_VAR_NAME_LEN) && (rex.cap(3).length() != 0)) {
-            varType = s2t(rex.cap(3));
+    auto rexMatch = rex.match(line);
+    if (rexMatch.hasMatch()) {
+        varName = rexMatch.captured(1);
+        varValue = rexMatch.captured(2);
+        if ((varName.length() >= 3) && (varName.length() <= MAX_VAR_NAME_LEN) && (rexMatch.captured(3).length() != 0)) {
+            varType = s2t(rexMatch.captured(3));
             varValue.truncate(maxChars.at(int(varType)));
         } else {
             return false;

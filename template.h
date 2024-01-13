@@ -1,7 +1,7 @@
 #ifndef TEMPLATE_H
 #define TEMPLATE_H
 
-#include "QtCore5Compat/qregexp.h"
+#include "QRegularExpression"
 #include "common.h"
 #include <QFile>
 #include <QString>
@@ -21,7 +21,7 @@ private:
     QString delimOpen  {"{"};
     QString delimClose {"}"};
     void extractDelimiters();
-    QRegExp rex;
+    QRegularExpression rex;
 
 public:
     bool noOpenErr {false};

@@ -62,11 +62,12 @@ QPixmap* NNCGTemplate::getPtrPixLogo(){
 
 // возвращает true, если формат переменной верный
 bool NNCGTemplate::inspectLine(const QString &line, QString &varName, QString &varDescr, varType_t &varType) {
-    if (rex.indexIn(line) != -1) {
-        varName = rex.cap(1);
-        varDescr = rex.cap(2);
-        if ((varName.length() >= 3) && (varName.length() <= MAX_VAR_NAME_LEN) && (rex.cap(3).length() != 0)) {
-            varType = s2t(rex.cap(3));
+    auto rexMatch = rex.match(line);
+    if (rexMatch.hasMatch()) {
+        varName = rexMatch.captured(1);
+        varDescr = rexMatch.captured(2);
+        if ((varName.length() >= 3) && (varName.length() <= MAX_VAR_NAME_LEN) && (rexMatch.captured(3).length() != 0)) {
+            varType = s2t(rexMatch.captured(3));
             if (varType != varType_t::Separator) {
                 if (varDescr.length() > MAX_VAR_DESCR_LEN) varDescr.truncate(MAX_VAR_DESCR_LEN); // обрезаем излишне длинное описание переменной
             } else {
@@ -82,13 +83,14 @@ bool NNCGTemplate::inspectLine(const QString &line, QString &varName, QString &v
 }
 
 void NNCGTemplate::inspectBrandColors() {
-    static QRegExp rex("([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3})");
+    static QRegularExpression rex("([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3}),([0-9]{1,3})");
+    auto rexMatch = rex.match(strList[5]);
     const int maxComp = 6; // max components
-    if (rex.indexIn(strList[5]) != -1) {
+    if (rexMatch.hasMatch()) {
         array<int, maxComp> colors {};
         bool badGamma {false};
         for (int c = 0; c < maxComp; c++) {
-            colors.at(c) = rex.cap(c + 1).toInt();
+            colors.at(c) = rexMatch.captured(c + 1).toInt();
             if ((colors.at(c) < 0) || (colors.at(c) > 255)) {
                 badGamma = true;
                 break;

@@ -11,8 +11,6 @@ const QString QS_MXMZD {"maximized"};
 const QString QS_WIDTH {"width"};
 const QString QS_HEIGHT {"height"};
 const QString QS_COLWIDTH {"col_width"};
-const QString QS_DARK {"dark"};
-const QString QS_LIGHT {"light"};
 const QString QS_LANG {"lang"};
 
 const array<array<QString, LANGS_AMOUNT>, int(themeId_t::UnknownTheme)> QS_THEMESNAMES {{ {"Dark", "Тёмная"}, {"Light", "Светлая"} }};
@@ -48,7 +46,7 @@ NNCGSettings::NNCGSettings() {
                     if (curThemeId < 0 || curThemeId >= themeId_t::UnknownTheme) curThemeId = themeId_t::Dark;
                     maximized = jsDoc[QS_MXMZD].toBool();
                     colWidth = jsDoc[QS_COLWIDTH].toInt();
-                    if (colWidth < 39) colWidth = 39;
+                    if (colWidth < TABLE_COLUMN_ONE_MIN_WIDTH) colWidth = TABLE_COLUMN_ONE_MIN_WIDTH;
                     if (colWidth > 2048) colWidth = BASE_WIDTH_COLUMN_DESCR;
                     curLang = (langId_t) jsDoc[QS_LANG].toInt();
                     if (curLang < langId_t::English || curLang >= langId_t::Elfian) curLang = langId_t::English;

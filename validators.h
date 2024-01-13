@@ -1,13 +1,13 @@
 #ifndef VALIDATORS_H
 #define VALIDATORS_H
 
-#include "QtCore5Compat/qregexp.h"
+#include "QRegularExpression"
 #include <QValidator>
 
 class NNCGValidIPv4: public QValidator
 {
 private:
-    QRegExp rex;
+    QRegularExpression rex;
 
 public:
     NNCGValidIPv4(QObject * = nullptr);
@@ -19,7 +19,7 @@ public:
 class NNCGValidMASKv4: public QValidator
 {
 private:
-    QRegExp rex;
+    QRegularExpression rex;
 
 public:
     NNCGValidMASKv4(QObject * = nullptr);

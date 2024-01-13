@@ -1,7 +1,7 @@
 #ifndef CSV_H
 #define CSV_H
 
-#include "QtCore5Compat/qregexp.h"
+#include <QRegularExpression>
 #include "common.h"
 
 #include <QFile>
@@ -17,7 +17,7 @@ private:
     bool inspectLine(const QString &, QString &, QString &, varType_t &);
     QString delimOpen  {"{"};
     QString delimClose {"}"};
-    QRegExp rex;
+    QRegularExpression rex;
 
 public:
     bool noOpenErr {false};

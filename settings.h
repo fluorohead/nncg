@@ -5,8 +5,6 @@
 #include <QFile>
 #include <QJsonDocument>
 
-extern const QString QS_DARK;
-
 class NNCGSettings: public QObject
 {
 

@@ -17,8 +17,9 @@ constexpr auto MIN_TMPL_HEADER_LINES = 10;   // минимальное коли�
 constexpr auto MAX_VAR_NAME_LEN = 100; // максимальная длина имени переменной (включая фигурные скобки)
 constexpr auto MAX_VAR_DESCR_LEN = 100; // максимальная длина описания переменной (без учёта двойных кавычек)
 
-constexpr auto TABLE_ZERO_COLUMN_WIDTH = 32; // ширина нулевой колонки таблицы
+constexpr auto TABLE_COLUMN_ZERO_FIXED_WIDTH = 32; // ширина нулевой колонки таблицы
 constexpr auto BASE_WIDTH_COLUMN_DESCR = 324; // начальная ширина 1-й колонки таблицы
+constexpr auto TABLE_COLUMN_ONE_MIN_WIDTH = 39;
 
 // индексы языков
 constexpr auto LANGS_AMOUNT = 2;

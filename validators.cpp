@@ -54,12 +54,13 @@ NNCGValidIPv4::NNCGValidIPv4(QObject *parent):QValidator(parent) {
 
 QValidator::State NNCGValidIPv4::validate(QString &input, int &pos) const {
     if (simpleIPv4Check(input)) {
-        if (rex.indexIn(input) != -1) { // проверка на regexp
+        auto rexMatch = rex.match(input);
+        if (rexMatch.hasMatch()) { // проверка на regexp
             // все октеты на месте, далее проверяем каждый
             input.clear(); // чистим строку, будем пересобирать её заново
             for (auto idx = 1; idx <= 4; idx++) {
                 int octet;
-                octet = rex.cap(idx).toUInt();
+                octet = rexMatch.captured(idx).toUInt();
                 if (octet > 255) octet = 255;
                 input.append(QString::number(octet) + '.');
             }
@@ -86,13 +87,14 @@ NNCGValidMASKv4::NNCGValidMASKv4(QObject *parent): QValidator(parent) {
 
 QValidator::State NNCGValidMASKv4::validate(QString &input, int &pos) const {
     if (!simpleIPv4Check(input)) {
-        if (rex.indexIn(input) != -1) { // проверка на regexp
+        auto rexMatch = rex.match(input);
+        if (rexMatch.hasMatch()) { // проверка на regexp
             // все октеты на месте, далее проверяем каждый
             input.clear(); // чистим строку, будем пересобирать её заново
             array<int, 4> bitsArr {};
             for (int idx = 1; idx <= 4; idx++) {
                 int octet;
-                octet = rex.cap(idx).toUInt();
+                octet = rexMatch.captured(idx).toUInt();
                 if (octet > 255) octet = 255;
                 input.append(QString::number(octet) + '.');
                 bitsArr.at(idx-1) = octet;
@@ -180,42 +182,49 @@ QValidator::State NNCGValidIPv6::validate(QString &input, int &pos) const {
     if (input.count(':') > 7) return Invalid;
     if (input.contains('.') && input.endsWith(':')) return Invalid;
     if (input.contains('.') && (!input.contains(':'))) return Invalid;
-    QRegExp rex;
+    QRegularExpression rex;
     rex.setPattern("[0-9A-Fa-f]{5,}:"); // больше 4 символов перед ":" => ошибка
-    if (rex.indexIn(input) != -1) {
+    auto rexMatch = rex.match(input);
+    if (rexMatch.hasMatch()) {
         return Invalid;
     }
     rex.setPattern(":[0-9A-Fa-f]{5,}"); // больше 4 символов после ":" => ошибка
-    if (rex.indexIn(input) != -1) {
+    rexMatch = rex.match(input);
+    if (rexMatch.hasMatch()) {
         return Invalid;
     }
     if (input.contains('.')) { // => ищем ошибки в интегрированном ipv4-адресе
         rex.setPattern(":[A-Fa-f0-9]{4,}\\."); // между : и . не должно быть более 3 символов
-        if (rex.indexIn(input) != - 1) {
+        rexMatch = rex.match(input);
+        if (rexMatch.hasMatch()) {
             return Invalid;
         }
         rex.setPattern(":.?[A-Fa-f]+.?\\."); // между : и . не должно быть букв
-        if (rex.indexIn(input) != - 1) {
+        rexMatch = rex.match(input);
+        if (rexMatch.hasMatch()) {
             return Invalid;
         }
         rex.setPattern("\\..*[A-Fa-f]+.*"); // после . не должно быть букв
-        if (rex.indexIn(input) != - 1) {
+        rexMatch = rex.match(input);
+        if (rexMatch.hasMatch()) {
             return Invalid;
         }
         rex.setPattern("\\.[0-9]{4,}"); // после . не должно быть более 3 символов
-        if (rex.indexIn(input) != - 1) {
+        rexMatch = rex.match(input);
+        if (rexMatch.hasMatch()) {
             return Invalid;
         }
     }
     if (input.endsWith('.')) return Intermediate;
     // если здесь, значит в полном виде присутствует интегрированный ipv4; проверяем его октеты
     rex.setPattern(R"(^(.*:)([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$)");
-    if (rex.indexIn(input) != -1) { // нашли ipv6 + 4 октета ipv4
+    rexMatch = rex.match(input);
+    if (rexMatch.hasMatch()) { // нашли ipv6 + 4 октета ipv4
         input.clear(); // будем пересобирать строку заново
-        input.append(rex.cap(1));
+        input.append(rexMatch.captured(1));
         for (int gr = 2; gr <= 5; gr++) {
-            if (rex.cap(gr).toUInt() > 255) input.append("255.");
-            else input.append(rex.cap(gr) + '.');
+            if (rexMatch.captured(gr).toUInt() > 255) input.append("255.");
+            else input.append(rexMatch.captured(gr) + '.');
         }
         input.chop(1); // откусываем последнюю точку
     }

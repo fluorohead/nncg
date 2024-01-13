@@ -24,7 +24,7 @@ void NNCGTable::changeEvent(QEvent *event) {
         this->setHorizontalHeaderLabels({"#", QS_TBLDESCR.at(objSett.curLang), QS_TBLVALUE.at(objSett.curLang)});
         for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
             if (hIt.value().type != varType_t::Separator) {
-                auto *cw = dynamic_cast<QLineEdit*>(this->cellWidget(hIt.value().orderNum, 2));
+                auto *cw = static_cast<QLineEdit*>(this->cellWidget(hIt.value().orderNum, 2));
                 if (!QS_PLCHLDRS.at(hIt.value().type).at(1).isEmpty()) cw->setPlaceholderText(QS_PLCHLDRS.at(hIt.value().type).at(objSett.curLang));
                 else cw->setPlaceholderText(QS_PLCHLDRS.at(hIt.value().type).at(0));
             }
