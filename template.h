@@ -11,15 +11,14 @@ using namespace std;
 
 class NNCGTemplate: public QObject
 {
-
-private:
     QFile qFile;
     QString serChar; // service char / служебный символ / первый символ строки №[8]
     QPixmap pixLogo;
     bool inspectLine(const QString &, QString &, QString &, varType_t &);
     void inspectBrandColors();
-    QString delimOpen  {"{"};
-    QString delimClose {"}"};
+    void escapingCtrlSymbols(QString &);
+    QString delimOpen  {"\{"};
+    QString delimClose {"\}"};
     void extractDelimiters();
     QRegularExpression rex;
 

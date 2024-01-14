@@ -3,6 +3,8 @@
 
 #include <QFileInfo>
 
+#include <iostream>
+
 using namespace std;
 
 extern varType_t s2t(const QString &str);
@@ -104,22 +106,39 @@ void NNCGTemplate::inspectBrandColors() {
     } // иначе просто оставляем гамму по-умолчанию (при инициализации объекта)
 }
 
+// экранирует служебные символы регулярных выражений
+void NNCGTemplate::escapingCtrlSymbols(QString& str) {
+    static QString control {R"r(\[]{}*.+?()^$|)r"};
+    int idx {0};
+    while (true) {
+        for (auto c = 0; c < control.length(); c++) {
+            if (str[idx] == control[c]) {
+                str.insert(idx, R"(\)");
+                idx++; // на 1 символ стало больше
+                break; // breaking 'for' loop
+            }
+        }
+        idx++; // переходим на следующий символ
+        if (idx >= str.length()) break; // breaking 'while' loop
+    }
+}
+
 
 // конструктор demo-шаблона
 NNCGTemplate::NNCGTemplate() {
     beginConfig = 8;
-    static QString demoStr =   QS_NNCT + "\r\n" +
-                        QS_SOFTVER + " 0.0.1\r\n" +
-                        QS_TITLE + " Network Node Configuration Demo Template\r\n" +
-                        QS_COMMENT + " created 2023-12-05-21-03\r\n" +
-                        QS_LOGO + " \r\n" +
-                        QS_DELIM_OPEN + " {\r\n" +
-                        QS_DELIM_CLOSE + " }\r\n" +
-                        QS_BRCOLORS + " \r\n" +
-                        "hostname {hostname}\r\n" +
-                        "interface {phy1_ifname}\r\n" +
-                        " description {phy1_descr}\r\n" +
-                        " ipv4 address {phy1_ip} {phy1_mask}\r\n";
+    static QString demoStr {QS_NNCT + "\r\n" +
+                            QS_SOFTVER + " 0.0.1\r\n" +
+                            QS_TITLE + " Network Node Configuration Demo Template\r\n" +
+                            QS_COMMENT + " created 2023-12-05-21-03\r\n" +
+                            QS_LOGO + " \r\n" +
+                            QS_DELIM_OPEN + " {\r\n" +
+                            QS_DELIM_CLOSE + " }\r\n" +
+                            QS_BRCOLORS + " \r\n" +
+                            "hostname {hostname}\r\n" +
+                            "interface {phy1_ifname}\r\n" +
+                            " description {phy1_descr}\r\n" +
+                               " ipv4 address {phy1_ip} {phy1_mask}\r\n"};
     strList = QStringList(demoStr.split("\r\n", Qt::KeepEmptyParts, Qt::CaseSensitive));
     hashVars["{hostname}"] = {0, "Network node hostname ->", "demo-sr01", Domname};
     hashVars["{phy1_ifname}"] = {1, "Interface name ->", "Giga0/1/0/7", Text};
@@ -132,12 +151,22 @@ NNCGTemplate::NNCGTemplate() {
     isDemo = true;
 }
 
+
 // извлекаем ограничители имён переменных (удаляя начальные и конечные пробелы)
 void NNCGTemplate::extractDelimiters() {
-    QString s = (strList[6].right(strList[6].length() - QS_DELIM_OPEN.length())).trimmed();
-    if (!s.isEmpty()) delimOpen = s;
-    s = (strList[7].right(strList[7].length() - QS_DELIM_CLOSE.length())).trimmed();
-    if (!s.isEmpty()) delimClose = s;
+    QString s = strList[6].right(strList[6].length() - QS_DELIM_OPEN.length()).trimmed();
+    if (!s.isEmpty()) {
+        escapingCtrlSymbols(s);
+        delimOpen = s;
+        cout << "delim open : " << delimOpen.toStdString() << endl;
+    }
+
+    s = strList[7].right(strList[7].length() - QS_DELIM_CLOSE.length()).trimmed();
+    if (!s.isEmpty()) {
+        escapingCtrlSymbols(s);
+        delimClose = s;
+        cout << "delim close : " << delimClose.toStdString() << endl;
+    }
 }
 
 
@@ -166,7 +195,7 @@ NNCGTemplate::NNCGTemplate(const QString &fn)
                     QString varDescr;
                     varType_t varType;
                     // настраиваем regexp-паттерн для проверки переменных
-                    rex.setPattern(serChar + QString(" *(\\%1.+\\%2) *, *\"(.*)\" *, *([a-zA-Z0-9]+) *").arg(delimOpen, delimClose));
+                    rex.setPattern(serChar + QString(R"r([ \t]*(%1.+%2) *,[ \t]*"(.*)"[ \t]*,[ \t]*([a-zA-Z0-9]+)[ \t]*)r").arg(delimOpen, delimClose));
                     for (int h = MIN_TMPL_HEADER_LINES - 1; h < strList.length(); h++) {
                         if (!strList[h].isEmpty()) { // пропускаем пустые строки
                             if (strList[h][0] == serChar) { // проверка на служебный символ

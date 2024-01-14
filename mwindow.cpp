@@ -195,7 +195,7 @@ void NNCGMainWindow::refreshTable() {
     commentLabel->setText(objTempl->getComment());
     table->clearContents();
     table->setRowCount((int)objTempl->hashVars.size());
-    for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
+    for (auto hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
         array <QTableWidgetItem*, 3> oneRow {};
         oneRow[0] = new QTableWidgetItem(QString::number(hIt.value().orderNum + 1), 0);
         oneRow[0]->setFont(fntCons10);
@@ -295,7 +295,7 @@ void NNCGMainWindow::closeEvent(QCloseEvent *event) {
 
 // сброс данных из таблицы в хэш объекта шаблона
 void NNCGMainWindow::dumpTableToHash() {
-    for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
+    for (auto hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
         if (hIt.value().type != varType_t::Separator) {
             auto *cw = static_cast<QLineEdit*>(table->cellWidget(hIt.value().orderNum, 2));
             objTempl->hashVars[hIt.key()].value = cw->text();
@@ -306,7 +306,7 @@ void NNCGMainWindow::dumpTableToHash() {
 
 // обнуление всех введённых значений в таблице; и в объекте шаблона (необязательно, но экономит память)
 void NNCGMainWindow::clearTable() {
-    for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
+    for (auto hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
         if (hIt.value().type != varType_t::Separator) {
             hIt.value().value.clear();
             auto *cw = static_cast<QLineEdit*>(table->cellWidget(hIt.value().orderNum, 2));

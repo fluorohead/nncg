@@ -3,7 +3,7 @@
 
 #include <QString>
 
-constexpr auto DISPLAY_APPVER = "v0.1.0 : GIA : 2023";
+constexpr auto DISPLAY_APPVER = "v0.1.1 : GIA : 2024";
 
 constexpr auto MIN_WIDTH = 800;
 constexpr auto MIN_HEIGHT = 600;

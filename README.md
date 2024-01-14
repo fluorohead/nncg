@@ -62,9 +62,10 @@ DELIMITER_CLOSE:
 
 ***DELIMITER_OPEN  
 DELIMITER_CLOSE***
-> Opening and closing variable name delimiters. They can
-> consist of more than 1 character. For empty values there will be
-> use curly braces { }. Examples:
+> Opening and closing variable name delimiters. Can consist of more than 1 character.
+> Space and tabulation are not permitted. For empty values there will be
+> use curly braces { }. Names of variables are case sensitive!
+> Examples:
 >
      DELIMITER_OPEN:("
      DELIMITER_CLOSE:")

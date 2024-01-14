@@ -68,7 +68,7 @@ void NNCGBtnCsvLoad::slotClicked() {
         if (newCSV->noOpenErr) { // с новым csv всё ок, тогда удаляем старый объект и подменяем указателем на новый
             delete objCSV;
             objCSV = newCSV;
-            for (QHash<QString, oneRecShort_t>::iterator hIt = objCSV->hashVars.begin(); hIt != objCSV->hashVars.end(); ++hIt) {
+            for (auto hIt = objCSV->hashVars.begin(); hIt != objCSV->hashVars.end(); ++hIt) {
                 if (objTempl->hashVars.contains(hIt.key()) ) { // загружаем значения из csv в template
                     if (objTempl->hashVars[hIt.key()].type == hIt.value().type) { // проверка на соответствие типа переменной из шаблона и csv
                         objTempl->hashVars[hIt.key()].value = hIt.value().value;
@@ -106,7 +106,7 @@ void NNCGBtnCsvSave::slotClicked() {
             QByteArray ba;
             mainWindow->dumpTableToHash();
             ba.append(QString(QS_VVT).toStdString());
-            for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
+            for (auto hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
                 if (hIt.value().type != varType_t::Separator) { // пишем в csv всё, кроме разделителя, т.к. у него всего пустое значение
                     ba.append(QString(QString("\r\n\"%1\";\"%2\";\"%3\"").arg(hIt.key(), hIt.value().value, t2s(hIt.value().type))).toStdString());
                 }
@@ -183,7 +183,7 @@ void NNCGButtonCreate::slotClicked() {
             mainWindow->dumpTableToHash();
             for (int idx = objTempl->beginConfig; idx < objTempl->strList.size(); idx++) {
                 QString tmp = objTempl->strList[idx];
-                for (QHash<QString, oneRec_t>::iterator hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
+                for (auto hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
                     tmp = tmp.replace(hIt.key(), hIt.value().value, Qt::CaseSensitive);
                 }
                 ba.append(QString(tmp + "\r\n").toStdString());
