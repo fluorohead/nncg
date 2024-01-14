@@ -3,7 +3,7 @@
 
 #include <QFileInfo>
 
-#include <iostream>
+//#include <iostream>
 
 using namespace std;
 
@@ -106,7 +106,7 @@ void NNCGTemplate::inspectBrandColors() {
     } // иначе просто оставляем гамму по-умолчанию (при инициализации объекта)
 }
 
-// экранирует служебные символы регулярных выражений
+// экранирует служебные символы, чтобы безопасно использовать в регулярках
 void NNCGTemplate::escapingCtrlSymbols(QString& str) {
     static QString control {R"r(\[]{}*.+?()^$|)r"};
     int idx {0};
@@ -158,14 +158,11 @@ void NNCGTemplate::extractDelimiters() {
     if (!s.isEmpty()) {
         escapingCtrlSymbols(s);
         delimOpen = s;
-        cout << "delim open : " << delimOpen.toStdString() << endl;
     }
-
     s = strList[7].right(strList[7].length() - QS_DELIM_CLOSE.length()).trimmed();
     if (!s.isEmpty()) {
         escapingCtrlSymbols(s);
         delimClose = s;
-        cout << "delim close : " << delimClose.toStdString() << endl;
     }
 }
 

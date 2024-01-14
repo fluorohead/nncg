@@ -4,15 +4,15 @@ TITLE:Template Example For An Abstract Network Node
 COMMENT:version 2024-05-01-21-52
 LOGO:
 BRAND_COLORS:0,139,224,255,255,255
-DELIMITER_OPEN:\{
-DELIMITER_CLOSE:\}
+DELIMITER_OPEN:{
+DELIMITER_CLOSE:}
 #BEGIN_VARIABLES
 #{sep9},            "---------------------------------------",   Separator
 #{domname},         "Domain name :",                             Domname
 #{prompt},          "System prompt :",                           Prompt
 #{sep1},            "---------------------------------------",   Separator
-#	{node}, 	 "Node ID number :",Unsigned		    
-#{sep10},            "---------------------------------------",   Separator
+#{node},            "Node ID number :",                          Unsigned
+#{sep10},            "---------------------------------------",  Separator
 #{lpb_v4_ip},       "Interface Loopback IPv4 address :",         IPv4
 #{lpb_v6_ip},       "Interface Loopback IPv6 address :",         IPv6
 #{sep2},            "---------------------------------------",   Separator

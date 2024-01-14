@@ -17,8 +17,8 @@ class NNCGTemplate: public QObject
     bool inspectLine(const QString &, QString &, QString &, varType_t &);
     void inspectBrandColors();
     void escapingCtrlSymbols(QString &);
-    QString delimOpen  {"\{"};
-    QString delimClose {"\}"};
+    QString delimOpen  {R"(\{)"};
+    QString delimClose {R"(\})"};
     void extractDelimiters();
     QRegularExpression rex;
 

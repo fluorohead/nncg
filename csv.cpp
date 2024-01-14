@@ -36,7 +36,7 @@ NNCG_csv::NNCG_csv(const QString &fn, const QString &dlmOpen, const QString &dlm
                 if (strList[0] == QS_VVT) {
                     delimOpen = dlmOpen;
                     delimClose = dlmClose;
-                    rex.setPattern(QString("\"(\\%1.+\\%2)\";\"(.+)\";\"(.+)\"").arg(delimOpen, delimClose));
+                    rex.setPattern(QString(R"r("(%1.+%2)";"(.+)";"(.+)")r").arg(delimOpen, delimClose));
                     QString varName;
                     QString varValue;
                     varType_t varType;

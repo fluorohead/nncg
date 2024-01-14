@@ -69,6 +69,7 @@ void NNCGBtnCsvLoad::slotClicked() {
             delete objCSV;
             objCSV = newCSV;
             for (auto hIt = objCSV->hashVars.begin(); hIt != objCSV->hashVars.end(); ++hIt) {
+//                cout << hIt.key().toStdString() << endl;
                 if (objTempl->hashVars.contains(hIt.key()) ) { // загружаем значения из csv в template
                     if (objTempl->hashVars[hIt.key()].type == hIt.value().type) { // проверка на соответствие типа переменной из шаблона и csv
                         objTempl->hashVars[hIt.key()].value = hIt.value().value;
