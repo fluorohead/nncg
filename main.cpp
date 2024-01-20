@@ -20,7 +20,9 @@ NNCG_csv *objCSV {nullptr};
 extern array<QString, int(varType_t::MAX)> QS_VARTYPES;
 
 // из bool в QString
-QString b2s(bool b) { return (b) ? "true" : "false"; }
+QString b2s(bool b) {
+    return (b) ? "true" : "false";
+}
 
 // из varType_t в строку
 QString t2s(varType_t type) {

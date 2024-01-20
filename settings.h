@@ -5,25 +5,28 @@
 #include <QFile>
 #include <QJsonDocument>
 
-class NNCGSettings: public QObject
-{
+class NNCGSettings: public QObject {
 
-private:
     QFile qFile;
     QJsonDocument jsDoc;
 
 public:
+    NNCGSettings();
+
     int width {800};
     int height {600}; // main window size
-    bool maximized {false};
-    int curLang {int(langId_t::English)};
-    QString templFpFn {""}; // template file path with file name
     int curThemeId {themeId_t::Dark};
-    bool noLastErr {false};
-    QString lastErrMsg;
+    int curLang {int(langId_t::English)};
     int colWidth {BASE_WIDTH_COLUMN_DESCR};
-    NNCGSettings();
-    bool saveSettings(const QString &, int, int, int, const QString &, int, int);
+    bool maximized {false};
+    bool noLastErr {false};
+    QString templFpFn {""}; // template file path with file name
+    QString lastErrMsg;
+    QString lastPathCfg {"./"};
+    QString lastPathCSV {"./"};
+
+    QString getTemplPathWOFn(); // returns template file path without file name
+    bool saveSettings(const QString &, int, int, int, const QString &, int, int, const QString &, const QString &);
 };
 
 #endif // SETTINGS_H

@@ -9,24 +9,32 @@
 
 using namespace std;
 
-class NNCGTemplate: public QObject
-{
+class NNCGTemplate {
+
     QFile qFile;
     QString serChar; // service char / служебный символ / первый символ строки №[8]
     QPixmap pixLogo;
-    bool inspectLine(const QString &, QString &, QString &, varType_t &);
-    void inspectBrandColors();
-    void escapingCtrlSymbols(QString &);
     QString delimOpen  {R"(\{)"};
     QString delimClose {R"(\})"};
-    void extractDelimiters();
     QRegularExpression rex;
 
+    bool inspectLine(const QString &, QString &, QString &, varType_t &);
+    void extractDelimiters();
+    void inspectBrandColors();
+    void escapingCtrlSymbols(QString &);
+
 public:
+    NNCGTemplate(); // для demo-шаблона
+    NNCGTemplate(const QString &);
+
     bool noOpenErr {false};
     bool isDemo {false};
+    int beginConfig {0}; // начало конфига в списке strList
     QString lastErrMsg;
+    QStringList strList;
+    array<int, 6> brandColors {0, 139, 224, 255, 255, 255};
     QHash<QString, oneRec_t> hashVars;
+
     QString getTitle();
     QString getComment();
     QString getFilePath(); // возвр. только путь, без имени файла
@@ -34,12 +42,6 @@ public:
     QPixmap* getPtrPixLogo(); // возвр. указатель на logo pixmap
     QString getDelimOpen(); // возвр. начальный ограничитель
     QString getDelimClose(); // возвр. конечный ограничитель
-    int beginConfig {0}; // начало конфига в списке strList
-    QStringList strList;
-    array<int, 6> brandColors {0, 139, 224, 255, 255, 255};
-    NNCGTemplate(); // для demo-шаблона
-    NNCGTemplate(const QString &);
-
 };
 
 #endif // TEMPLATE_H

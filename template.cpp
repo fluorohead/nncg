@@ -7,7 +7,7 @@
 
 using namespace std;
 
-extern varType_t s2t(const QString &str);
+extern auto s2t(const QString &str) -> varType_t;
 extern NNCGSettings objSett;
 
 // тексты, связанные с объектом шаблона
@@ -38,6 +38,13 @@ const QString   QS_NNCT {"NETWORK_NODE_CONFIG_TEMPLATE"},
                 QS_ENDVARS {"END_VARIABLES"};
 
 
+// общая функция (используется здесь и в CSV), возвращает только путь к файлу, без имени файла
+QString getPathWOFileName(const QFile& qfile) {
+    QString path = QFileInfo(qfile).canonicalPath();
+    if (path[path.length()-1] != '/') path.append('/');
+    return path;
+}
+
 QString NNCGTemplate::getTitle(){
     return strList[2].mid(6);
 }
@@ -48,9 +55,7 @@ QString NNCGTemplate::getComment(){
 
 // возвращает только путь к файлу, без имени файла
 QString NNCGTemplate::getFilePath() {
-    QString path = QFileInfo(qFile).canonicalPath();
-    if (path[path.length()-1] != '/') path.append('/');
-    return path;
+    return getPathWOFileName(qFile);
 }
 
 // возвращает только имя файла без пути

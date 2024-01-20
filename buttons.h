@@ -43,8 +43,7 @@ public slots:
 };
 
 
-class NNCGButtonCreate: public QPushButton
-{
+class NNCGButtonCreate: public QPushButton {
     Q_OBJECT
 
 public:
@@ -56,8 +55,7 @@ public slots:
 };
 
 
-class NNCGBtnClearAll: public QPushButton
-{
+class NNCGBtnClearAll: public QPushButton {
     Q_OBJECT
 
 public:
@@ -69,8 +67,7 @@ public slots:
 };
 
 
-class NNCGBtnLangSwitch: public QPushButton
-{
+class NNCGBtnLangSwitch: public QPushButton {
     Q_OBJECT
 
 public:
@@ -82,8 +79,7 @@ public slots:
 };
 
 
-class NNCGBtnThemeSwitch: public QPushButton
-{
+class NNCGBtnThemeSwitch: public QPushButton {
     Q_OBJECT
 
 public:

@@ -4,6 +4,7 @@
 #include "template.h"
 #include "table.h"
 #include "validators.h"
+#include "csv.h"
 
 #include <QCommonStyle>
 #include <QLineEdit>
@@ -21,6 +22,7 @@ using namespace std;
 extern NNCGSettings objSett;
 extern array<theme_t, themeId_t::UnknownTheme> gammaApp;
 extern NNCGTemplate* objTempl;
+extern NNCG_csv *objCSV;
 extern QString b2s(bool b);
 
 extern array<QString, LANGS_AMOUNT> QS_TBLDESCR;
@@ -205,21 +207,23 @@ void NNCGMainWindow::refreshTable() {
         oneRow[1]->setFont(fntCons11);
         oneRow[1]->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
         oneRow[1]->setFlags(Qt::NoItemFlags);
-        for (int col = 0; col < 2; col++) table->setItem(hIt.value().orderNum, col, oneRow.at(col));
-        if (hIt.value().type != varType_t::Separator) {
+        for (int col = 0; col < 2; col++) table->setItem(hIt.value().orderNum, col, oneRow.at(col)); // from docs : "The table takes ownership of the item."
+        if (hIt.value().type != varType_t::Separator) { // вставка любого типа, кроме Separator
             auto qle = new QLineEdit;
             qle->setFont(fntCons12bold);
             qle->setFrame(false);
             qle->setMaxLength(maxChars.at(hIt.value().type));
             qle->setClearButtonEnabled(true);
-            if (!QS_PLCHLDRS.at(hIt.value().type).at(1).isEmpty()) qle->setPlaceholderText(QS_PLCHLDRS.at(hIt.value().type).at(objSett.curLang));
-            else qle->setPlaceholderText(QS_PLCHLDRS.at(hIt.value().type).at(0));
+            if (!QS_PLCHLDRS.at(hIt.value().type).at(1).isEmpty())
+                qle->setPlaceholderText(QS_PLCHLDRS.at(hIt.value().type).at(objSett.curLang));
+            else
+                qle->setPlaceholderText(QS_PLCHLDRS.at(hIt.value().type).at(0));
             if (hIt.value().type == varType_t::Password)
                 qle->setEchoMode(QLineEdit::Password);
             qle->setValidator(vldtrs.at(int(hIt.value().type)));
             qle->setText(hIt.value().value);
-            table->setCellWidget(hIt.value().orderNum, 2, qle);
-        } else {
+            table->setCellWidget(hIt.value().orderNum, 2, qle); // from docs : "...passing the ownership of the widget to the table"
+        } else { // вставка Separator
             auto ql = new QLabel; // separator QLabel
             ql->setScaledContents(true);
             ql->setPixmap(sepPixmap);
@@ -230,7 +234,7 @@ void NNCGMainWindow::refreshTable() {
             ql = new QLabel;
             ql->setScaledContents(true);
             ql->setPixmap(sepPixmap);
-            table->setCellWidget(hIt.value().orderNum, 2, ql);
+            table->setCellWidget(hIt.value().orderNum, 2, ql); // from docs : "...passing the ownership of the widget to the table"
         }
     };
     int colW = table->columnWidth(1);
@@ -287,8 +291,17 @@ void NNCGMainWindow::refreshTable() {
 // при событии закрытия окна сохраняем настройки в json
 void NNCGMainWindow::closeEvent(QCloseEvent *event) {
     this->hide();
-    if (!objTempl->isDemo) objSett.saveSettings(objTempl->getFilePath() + objTempl->getFileName(), objSett.curThemeId, this->width(), this->height(), b2s(isMaximized()), table->horizontalHeader()->sectionSize(1), objSett.curLang);
-    else objSett.saveSettings("", themeId_t::Dark, width(), height(), b2s(isMaximized()), table->horizontalHeader()->sectionSize(1), objSett.curLang);
+    objSett.saveSettings(
+                            ((objTempl->isDemo) ? "": objTempl->getFilePath() + objTempl->getFileName()),
+                            ((objTempl->isDemo) ? themeId_t::Dark : objSett.curThemeId),
+                            this->width(),
+                            this->height(),
+                            b2s(isMaximized()),
+                            table->horizontalHeader()->sectionSize(1),
+                            objSett.curLang,
+                            objSett.lastPathCfg,
+                            ((objCSV == nullptr) ? objSett.lastPathCSV : objCSV->getFilePath())
+                        );
     event->accept();
 }
 

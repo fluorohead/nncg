@@ -13,11 +13,10 @@
 
 using namespace std;
 
-class NNCGMainWindow: public QMainWindow
-{
+class NNCGMainWindow: public QMainWindow {
+
     Q_OBJECT
 
-private:
     QWidget *bigWidget;
     QStatusBar *statusBar;
     QLabel *logoLabel;
@@ -27,13 +26,15 @@ private:
     QFont fntCons10 {"Consolas", 10, 0}; // фонт для колонки #
     QFont fntCons11 {"Consolas", 11, 0}; // фонт для колонки Description
     QFont fntCons12bold {"Consolas", 12, 100}; // фонт для колонки Value
-    void closeEvent(QCloseEvent*) override;
-    void resizeEvent(QResizeEvent *) override;
     array <QValidator*, int(varType_t::MAX)> vldtrs {};
     QPixmap sepPixmap;
 
+    void closeEvent(QCloseEvent *) override;
+    void resizeEvent(QResizeEvent *) override;
+
 public:
     NNCGMainWindow(QWidget* = nullptr, Qt::WindowFlags = Qt::WindowFlags());
+
     void refreshTable();
     void dumpTableToHash();
     void clearTable();

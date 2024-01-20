@@ -2,12 +2,19 @@
 
 using namespace std;
 
-extern varType_t s2t(const QString &str);
+extern varType_t s2t(const QString &);
 extern array<int, int(varType_t::MAX)> maxChars;
+
+extern QString getPathWOFileName(const QFile&);
 
 const QString QS_CSV {"csv"};
 
 extern const QString QS_VVT {R"("variable";"value";"type")"};
+
+// возвращает только путь к файлу, без имени файла
+QString NNCG_csv::getFilePath() {
+    return getPathWOFileName(qFile);
+}
 
 // возвращает true, если формат переменной верный
 bool NNCG_csv::inspectLine(const QString &line, QString &varName, QString &varValue, varType_t &varType) {
@@ -27,8 +34,9 @@ bool NNCG_csv::inspectLine(const QString &line, QString &varName, QString &varVa
     return true;
 }
 
-NNCG_csv::NNCG_csv(const QString &fn, const QString &dlmOpen, const QString &dlmClose)
-{   qFile.setFileName(fn);
+NNCG_csv::NNCG_csv(const QString &fn, const QString &dlmOpen, const QString &dlmClose) {
+    loadPath = fn;
+    qFile.setFileName(loadPath);
     if (qFile.open(QIODevice::ReadOnly)) {
         if (qFile.size() <= MAX_CSV_FILE_SIZE) {
             strList = QStringList(QString(qFile.readAll()).split("\r\n", Qt::SkipEmptyParts));

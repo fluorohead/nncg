@@ -8,10 +8,8 @@
 #include <QStringList>
 #include <QHash>
 
-class NNCG_csv: public QObject
-{
+class NNCG_csv: public QObject {
 
-private:
     QFile qFile;
     QStringList strList;
     bool inspectLine(const QString &, QString &, QString &, varType_t &);
@@ -20,10 +18,15 @@ private:
     QRegularExpression rex;
 
 public:
+    NNCG_csv(const QString &, const QString &, const QString &);
+
+    QString loadPath {"./"};
     bool noOpenErr {false};
     QString lastErrMsg;
     QHash<QString, oneRecShort_t> hashVars;
-    NNCG_csv(const QString &, const QString &, const QString &);
+
+    QString getFilePath(); // возвр. только путь, без имени файла
+
 };
 
 #endif // CSV_H

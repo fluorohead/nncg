@@ -17,8 +17,9 @@ extern NNCGMainWindow *mainWindow;
 extern NNCG_csv *objCSV;
 extern NNCGTemplate *objTempl;
 extern NNCGSettings objSett;
-extern QString t2s(varType_t type);
+extern QString t2s(varType_t);
 extern QString QS_VVT;
+extern QString getPathWOFileName(const QFile &);
 
 // тексты, связанные с работой кнопок
 const array<QString, LANGS_AMOUNT> QS_LOADCSV {"Load CSV", "Загр. CSV"};
@@ -61,15 +62,13 @@ void NNCGBtnCsvLoad::changeEvent(QEvent *event) {
 }
 
 void NNCGBtnCsvLoad::slotClicked() {
-    QString newFN = QFileDialog::getOpenFileName(this, QS_OPNNGCSV.at(objSett.curLang), "./", QS_CSVFILES.at(objSett.curLang));
+    QString newFN = QFileDialog::getOpenFileName(this, QS_OPNNGCSV.at(objSett.curLang), ((objCSV != nullptr) ? objCSV->loadPath : objSett.lastPathCSV), QS_CSVFILES.at(objSett.curLang));
     if (!newFN.isEmpty()) {
-        /// потом выделить в отдельный поток
         auto *newCSV = new NNCG_csv(newFN, objTempl->getDelimOpen(), objTempl->getDelimClose());
         if (newCSV->noOpenErr) { // с новым csv всё ок, тогда удаляем старый объект и подменяем указателем на новый
             delete objCSV;
             objCSV = newCSV;
             for (auto hIt = objCSV->hashVars.begin(); hIt != objCSV->hashVars.end(); ++hIt) {
-//                cout << hIt.key().toStdString() << endl;
                 if (objTempl->hashVars.contains(hIt.key()) ) { // загружаем значения из csv в template
                     if (objTempl->hashVars[hIt.key()].type == hIt.value().type) { // проверка на соответствие типа переменной из шаблона и csv
                         objTempl->hashVars[hIt.key()].value = hIt.value().value;
@@ -81,7 +80,6 @@ void NNCGBtnCsvLoad::slotClicked() {
             QMessageBox(QMessageBox::Critical, QS_DIAGERR.at(objSett.curLang), newCSV->lastErrMsg, QMessageBox::Ok, mainWindow).exec();
             delete newCSV;
         }
-        ///
     }
 }
 
@@ -99,16 +97,15 @@ void NNCGBtnCsvSave::changeEvent(QEvent *event) {
 }
 
 void NNCGBtnCsvSave::slotClicked() {
-    QString saveFpFn = QFileDialog::getSaveFileName(this, QS_SVNGCSV.at(objSett.curLang), "./", QS_CSVFILES.at(objSett.curLang));
+    QString saveFpFn = QFileDialog::getSaveFileName(this, QS_SVNGCSV.at(objSett.curLang), ((objCSV != nullptr) ? objCSV->loadPath : objSett.lastPathCSV), QS_CSVFILES.at(objSett.curLang));
     if (!saveFpFn.isEmpty()) {
-        /// потом выделить в отдельный поток
         QFile fileCSV(saveFpFn);
         if (fileCSV.open(QIODevice::WriteOnly)) {
             QByteArray ba;
             mainWindow->dumpTableToHash();
             ba.append(QString(QS_VVT).toStdString());
             for (auto hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
-                if (hIt.value().type != varType_t::Separator) { // пишем в csv всё, кроме разделителя, т.к. у него всего пустое значение
+                if (hIt.value().type != varType_t::Separator) { // пишем в csv всё, кроме Separator, т.к. у него нет значения
                     ba.append(QString(QString("\r\n\"%1\";\"%2\";\"%3\"").arg(hIt.key(), hIt.value().value, t2s(hIt.value().type))).toStdString());
                 }
             }
@@ -122,7 +119,6 @@ void NNCGBtnCsvSave::slotClicked() {
         } else { // ошибка при создании файла
             QMessageBox(QMessageBox::Critical, QS_DIAGERR.at(objSett.curLang), QS_CSV_ERSV.at(objSett.curLang), QMessageBox::Ok, mainWindow).exec();
         }
-        ///
     }
 }
 
@@ -141,11 +137,9 @@ void NNCGButtonLoad::changeEvent(QEvent *event) {
 
 
 void NNCGButtonLoad::slotClicked() {
-    QString newFN = QFileDialog::getOpenFileName(this, QS_OPNNGTMPLT.at(objSett.curLang), "./",  QS_TXTFILES.at(objSett.curLang));
+    QString newFN = QFileDialog::getOpenFileName(this, QS_OPNNGTMPLT.at(objSett.curLang), objSett.getTemplPathWOFn(),  QS_TXTFILES.at(objSett.curLang));
     if (!newFN.isEmpty()) {
-        /// потом выделить в отдельный поток
         auto *newTempl = new NNCGTemplate(newFN);
-        ///
         if (newTempl->noOpenErr) { // с новым шаблоном всё ок, тогда удаляем старый объект и подменяем указателем на новый
             delete objTempl;
             objTempl = newTempl;
@@ -175,9 +169,8 @@ void NNCGButtonCreate::changeEvent(QEvent *event) {
 }
 
 void NNCGButtonCreate::slotClicked() {
-    QString saveFpFn = QFileDialog::getSaveFileName(this, QS_SVNGCFG.at(objSett.curLang), "./", QS_CFGFILES.at(objSett.curLang));
+    QString saveFpFn = QFileDialog::getSaveFileName(this, QS_SVNGCFG.at(objSett.curLang), objSett.lastPathCfg, QS_CFGFILES.at(objSett.curLang));
     if (!saveFpFn.isEmpty()) {
-        /// потом выделить в отдельный поток
         QFile fileCFG(saveFpFn);
         if (fileCFG.open(QIODevice::WriteOnly)) {
             QByteArray ba;
@@ -189,6 +182,7 @@ void NNCGButtonCreate::slotClicked() {
                 }
                 ba.append(QString(tmp + "\r\n").toStdString());
             }
+            objSett.lastPathCfg = getPathWOFileName(fileCFG);
             if (fileCFG.write(ba)) {
                 QMessageBox(QMessageBox::Information, QS_DIAGINFO.at(objSett.curLang), QS_CFG_SSC.at(objSett.curLang), QMessageBox::Ok, mainWindow).exec();
                 fileCFG.flush();
@@ -199,7 +193,6 @@ void NNCGButtonCreate::slotClicked() {
         } else { // ошибка при создании файла
             QMessageBox(QMessageBox::Critical, QS_DIAGERR.at(objSett.curLang), QS_CFG_ERSV.at(objSett.curLang), QMessageBox::Ok, mainWindow).exec();
         }
-        ///
     }
 }
 

@@ -100,7 +100,7 @@ DELIMITER_CLOSE***
 > unsigned 32-bit integer in the range from 0 to 4_294_967_295
 
 ***Password***
-> password, hidden input field, max. 128 unicode characters
+> password, hidden input, max. 128 unicode characters
 
 ***MASKv4***
 > checking the correctness of the mask for IPv4 in dotted format
