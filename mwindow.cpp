@@ -20,7 +20,7 @@
 using namespace std;
 
 extern NNCGSettings objSett;
-extern array<theme_t, themeId_t::UnknownTheme> gammaApp;
+extern array<theme_t, themeId_t::UnknownTheme> appGamma;
 extern NNCGTemplate* objTempl;
 extern NNCG_csv *objCSV;
 extern QString b2s(bool b);
@@ -349,12 +349,12 @@ void NNCGMainWindow::repaintWithTheme() {
 
     tmpPal = bigWidget->palette();
 
-    tmpCol = {gammaApp.at(objSett.curThemeId).bw_bg.r, gammaApp.at(objSett.curThemeId).bw_bg.g, gammaApp.at(objSett.curThemeId).bw_bg.b, 255};
+    tmpCol = {appGamma.at(objSett.curThemeId).bw_bg.r, appGamma.at(objSett.curThemeId).bw_bg.g, appGamma.at(objSett.curThemeId).bw_bg.b, 255};
     tmpPal.setColor(QPalette::Window, tmpCol);
     bigWidget->setPalette(tmpPal);
 
     tmpPal = titleLabel->palette();
-    tmpCol = {gammaApp.at(objSett.curThemeId).ttl_fg.r, gammaApp.at(objSett.curThemeId).ttl_fg.g, gammaApp.at(objSett.curThemeId).ttl_fg.b, 255};
+    tmpCol = {appGamma.at(objSett.curThemeId).ttl_fg.r, appGamma.at(objSett.curThemeId).ttl_fg.g, appGamma.at(objSett.curThemeId).ttl_fg.b, 255};
     tmpPal.setColor(QPalette::WindowText, tmpCol);
     titleLabel->setPalette(tmpPal);
     commentLabel->setPalette(tmpPal);
@@ -362,15 +362,15 @@ void NNCGMainWindow::repaintWithTheme() {
     int colW = table->columnWidth(1);
     table->setStyleSheet(QString("color: rgb(%1, %2, %3); gridline-color: rgb(%4, %5, %6); background-color: rgb(%7, %8, %9)")
                              .arg(
-                                 QString::number(gammaApp.at(objSett.curThemeId).tbl_fg.r),
-                                 QString::number(gammaApp.at(objSett.curThemeId).tbl_fg.g),
-                                 QString::number(gammaApp.at(objSett.curThemeId).tbl_fg.b),
-                                 QString::number(gammaApp.at(objSett.curThemeId).tbl_gr.r),
-                                 QString::number(gammaApp.at(objSett.curThemeId).tbl_gr.g),
-                                 QString::number(gammaApp.at(objSett.curThemeId).tbl_gr.b),
-                                 QString::number(gammaApp.at(objSett.curThemeId).tbl_bg.r),
-                                 QString::number(gammaApp.at(objSett.curThemeId).tbl_bg.g),
-                                 QString::number(gammaApp.at(objSett.curThemeId).tbl_bg.b)
+                                 QString::number(appGamma.at(objSett.curThemeId).tbl_fg.r),
+                                 QString::number(appGamma.at(objSett.curThemeId).tbl_fg.g),
+                                 QString::number(appGamma.at(objSett.curThemeId).tbl_fg.b),
+                                 QString::number(appGamma.at(objSett.curThemeId).tbl_gr.r),
+                                 QString::number(appGamma.at(objSett.curThemeId).tbl_gr.g),
+                                 QString::number(appGamma.at(objSett.curThemeId).tbl_gr.b),
+                                 QString::number(appGamma.at(objSett.curThemeId).tbl_bg.r),
+                                 QString::number(appGamma.at(objSett.curThemeId).tbl_bg.g),
+                                 QString::number(appGamma.at(objSett.curThemeId).tbl_bg.b)
                                  )
                          );
     table->setColumnWidth(0, TABLE_COLUMN_ZERO_FIXED_WIDTH);
@@ -382,12 +382,12 @@ void NNCGMainWindow::repaintWithTheme() {
                                                       "::sub-line:vertical {height: 0px}"
                                                       "::add-line:vertical {height: 0px}")
                                                   .arg(
-                                                      QString::number(gammaApp.at(objSett.curThemeId).bw_bg.r),
-                                                      QString::number(gammaApp.at(objSett.curThemeId).bw_bg.g),
-                                                      QString::number(gammaApp.at(objSett.curThemeId).bw_bg.b),
-                                                      QString::number(gammaApp.at(objSett.curThemeId).vh.r),
-                                                      QString::number(gammaApp.at(objSett.curThemeId).vh.g),
-                                                      QString::number(gammaApp.at(objSett.curThemeId).vh.b)
+                                                      QString::number(appGamma.at(objSett.curThemeId).bw_bg.r),
+                                                      QString::number(appGamma.at(objSett.curThemeId).bw_bg.g),
+                                                      QString::number(appGamma.at(objSett.curThemeId).bw_bg.b),
+                                                      QString::number(appGamma.at(objSett.curThemeId).vh.r),
+                                                      QString::number(appGamma.at(objSett.curThemeId).vh.g),
+                                                      QString::number(appGamma.at(objSett.curThemeId).vh.b)
                                                       )
                                               );
 

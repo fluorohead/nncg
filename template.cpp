@@ -151,7 +151,7 @@ NNCGTemplate::NNCGTemplate() {
     hashVars["{phy1_ip}"] = {3, "IPv4 address ->", "192.168.0.2", IPv4};
     hashVars["{phy1_mask}"] = {4, "IPv4 mask ->", "255.255.255.0", MASKv4};
     noOpenErr = true;
-    lastErrMsg = tr("demo template loaded");
+    lastErrMsg = "demo template loaded";
     pixLogo.load(QS_DEFLOGO);
     isDemo = true;
 }

@@ -3,8 +3,7 @@
 
 #include <QTableWidget>
 
-class NNCGTable: public QTableWidget
-{
+class NNCGTable: public QTableWidget {
 
 public:
     void changeEvent(QEvent *);
