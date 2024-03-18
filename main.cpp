@@ -2,11 +2,11 @@
 #include "template.h"
 #include "settings.h"
 #include "csv.h"
+#include "updater.h"
 
+#include <QThread>
 #include <QApplication>
 #include <QWindowStateChangeEvent>
-
-// #include <iostream>
 
 using namespace std;
 
@@ -38,6 +38,11 @@ varType_t s2t(const QString &str) {
     return varType_t::Text; // значение по умолчанию
 }
 
+void updater_work() {
+    Updater().make_request();
+    QThread::currentThread()->deleteLater();
+}
+
 ///////////////////////////////////////////
 int main(int argc, char *argv[]) {
     app = new QApplication(argc, argv);
@@ -64,6 +69,10 @@ int main(int argc, char *argv[]) {
 
     mainWindow->repaintWithTheme(); // раскраска дочерних элеметов в соотв. в текущей темой
     QApplication::postEvent(mainWindow, new QEvent(QEvent::LanguageChange)); // перевод надписей на текущий язык
+
+    auto upd_wrk_thr = QThread::create(updater_work); // отдельный процесс проверки и скачивания новой версии
+    upd_wrk_thr->start();
+
     mainWindow->refreshTable(); // обновление таблицы в соотв. с текущим шаблоном и показ главного окна
 
     QApplication::exec();

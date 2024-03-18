@@ -1,7 +1,5 @@
 #include "validators.h"
 
-//#include <iostream>
-
 using namespace std;
 
 extern QString b2s(bool b);

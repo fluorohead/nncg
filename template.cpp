@@ -3,8 +3,6 @@
 
 #include <QFileInfo>
 
-//#include <iostream>
-
 using namespace std;
 
 extern auto s2t(const QString &str) -> varType_t;

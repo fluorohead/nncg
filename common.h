@@ -3,7 +3,8 @@
 
 #include <QString>
 
-constexpr auto DISPLAY_APPVER = "v0.1.1 : GIA : 2024";
+constexpr struct { int major; int minor; int micro; } APPVER = {0, 1, 2};
+constexpr auto DISPLAY_APPVER = "v0.1.2 : GIA : 2024";
 
 constexpr auto MIN_WIDTH = 800;
 constexpr auto MIN_HEIGHT = 600;

@@ -8,8 +8,6 @@
 #include <QScrollBar>
 #include <QCommonStyle>
 
-//#include <iostream>
-
 using namespace std;
 
 extern NNCGSettings objSett;
