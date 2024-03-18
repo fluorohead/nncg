@@ -300,7 +300,8 @@ void NNCGMainWindow::closeEvent(QCloseEvent *event) {
                             table->horizontalHeader()->sectionSize(1),
                             objSett.curLang,
                             objSett.lastPathCfg,
-                            ((objCSV == nullptr) ? objSett.lastPathCSV : objCSV->getFilePath())
+                            ((objCSV == nullptr) ? objSett.lastPathCSV : objCSV->getFilePath()),
+                            true
                         );
     event->accept();
 }

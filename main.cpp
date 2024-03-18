@@ -16,6 +16,7 @@ NNCGMainWindow *mainWindow;
 NNCGTemplate *objTempl;
 NNCGSettings objSett;
 NNCG_csv *objCSV {nullptr};
+QThread *upd_wrk_thr;
 
 extern array<QString, int(varType_t::MAX)> QS_VARTYPES;
 
@@ -70,8 +71,10 @@ int main(int argc, char *argv[]) {
     mainWindow->repaintWithTheme(); // раскраска дочерних элеметов в соотв. в текущей темой
     QApplication::postEvent(mainWindow, new QEvent(QEvent::LanguageChange)); // перевод надписей на текущий язык
 
-    auto upd_wrk_thr = QThread::create(updater_work); // отдельный процесс проверки и скачивания новой версии
-    upd_wrk_thr->start();
+    if (objSett.autoUpdate) {
+        upd_wrk_thr = QThread::create(updater_work); // отдельный процесс проверки и скачивания новой версии
+        upd_wrk_thr->start();
+    }
 
     mainWindow->refreshTable(); // обновление таблицы в соотв. с текущим шаблоном и показ главного окна
 

@@ -20,13 +20,14 @@ public:
     int colWidth {BASE_WIDTH_COLUMN_DESCR};
     bool maximized {false};
     bool noLastErr {false};
+    bool autoUpdate {false};
     QString templFpFn {""}; // template file path with file name
     QString lastErrMsg;
     QString lastPathCfg {"./"};
     QString lastPathCSV {"./"};
 
     QString getTemplPathWOFn(); // returns template file path without file name
-    bool saveSettings(const QString &, int, int, int, const QString &, int, int, const QString &, const QString &);
+    bool saveSettings(const QString &, int, int, int, const QString &, int, int, const QString &, const QString &, bool);
 };
 
 #endif // SETTINGS_H

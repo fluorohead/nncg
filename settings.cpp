@@ -8,6 +8,7 @@ using namespace std;
 const QString QS_TEMPLATE {"template"};
 const QString QS_LAST_PATH_CFG {"last_cfg_path"};
 const QString QS_LAST_PATH_CSV {"last_csv_path"};
+const QString QS_AUTO_UPDATE {"auto_update"};
 const QString QS_THEME {"theme"};
 const QString QS_MXMZD {"maximized"};
 const QString QS_WIDTH {"width"};
@@ -54,27 +55,28 @@ NNCGSettings::NNCGSettings() {
                     if (curLang < langId_t::English || curLang >= langId_t::Elfian) curLang = langId_t::English;
                     lastPathCfg = jsDoc[QS_LAST_PATH_CFG].toString();
                     lastPathCSV = jsDoc[QS_LAST_PATH_CSV].toString();
+                    autoUpdate = jsDoc[QS_AUTO_UPDATE].toBool();
                     noLastErr = true;
-                    lastErrMsg = tr("succesfully parsed nncg.json");
+                    lastErrMsg = "succesfully parsed nncg.json";
                 } else {
                     noLastErr = false;
                     lastErrMsg = jsErr.errorString();
                 }
             } else {
                 noLastErr = false;
-                lastErrMsg = tr("too big nncg.json, skipped");
+                lastErrMsg = "too big nncg.json, skipped";
             }
         } else { // ошибка создания или открытия файла
             noLastErr = false;
-            lastErrMsg = tr("error creating or opening /.nncg/ in home dir");
+            lastErrMsg = "error creating or opening /.nncg/ in home dir";
         }
     } else { // ошибка создания или открытия подкаталога /.nncg/
         noLastErr = false;
-        lastErrMsg = tr("error creating or opening /.nncg/ in home dir");
+        lastErrMsg = "error creating or opening /.nncg/ in home dir";
     }
 }
 
-bool NNCGSettings::saveSettings(const QString& fpfn, int theme, int w, int h, const QString& mxmzd, int colWidth, int lang, const QString& fpCfg, const QString& fpcsv) {
+bool NNCGSettings::saveSettings(const QString& fpfn, int theme, int w, int h, const QString& mxmzd, int colWidth, int lang, const QString& fpCfg, const QString& fpcsv, bool auto_upd) {
     qFile.resize(0);
     QString writeStr =  QString("{\r\n"
                                 " \"%1\": \"%2\",\r\n"
@@ -85,16 +87,18 @@ bool NNCGSettings::saveSettings(const QString& fpfn, int theme, int w, int h, co
                                 " \"%11\": %12,\r\n"
                                 " \"%13\": %14,\r\n"
                                 " \"%15\": \"%16\",\r\n"
-                                " \"%17\": \"%18\"\r\n"
-                                "}").arg(QS_TEMPLATE,fpfn,
+                                " \"%17\": \"%18\",\r\n"
+                                " \"%19\": %20\r\n"
+                                "}").arg(QS_TEMPLATE, fpfn,
                                          QS_THEME, QString::number(theme),
                                          QS_WIDTH, QString::number(w),
                                          QS_HEIGHT, QString::number(h),
                                          QS_MXMZD, mxmzd,
                                          QS_COLWIDTH, QString::number(colWidth),
                                          QS_LANG, QString::number(lang),
-                                QS_LAST_PATH_CFG, fpCfg,
-                                QS_LAST_PATH_CSV, fpcsv
+                                         QS_LAST_PATH_CFG, fpCfg,
+                                         QS_LAST_PATH_CSV, fpcsv,
+                                         QS_AUTO_UPDATE, (auto_upd) ? "true" : "false"
                                 );
     qFile.write(writeStr.toUtf8());
     qFile.flush();
