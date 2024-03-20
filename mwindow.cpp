@@ -314,7 +314,7 @@ void NNCGMainWindow::closeEvent(QCloseEvent *event) {
                             objSett.curLang,
                             objSett.lastPathCfg,
                             ((objCSV == nullptr) ? objSett.lastPathCSV : objCSV->getFilePath()),
-                            true
+                            objSett.autoUpgrade
                         );
     event->accept();
 }

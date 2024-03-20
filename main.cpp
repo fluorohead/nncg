@@ -74,8 +74,8 @@ int main(int argc, char *argv[]) {
 
     mainWindow->repaintWithTheme(); // раскраска дочерних элементов в соотв. с текущей темой
     QApplication::postEvent(mainWindow, new QEvent(QEvent::LanguageChange)); // перевод надписей на текущий язык
-
-    if (objSett.autoUpdate) {
+    
+    if (objSett.autoUpgrade) {
         upd_wrk_thr = QThread::create(updater_work, mainWindow); // порождаем отдельный процесс проверки и скачивания новой версии
         upd_wrk_thr->start();
     }

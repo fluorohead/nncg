@@ -87,7 +87,7 @@ void Updater::make_request(NNCGMainWindow *mw_ptr) {
             } else {
                 //qInfo() << "New version installer already downloaded and present in tmp dir.";
             }
-            if (objSett.autoUpdate) { // отображаем кнопку апгрейда
+            if (objSett.autoUpgrade) { // отображаем кнопку апгрейда
                 upgradeFilePath = fp;
                 mw_ptr->btnUpgrade->setText(QS_UPGRADE.at(objSett.curLang).arg(lastVerStr));
                 connect(this, SIGNAL(upgrade_btn_show()), mw_ptr->btnUpgrade, SLOT(show_on_signal()), Qt::AutoConnection);

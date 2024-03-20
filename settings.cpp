@@ -57,7 +57,7 @@ NNCGSettings::NNCGSettings() {
                     if (curLang < langId_t::English || curLang >= langId_t::Elfian) curLang = langId_t::English;
                     lastPathCfg = jsDoc[QS_LAST_PATH_CFG].toString();
                     lastPathCSV = jsDoc[QS_LAST_PATH_CSV].toString();
-                    autoUpdate = jsDoc[QS_AUTO_UPDATE].toBool();
+                    autoUpgrade = jsDoc[QS_AUTO_UPDATE].toBool();
                     noLastErr = true;
                     lastErrMsg = "succesfully parsed nncg.json";
                 } else {
