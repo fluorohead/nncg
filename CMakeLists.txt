@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(nncg VERSION 0.1.1.0 LANGUAGES C CXX)
+project(nncg VERSION 0.1.2.0 LANGUAGES C CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -20,6 +20,7 @@ qt_add_executable(nncg WIN32 MACOSX_BUNDLE
     template.cpp template.h
     validators.cpp validators.h
     updater.cpp updater.h
+    icons.rc
 )
 target_compile_definitions(nncg PRIVATE
     QT_DEPRECATED_WARNINGS
@@ -30,7 +31,6 @@ target_link_libraries(nncg PRIVATE
     Qt${QT_VERSION_MAJOR}::Gui
     Qt${QT_VERSION_MAJOR}::Network
 )
-
 
 # Resources:
 set(nncg_resource_files

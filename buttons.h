@@ -99,6 +99,7 @@ public:
     void changeEvent(QEvent *) override;
 
 public slots:
+    void show_on_signal() { setVisible(true); };
     void slotClicked();
 };
 

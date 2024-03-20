@@ -24,6 +24,8 @@ extern const array<theme_t, themeId_t::UnknownTheme> appGamma {
     theme_t{{210, 202, 188}, {  0,   0,   0}, {150, 150, 150}, {240, 239, 229}, {160, 160, 160}, { 97,  88,  96}} // light theme gamma
 };
 
+extern QString b2s(bool b);
+
 NNCGSettings::NNCGSettings() {
     QDir qDir;
     QString strDir {QDir::homePath() + "/.nncg/"};
@@ -98,7 +100,7 @@ bool NNCGSettings::saveSettings(const QString& fpfn, int theme, int w, int h, co
                                          QS_LANG, QString::number(lang),
                                          QS_LAST_PATH_CFG, fpCfg,
                                          QS_LAST_PATH_CSV, fpcsv,
-                                         QS_AUTO_UPDATE, (auto_upd) ? "true" : "false"
+                                         QS_AUTO_UPDATE, b2s(auto_upd)
                                 );
     qFile.write(writeStr.toUtf8());
     qFile.flush();

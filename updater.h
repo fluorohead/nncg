@@ -23,6 +23,8 @@ public:
     ~Updater();
     void make_request(NNCGMainWindow *mw_ptr);
     en_state get_state() { return state; };
+signals:
+    void upgrade_btn_show();
 };
 
 #endif // UPDATER_H

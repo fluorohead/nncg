@@ -51,6 +51,7 @@ void updater_work(NNCGMainWindow *mw_ptr) {
 int main(int argc, char *argv[]) {
     app = new QApplication(argc, argv);
     QApplication::setApplicationName("Network Node Configuration Generator");
+    QApplication::setWindowIcon(QIcon(":/rtr.png"));
 
     if (!objSett.templFpFn.isEmpty()) { // проверка пути к шаблону
         objTempl = new NNCGTemplate(objSett.templFpFn);
@@ -71,7 +72,7 @@ int main(int argc, char *argv[]) {
         mainWindow->btnClearAll->setDisabled(true);
     }
 
-    mainWindow->repaintWithTheme(); // раскраска дочерних элеметов в соотв. с текущей темой
+    mainWindow->repaintWithTheme(); // раскраска дочерних элементов в соотв. с текущей темой
     QApplication::postEvent(mainWindow, new QEvent(QEvent::LanguageChange)); // перевод надписей на текущий язык
 
     if (objSett.autoUpdate) {

@@ -1,5 +1,6 @@
 #include "updater.h"
 #include "common.h"
+#include "qthread.h"
 #include "settings.h"
 #include <QStandardPaths>
 #include <QProcess>
@@ -18,7 +19,7 @@ Updater::~Updater() {
     if (ptr_reply != nullptr) delete ptr_reply;
 };
 
-bool Updater::need_update(QString &str_ver){
+bool Updater::need_update(QString &str_ver) {
     QStringList qsl = str_ver.split('.');
     if (qsl.length() != 3) return false;
     bool ok;
@@ -86,10 +87,11 @@ void Updater::make_request(NNCGMainWindow *mw_ptr) {
             } else {
                 //qInfo() << "New version installer already downloaded and present in tmp dir.";
             }
-            if (objSett.autoUpdate) { // отображаем кнопку апгрейда на новую версию
+            if (objSett.autoUpdate) { // отображаем кнопку апгрейда
                 upgradeFilePath = fp;
                 mw_ptr->btnUpgrade->setText(QS_UPGRADE.at(objSett.curLang).arg(lastVerStr));
-                mw_ptr->btnUpgrade->setVisible(true);
+                connect(this, SIGNAL(upgrade_btn_show()), mw_ptr->btnUpgrade, SLOT(show_on_signal()), Qt::AutoConnection);
+                emit upgrade_btn_show();
             }
         }
     }
