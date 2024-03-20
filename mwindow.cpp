@@ -71,7 +71,8 @@ const extern array<array<QString, LANGS_AMOUNT>, int(varType_t::MAX)> QS_PLCHLDR
 NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWindow(parent, flags) {
     this->setMinimumSize(MIN_WIDTH, MIN_HEIGHT);
     this->resize(objSett.width, objSett.height);
-    if (objSett.maximized) setWindowState(Qt::WindowMaximized);
+    if (objSett.maximized)
+        setWindowState(Qt::WindowMaximized);
     bigWidget = new QWidget(this, Qt::Widget);
     statusBar = new QStatusBar(this);
     statusBar->showMessage(DISPLAY_APPVER);
@@ -82,7 +83,8 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
 
     bigWidget->setAutoFillBackground(true);
 
-    statusBar->setFixedHeight(20);
+    statusBar->setFixedHeight(24);
+    statusBar->setContentsMargins(0, 0, 0, 0);
     statusBar->setAutoFillBackground(true);
 
     this->setCentralWidget(bigWidget);
@@ -153,9 +155,13 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
 
     btnTemplLoad = new NNCGButtonLoad(108, 32, "");
     btnCfgCreate = new NNCGButtonCreate(108, 32, "");
+    btnUpgrade = new NNCGBtnUpgrade(356, 28, "123");
+    btnUpgrade->setHidden(true);
 
     hbBottom->addWidget(btnCsvLoad);
     hbBottom->addWidget(btnCsvSave);
+    hbBottom->addSpacerItem(hbSI);
+    hbBottom->addWidget(btnUpgrade);
     hbBottom->addSpacerItem(hbSI);
     hbBottom->addWidget(btnTemplLoad);
     hbBottom->addWidget(btnCfgCreate);
@@ -170,6 +176,7 @@ NNCGMainWindow::NNCGMainWindow(QWidget *parent, Qt::WindowFlags flags): QMainWin
     connect(btnClearAll, SIGNAL(clicked()), btnClearAll, SLOT(slotClicked()), Qt::AutoConnection);
     connect(btnLangSwitch, SIGNAL(clicked()), btnLangSwitch, SLOT(slotClicked()), Qt::AutoConnection);
     connect(btnThemeSwitch, SIGNAL(clicked()), btnThemeSwitch, SLOT(slotClicked()), Qt::AutoConnection);
+    connect(btnUpgrade, SIGNAL(clicked()), btnUpgrade, SLOT(slotClicked()), Qt::AutoConnection);
 
    // создаём валидаторы
     vldtrs[varType_t::Domname] = new NNCGValidDomname(this);
@@ -282,6 +289,12 @@ void NNCGMainWindow::refreshTable() {
                                         QString::number(objTempl->brandColors[5] / 2)
                                     ));
 
+    btnUpgrade->setStyleSheet(
+        ":enabled  {background: rgb(216, 216, 216); border: 2px rgb(165, 205, 5); border-radius: 10px; border-style: outset; font: 12px 'Tahoma'}"
+        ":hover    {background: rgb(216, 216, 216); border: 2px rgb(165, 205, 5); border-radius: 10px; border-style: inset;  font: 12px 'Tahoma'}"
+        ":pressed  {background: rgb(216, 216, 216); border: 2px rgb(165, 205, 5); border-radius:  4px; border-style: inset;  font: 12px 'Tahoma'}"
+        "QToolTip:enabled {background : white; color: black; border: 0px}"
+        );
 
     this->setEnabled(true);
     this->show();
@@ -306,6 +319,13 @@ void NNCGMainWindow::closeEvent(QCloseEvent *event) {
     event->accept();
 }
 
+void NNCGMainWindow::resizeEvent(QResizeEvent *event) {
+    auto w = this->width();
+    btnClearAll->move(w - 84, 48);
+    btnLangSwitch->move(w - 130, 90);
+    btnThemeSwitch->move(w - 178, 90);
+    event->accept();
+}
 
 // сброс данных из таблицы в хэш объекта шаблона
 void NNCGMainWindow::dumpTableToHash() {
@@ -317,7 +337,6 @@ void NNCGMainWindow::dumpTableToHash() {
     }
 }
 
-
 // обнуление всех введённых значений в таблице; и в объекте шаблона (необязательно, но экономит память)
 void NNCGMainWindow::clearTable() {
     for (auto hIt = objTempl->hashVars.begin(); hIt != objTempl->hashVars.end(); ++hIt) {
@@ -328,16 +347,6 @@ void NNCGMainWindow::clearTable() {
         }
     }
 }
-
-
-void NNCGMainWindow::resizeEvent(QResizeEvent *event) {
-    auto w = this->width();
-    btnClearAll->move(w - 84, 48);
-    btnLangSwitch->move(w - 130, 90);
-    btnThemeSwitch->move(w - 178, 90);
-    event->accept();
-}
-
 
 // вызывается сигналом при переключении темы оформления
 void NNCGMainWindow::repaintWithTheme() {

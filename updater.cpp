@@ -1,6 +1,14 @@
 #include "updater.h"
 #include "common.h"
+#include "settings.h"
 #include <QStandardPaths>
+#include <QProcess>
+
+extern NNCGSettings objSett;
+extern const array<QString, LANGS_AMOUNT> QS_UPGRADE;
+
+extern QString upgradeFilePath;
+extern QString lastVerStr;
 
 Updater::Updater(): naman(this), state(en_state::Idle) {
 };
@@ -10,7 +18,7 @@ Updater::~Updater() {
     if (ptr_reply != nullptr) delete ptr_reply;
 };
 
-bool Updater::can_update(QString &str_ver){
+bool Updater::need_update(QString &str_ver){
     QStringList qsl = str_ver.split('.');
     if (qsl.length() != 3) return false;
     bool ok;
@@ -25,41 +33,45 @@ bool Updater::can_update(QString &str_ver){
     return false;
 }
 
-void Updater::make_request() {
+void Updater::make_request(NNCGMainWindow *mw_ptr) {
     state = en_state::Working;
     nreq.setUrl(QUrl("https://raw.githubusercontent.com/fluorohead/nncg/main/last_ver.txt")); // скачиваем текстовый файл с последней версией
     ptr_reply = naman.get(nreq);
     while (!ptr_reply->isFinished())
         QApplication::processEvents(QEventLoop::WaitForMoreEvents, 250);
     if (!ptr_reply->error()) {
-        QString last_ver = ptr_reply->readAll();
+        lastVerStr = ptr_reply->readAll();
         QStringList tmp_paths = QStandardPaths::standardLocations(QStandardPaths::TempLocation);
-        if (can_update(last_ver) && (tmp_paths.length() > 0)) {
-            QString fn = "nncg-" + last_ver + "-windows-x64.exe";
+        if (need_update(lastVerStr) && (tmp_paths.length() > 0)) {
+            QString fn = "nncg-" + lastVerStr + "-windows-x64.exe";
             QString fp = tmp_paths[0] + "/" + fn;
             QFile new_file(fp);
             bool hash_ok {false};
             if (new_file.exists()) { // сначала проверяем не скачан ли уже этот файл
-                qInfo() << "New installer detected in tmp dir!";
+               // qInfo() << "New installer detected in tmp dir!";
                 nreq.setUrl(QUrl("https://raw.githubusercontent.com/fluorohead/nncg/main/last_ver.md5")); // для этого узнаем какой у последней версии должен быть MD5-хэш
                 delete ptr_reply;
                 ptr_reply = naman.get(nreq);
                 while (!ptr_reply->isFinished())
                     QApplication::processEvents(QEventLoop::WaitForMoreEvents, 250);
-                qInfo() << "File last_ver.md5 downloaded.";
+                //qInfo() << "File last_ver.md5 downloaded.";
                 if (!ptr_reply->error()) {
                     new_file.open(QIODevice::ReadOnly);
-                    qInfo() << "New installer file opened to calculate MD5 hash";
+                    //qInfo() << "New installer file opened to calculate MD5 hash.";
                     QCryptographicHash crh(QCryptographicHash::Md5);
                     if (crh.addData(&new_file)) {
-                        if (crh.result().toHex() == ptr_reply->readAll().toHex()) {
+                        //qInfo() << "Calculating hash...";
+                        //qInfo() << "Calculated : " << crh.result().toHex();
+                        if (crh.result().toHex() == ptr_reply->readAll()) {
                             hash_ok = true;
+                            //qInfo() << "Hash is equal, so no need to download installer again.";
                         }
                     }
+                    new_file.close();
                 }
             }
-            if (!hash_ok) { // используем эту переменную, как индикатор наличия скачанного инсталлятора
-                nreq.setUrl(QUrl("https://github.com/fluorohead/nncg/releases/download/" + last_ver + "/" + fn)); // скачиваем инсталлятор последней версии
+            if (!hash_ok) { // используем переменную, как индикатор уже скачанного инсталлятора в tmp
+                nreq.setUrl(QUrl("https://github.com/fluorohead/nncg/releases/download/" + lastVerStr + "/" + fn)); // скачиваем инсталлятор последней версии
                 delete ptr_reply;
                 ptr_reply = naman.get(nreq);
                 while (!ptr_reply->isFinished())
@@ -72,9 +84,13 @@ void Updater::make_request() {
                     }
                 }
             } else {
-                qInfo() << "new version installer already downloaded and present in tmp dir";
+                //qInfo() << "New version installer already downloaded and present in tmp dir.";
             }
-
+            if (objSett.autoUpdate) { // отображаем кнопку апгрейда на новую версию
+                upgradeFilePath = fp;
+                mw_ptr->btnUpgrade->setText(QS_UPGRADE.at(objSett.curLang).arg(lastVerStr));
+                mw_ptr->btnUpgrade->setVisible(true);
+            }
         }
     }
     state = en_state::Finished;

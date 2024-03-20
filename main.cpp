@@ -18,6 +18,9 @@ NNCGSettings objSett;
 NNCG_csv *objCSV {nullptr};
 QThread *upd_wrk_thr;
 
+QString upgradeFilePath {};
+QString lastVerStr {};
+
 extern array<QString, int(varType_t::MAX)> QS_VARTYPES;
 
 // из bool в QString
@@ -39,8 +42,8 @@ varType_t s2t(const QString &str) {
     return varType_t::Text; // значение по умолчанию
 }
 
-void updater_work() {
-    Updater().make_request();
+void updater_work(NNCGMainWindow *mw_ptr) {
+    Updater().make_request(mw_ptr);
     QThread::currentThread()->deleteLater();
 }
 
@@ -68,11 +71,11 @@ int main(int argc, char *argv[]) {
         mainWindow->btnClearAll->setDisabled(true);
     }
 
-    mainWindow->repaintWithTheme(); // раскраска дочерних элеметов в соотв. в текущей темой
+    mainWindow->repaintWithTheme(); // раскраска дочерних элеметов в соотв. с текущей темой
     QApplication::postEvent(mainWindow, new QEvent(QEvent::LanguageChange)); // перевод надписей на текущий язык
 
     if (objSett.autoUpdate) {
-        upd_wrk_thr = QThread::create(updater_work); // отдельный процесс проверки и скачивания новой версии
+        upd_wrk_thr = QThread::create(updater_work, mainWindow); // порождаем отдельный процесс проверки и скачивания новой версии
         upd_wrk_thr->start();
     }
 

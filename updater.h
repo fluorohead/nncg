@@ -1,6 +1,7 @@
 #ifndef UPDATER_H
 #define UPDATER_H
 
+#include "mwindow.h"
 #include <QApplication>
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
@@ -14,13 +15,13 @@ class Updater: public QObject {
     QNetworkRequest nreq;
     QNetworkReply *ptr_reply {nullptr};
     enum class en_state {Init = 0, Idle = 1, Working = 2, Finished = 3};
-    bool can_update(QString &str_ver);
+    bool need_update(QString &str_ver);
     en_state state {en_state::Init};
 
 public:
     Updater();
     ~Updater();
-    void make_request();
+    void make_request(NNCGMainWindow *mw_ptr);
     en_state get_state() { return state; };
 };
 

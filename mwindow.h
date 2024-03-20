@@ -14,7 +14,6 @@
 using namespace std;
 
 class NNCGMainWindow: public QMainWindow {
-
     Q_OBJECT
 
     QWidget *bigWidget;
@@ -28,13 +27,11 @@ class NNCGMainWindow: public QMainWindow {
     QFont fntCons12bold {"Consolas", 12, 100}; // фонт для колонки Value
     array <QValidator*, int(varType_t::MAX)> vldtrs {};
     QPixmap sepPixmap;
-
     void closeEvent(QCloseEvent *) override;
     void resizeEvent(QResizeEvent *) override;
 
 public:
     NNCGMainWindow(QWidget* = nullptr, Qt::WindowFlags = Qt::WindowFlags());
-
     void refreshTable();
     void dumpTableToHash();
     void clearTable();
@@ -46,7 +43,7 @@ public:
     NNCGBtnClearAll *btnClearAll;
     NNCGBtnLangSwitch *btnLangSwitch;
     NNCGBtnThemeSwitch *btnThemeSwitch;
-
+    NNCGBtnUpgrade *btnUpgrade;
 };
 
 #endif // MWINDOW_H

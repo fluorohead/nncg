@@ -90,4 +90,16 @@ public slots:
     void slotClicked();
 };
 
+
+class NNCGBtnUpgrade: public QPushButton {
+    Q_OBJECT
+
+public:
+    NNCGBtnUpgrade(int, int, const QString &, QWidget * = nullptr);
+    void changeEvent(QEvent *) override;
+
+public slots:
+    void slotClicked();
+};
+
 #endif // BUTTONS_H

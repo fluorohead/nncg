@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QApplication>
+#include <QProcess>
 
 using namespace std;
 
@@ -18,6 +19,8 @@ extern NNCGSettings objSett;
 extern QString t2s(varType_t);
 extern QString QS_VVT;
 extern QString getPathWOFileName(const QFile &);
+extern QString upgradeFilePath;
+extern QString lastVerStr;
 
 // тексты, связанные с работой кнопок
 const array<QString, LANGS_AMOUNT> QS_LOADCSV {"Load CSV", "Загр. CSV"};
@@ -37,6 +40,8 @@ const array<QString, LANGS_AMOUNT> QS_SVNGCFG {"Saving config", "Сохране�
 const array<QString, LANGS_AMOUNT> QS_CFGFILES {"CFG files (*.cfg)", "Файлы CFG (*.cfg)"};
 const array<QString, LANGS_AMOUNT> QS_CRTCFG {"Create config", "Созд. конфиг"};
 const array<QString, LANGS_AMOUNT> QS_TT_CRTCFG {"Creating a device configuration.", "Создание конфигурации устройства."};
+extern const array<QString, LANGS_AMOUNT> QS_UPGRADE {"New version %1 is available. Press here to upgrade. ", "Доступна новая версия %1. Нажмите для установки. "};
+const array<QString, LANGS_AMOUNT> QS_TT_UPGRADE {"Application upgrade.", "Обновление приложения."};
 const array<QString, LANGS_AMOUNT> QS_CSV_SSC {"csv saved successfully", "csv успешно сохранён"};
 const array<QString, LANGS_AMOUNT> QS_CSV_ERWR {"error writing csv", "ошибка записи в csv"};
 const array<QString, LANGS_AMOUNT> QS_CSV_ERSV {"error creating csv", "ошибка при создании csv"};
@@ -244,7 +249,6 @@ NNCGBtnThemeSwitch::NNCGBtnThemeSwitch(int w, int h, QWidget *parent): QPushButt
                           ":pressed {background: transparent; image : url(:/tmp.png)}"));
 }
 
-
 void NNCGBtnThemeSwitch::slotClicked() {
     objSett.curThemeId++; // меняем тему на следующую
     if (objSett.curThemeId >= themeId_t::UnknownTheme) objSett.curThemeId = 0;
@@ -257,3 +261,21 @@ void NNCGBtnThemeSwitch::changeEvent(QEvent *event) {
     }
     event->accept();
 }
+
+NNCGBtnUpgrade::NNCGBtnUpgrade(int w, int h, const QString &text, QWidget *parent): QPushButton(text, parent) {
+    setFixedSize(w, h);
+}
+
+void NNCGBtnUpgrade::changeEvent(QEvent *event) {
+    if (event->type() == QEvent::LanguageChange) {
+        setText(QS_UPGRADE.at(objSett.curLang).arg(lastVerStr));
+        setToolTip(QS_TT_UPGRADE.at(objSett.curLang));
+    }
+    event->accept();
+}
+
+void NNCGBtnUpgrade::slotClicked() {
+    //qInfo() << "update process start";
+    QProcess::startDetached(upgradeFilePath);
+    mainWindow->close();
+};
