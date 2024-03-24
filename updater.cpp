@@ -1,6 +1,5 @@
 #include "updater.h"
 #include "common.h"
-#include "qthread.h"
 #include "settings.h"
 #include <QStandardPaths>
 #include <QProcess>
@@ -42,16 +41,17 @@ void Updater::make_request(NNCGMainWindow *mw_ptr) {
         QApplication::processEvents(QEventLoop::WaitForMoreEvents, 250);
     if (!ptr_reply->error()) {
         lastVerStr = ptr_reply->readAll();
+        ptr_reply->deleteLater();
         QStringList tmp_paths = QStandardPaths::standardLocations(QStandardPaths::TempLocation);
         if (need_update(lastVerStr) && (tmp_paths.length() > 0)) {
             QString fn = "nncg-" + lastVerStr + "-windows-x64.exe";
             QString fp = tmp_paths[0] + "/" + fn;
             QFile new_file(fp);
             bool hash_ok {false};
+            bool run_installer {false};
             if (new_file.exists()) { // сначала проверяем не скачан ли уже этот файл
                // qInfo() << "New installer detected in tmp dir!";
                 nreq.setUrl(QUrl("https://raw.githubusercontent.com/fluorohead/nncg/main/last_ver.md5")); // для этого узнаем какой у последней версии должен быть MD5-хэш
-                delete ptr_reply;
                 ptr_reply = naman.get(nreq);
                 while (!ptr_reply->isFinished())
                     QApplication::processEvents(QEventLoop::WaitForMoreEvents, 250);
@@ -65,15 +65,16 @@ void Updater::make_request(NNCGMainWindow *mw_ptr) {
                         //qInfo() << "Calculated : " << crh.result().toHex();
                         if (crh.result().toHex() == ptr_reply->readAll()) {
                             hash_ok = true;
+                            run_installer = true;
                             //qInfo() << "Hash is equal, so no need to download installer again.";
                         }
                     }
                     new_file.close();
                 }
+                ptr_reply->deleteLater();
             }
             if (!hash_ok) { // используем переменную, как индикатор уже скачанного инсталлятора в tmp
                 nreq.setUrl(QUrl("https://github.com/fluorohead/nncg/releases/download/" + lastVerStr + "/" + fn)); // скачиваем инсталлятор последней версии
-                delete ptr_reply;
                 ptr_reply = naman.get(nreq);
                 while (!ptr_reply->isFinished())
                     QCoreApplication::processEvents(QEventLoop::WaitForMoreEvents, 250);
@@ -84,16 +85,19 @@ void Updater::make_request(NNCGMainWindow *mw_ptr) {
                         new_file.close();
                     }
                 }
+                ptr_reply->deleteLater();
             } else {
                 //qInfo() << "New version installer already downloaded and present in tmp dir.";
             }
-            if (objSett.autoUpgrade) { // отображаем кнопку апгрейда
+            if (objSett.autoUpgrade && run_installer) { // отображаем кнопку апгрейда
                 upgradeFilePath = fp;
                 mw_ptr->btnUpgrade->setText(QS_UPGRADE.at(objSett.curLang).arg(lastVerStr));
                 connect(this, SIGNAL(upgrade_btn_show()), mw_ptr->btnUpgrade, SLOT(show_on_signal()), Qt::AutoConnection);
                 emit upgrade_btn_show();
             }
         }
+    } else {
+        ptr_reply->deleteLater();
     }
     state = en_state::Finished;
 }
