@@ -97,9 +97,8 @@ class NNCGBtnUpgrade: public QPushButton {
 public:
     NNCGBtnUpgrade(int, int, const QString &, QWidget * = nullptr);
     void changeEvent(QEvent *) override;
-
+    void showEvent(QShowEvent *event) override { setVisible(true); };
 public slots:
-    void show_on_signal() { setVisible(true); };
     void slotClicked();
 };
 

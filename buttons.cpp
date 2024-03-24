@@ -275,7 +275,6 @@ void NNCGBtnUpgrade::changeEvent(QEvent *event) {
 }
 
 void NNCGBtnUpgrade::slotClicked() {
-    //qInfo() << "update process start";
     QProcess::startDetached(upgradeFilePath);
     mainWindow->close();
 };

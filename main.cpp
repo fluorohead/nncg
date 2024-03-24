@@ -2,7 +2,7 @@
 #include "template.h"
 #include "settings.h"
 #include "csv.h"
-#include "updater.h"
+#include "upgrader.h"
 
 #include <QThread>
 #include <QApplication>
@@ -17,6 +17,8 @@ NNCGTemplate *objTempl;
 NNCGSettings objSett;
 NNCG_csv *objCSV {nullptr};
 QThread *upd_wrk_thr;
+
+UpgraderThread *upg_thread {nullptr};
 
 QString upgradeFilePath {};
 QString lastVerStr {};
@@ -40,11 +42,6 @@ varType_t s2t(const QString &str) {
         if (toLow == QS_VARTYPES.at(vt)) return (varType_t) vt;
     }
     return varType_t::Text; // значение по умолчанию
-}
-
-void updater_work(NNCGMainWindow *mw_ptr) {
-    Updater().make_request(mw_ptr);
-    QThread::currentThread()->deleteLater();
 }
 
 ///////////////////////////////////////////
@@ -76,13 +73,19 @@ int main(int argc, char *argv[]) {
     QApplication::postEvent(mainWindow, new QEvent(QEvent::LanguageChange)); // перевод надписей на текущий язык
     
     if (objSett.autoUpgrade) {
-        upd_wrk_thr = QThread::create(updater_work, mainWindow); // порождаем отдельный процесс проверки и скачивания новой версии
-        upd_wrk_thr->start();
+        upg_thread = new UpgraderThread(mainWindow);
+        upg_thread->start(QThread::NormalPriority);
     }
 
     mainWindow->refreshTable(); // обновление таблицы в соотв. с текущим шаблоном и показ главного окна
 
     QApplication::exec();
+
+    if (objSett.autoUpgrade) {
+        //upg_thread->exit(0);
+        upg_thread->wait();
+        delete upg_thread;
+    }
 
     return 0;
 }
