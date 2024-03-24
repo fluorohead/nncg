@@ -41,6 +41,7 @@ void Updater::make_request(NNCGMainWindow *mw_ptr) {
         QApplication::processEvents(QEventLoop::WaitForMoreEvents, 250);
     if (!ptr_reply->error()) {
         lastVerStr = ptr_reply->readLine();
+        qInfo() << "Last ver string : " << lastVerStr;
         QStringList tmp_paths = QStandardPaths::standardLocations(QStandardPaths::TempLocation);
         if (need_update(lastVerStr) && (tmp_paths.length() > 0)) {
             QString fn = "nncg-" + lastVerStr + "-windows-x64.exe";
@@ -58,7 +59,7 @@ void Updater::make_request(NNCGMainWindow *mw_ptr) {
                     qInfo() << "Calculated : " << crh.result().toHex();
                     QString new_ver_hash = ptr_reply->readLine();
                     qInfo() << "Downloaded hash : " << new_ver_hash;
-                    if (crh.result().toHex() == ptr_reply->readLine()) {
+                    if (crh.result().toHex() == new_ver_hash) {
                         hash_ok = true;
                         run_installer = true;
                         qInfo() << "Hash is equal, so no need to download installer again.";
