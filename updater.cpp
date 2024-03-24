@@ -40,8 +40,7 @@ void Updater::make_request(NNCGMainWindow *mw_ptr) {
     while (!ptr_reply->isFinished())
         QApplication::processEvents(QEventLoop::WaitForMoreEvents, 250);
     if (!ptr_reply->error()) {
-        lastVerStr = ptr_reply->readAll();
-        ptr_reply->deleteLater();
+        lastVerStr = ptr_reply->readLine();
         QStringList tmp_paths = QStandardPaths::standardLocations(QStandardPaths::TempLocation);
         if (need_update(lastVerStr) && (tmp_paths.length() > 0)) {
             QString fn = "nncg-" + lastVerStr + "-windows-x64.exe";
@@ -50,28 +49,22 @@ void Updater::make_request(NNCGMainWindow *mw_ptr) {
             bool hash_ok {false};
             bool run_installer {false};
             if (new_file.exists()) { // сначала проверяем не скачан ли уже этот файл
-               // qInfo() << "New installer detected in tmp dir!";
-                nreq.setUrl(QUrl("https://raw.githubusercontent.com/fluorohead/nncg/main/last_ver.md5")); // для этого узнаем какой у последней версии должен быть MD5-хэш
-                ptr_reply = naman.get(nreq);
-                while (!ptr_reply->isFinished())
-                    QApplication::processEvents(QEventLoop::WaitForMoreEvents, 250);
-                //qInfo() << "File last_ver.md5 downloaded.";
-                if (!ptr_reply->error()) {
-                    new_file.open(QIODevice::ReadOnly);
-                    //qInfo() << "New installer file opened to calculate MD5 hash.";
-                    QCryptographicHash crh(QCryptographicHash::Md5);
-                    if (crh.addData(&new_file)) {
-                        //qInfo() << "Calculating hash...";
-                        //qInfo() << "Calculated : " << crh.result().toHex();
-                        if (crh.result().toHex() == ptr_reply->readAll()) {
-                            hash_ok = true;
-                            run_installer = true;
-                            //qInfo() << "Hash is equal, so no need to download installer again.";
-                        }
+                qInfo() << "New installer detected in tmp dir!";
+                new_file.open(QIODevice::ReadOnly);
+                qInfo() << "New installer file opened to calculate MD5 hash.";
+                QCryptographicHash crh(QCryptographicHash::Md5);
+                if (crh.addData(&new_file)) {
+                    qInfo() << "Calculating hash...";
+                    qInfo() << "Calculated : " << crh.result().toHex();
+                    QString new_ver_hash = ptr_reply->readLine();
+                    qInfo() << "Downloaded hash : " << new_ver_hash;
+                    if (crh.result().toHex() == ptr_reply->readLine()) {
+                        hash_ok = true;
+                        run_installer = true;
+                        qInfo() << "Hash is equal, so no need to download installer again.";
                     }
-                    new_file.close();
                 }
-                ptr_reply->deleteLater();
+                new_file.close();
             }
             if (!hash_ok) { // используем переменную, как индикатор уже скачанного инсталлятора в tmp
                 nreq.setUrl(QUrl("https://github.com/fluorohead/nncg/releases/download/" + lastVerStr + "/" + fn)); // скачиваем инсталлятор последней версии
