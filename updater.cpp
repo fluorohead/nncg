@@ -41,7 +41,6 @@ void Updater::make_request(NNCGMainWindow *mw_ptr) {
         QApplication::processEvents(QEventLoop::WaitForMoreEvents, 250);
     if (!ptr_reply->error()) {
         lastVerStr = ptr_reply->readLine();
-        qInfo() << "Last ver string : " << lastVerStr;
         QStringList tmp_paths = QStandardPaths::standardLocations(QStandardPaths::TempLocation);
         if (need_update(lastVerStr) && (tmp_paths.length() > 0)) {
             QString fn = "nncg-" + lastVerStr + "-windows-x64.exe";
